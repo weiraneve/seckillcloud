@@ -1,0 +1,44 @@
+# 端口
+server:
+  port: 8205
+
+spring:
+  application:
+    name: cloud-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置Nacos地址 ,暂且只配置服务发现管理，配置管理暂且没有弄
+    gateway:
+      # 全局fallback
+      default-filters:
+        - name: Hystrix
+          args:
+            name: defaultFallback
+            fallbackUri: forward:/defaultFallback
+      # 路由（routes：路由，它由唯一标识（ID）、目标服务地址（uri）、一组断言（predicates）和一组过滤器组成（filters）。filters 不是必需参数。）
+      routes:
+        - id: cloud-uaa
+          uri: lb://cloud-uaa
+          predicates:
+            - Path=/uaa/**
+          filters:
+            - StripPrefix=1
+
+        - id: cloud-mission
+          uri: lb://cloud-mission
+          predicates:
+            - Path=/mission/**
+          filters:
+            - StripPrefix=1
+
+        - id: cloud-manage
+          uri: lb://cloud-manage
+          predicates:
+            - Path=/manage/**
+          filters:
+            - StripPrefix=1
+
+logging:
+  # 日志文件地址
+  config: classpath:logback.xml

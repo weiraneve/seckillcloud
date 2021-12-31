@@ -1,0 +1,38 @@
+server:
+  port: 8888
+
+# 这里redis配置与高版本的依赖的redis配置不同
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: 123456
+  poolMaxIdle: 500
+  poolMaxTotal: 1000
+  poolMaxWait: 500
+  timeout: 10
+
+spring:
+  profiles:
+    active: weiran
+  application:
+    name: cloud-mission
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cloud-mission?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    # 全局消息确认消费默认
+#    listener.simple.acknowledge-mode: auto
+
+logging:
+  config: classpath:logback.xml

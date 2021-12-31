@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>注册</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- jquery -->
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/login.css"/>
+    <style>
+        .form-control{
+            font-size: 10px !important;
+        }
+        .error{
+            font-size: 10px !important;
+            color: red !important;
+            font-weight:100 !important;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="title">
+        <h4>用户注册</h4>
+    </div>
+
+    <form name="registerForm" id="registerForm" method="post">
+        <div class="form-group">
+            <input id="mobile" name="mobile" class="form-control" type="text" placeholder="手机号码" required="true"
+                   minlength="11" maxlength="11"/>
+        </div>
+        <div class="form-group">
+            <input id="identityCardId" name="identityCardId" class="form-control" type="text" placeholder="身份证号"
+                   required="true" minlength="18" maxlength="18"/>
+        </div>
+        <div class="form-group">
+            <input id="username" name="username" class="form-control" type="text" placeholder="用户姓名"
+                   required="true" minlength="1" maxlength="5"/>
+        </div>
+        <div class="form-group">
+            <input id="password" name="password" class="form-control" type="password" placeholder="密码"
+                   required="true" minlength="6" maxlength="16"/>
+        </div>
+        <div class="form-group">
+            <input id="repeat_password" name="password" class="form-control" type="password" placeholder="重复密码"
+                   required="true" minlength="6" maxlength="16"/>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" onclick="register()">注销</button>
+    </form>
+
+</div>
+</body>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<!-- jquery-validator -->
+<script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="/layer/layer.js"></script>
+<!-- md5.js -->
+<script type="text/javascript" src="/js/md5.min.js"></script>
+<!-- common.js -->
+<script type="text/javascript" src="/js/common.js"></script>
+<script>
+    function register() {
+        $("#registerForm").validate({
+            submitHandler: function (form) {
+                doRegister();
+            }
+        });
+    }
+
+    function doRegister() {
+        g_showLoading();
+
+        var mobile = $("#mobile").val();
+        var inputPass = $("#password").val();
+        var identityCardId = $("#identityCardId").val();
+        var username = $("#username").val();
+        var repeat_inputPass = $("#repeat_password").val();
+        var salt = g_passsword_salt;
+        var str = "" + salt.charAt(0) + salt.charAt(2) + inputPass + salt.charAt(5) + salt.charAt(4);
+        var password = md5(str);
+        if (inputPass != repeat_inputPass) {
+            layer.msg("设定密码与重复密码不一致，请重新注册！");
+            return false;
+        }
+        var myReg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if (!myReg.test(mobile)) {
+            layer.msg("请输入正确的帐号！");
+            return false;
+        }
+        if (inputPass == repeat_inputPass) {
+            $.ajax({
+                url: "http://localhost:8205/uaa/user/doRegister",
+                type: "POST",
+                data: {
+                    mobile: mobile,
+                    password: password,
+                    identityCardId: identityCardId,
+                    username: username
+                },
+                success: function (data) {
+                    layer.closeAll();
+                    if (data.code == 200) {
+                        layer.msg("成功");
+                        window.location.href = "http://localhost:8205/uaa/login";
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                },
+                error: function () {
+                    layer.closeAll();
+                }
+            });
+        }
+    }
+</script>
+</html>

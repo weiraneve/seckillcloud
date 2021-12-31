@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>登录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- jquery -->
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/login.css"/>
+    <style>
+        .form-control{
+            font-size: 10px !important;
+        }
+        .error{
+            font-size: 10px !important;
+            color: red !important;
+            font-weight:100 !important;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="title">
+        <h4>用户登录</h4>
+    </div>
+    <a href="http://localhost:8205/uaa/register"> <button class="btn btn-default" type="submit">注册</button></a>
+    <form name="loginForm" id="loginForm" method="post">
+        <div class="form-group">
+            <input id="mobile" name="mobile" class="form-control" type="text" placeholder="手机号码" required="true"
+                   minlength="11" maxlength="11"/>
+        </div>
+
+        <div class="form-group">
+            <input id="password" name="password" class="form-control" type="password" placeholder="密码"
+                   required="true" minlength="6" maxlength="16"/>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" onclick="login()">登录</button>
+    </form>
+
+</div>
+</body>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<!-- jquery-validator -->
+<script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="/layer/layer.js"></script>
+<!-- md5.js -->
+<script type="text/javascript" src="/js/md5.min.js"></script>
+<!-- common.js -->
+<script type="text/javascript" src="/js/common.js"></script>
+<script>
+    function login() {
+        $("#loginForm").validate({
+            submitHandler: function (form) {
+                doLogin();
+            }
+        });
+    }
+
+    function doLogin() {
+        g_showLoading();
+
+        var inputPass = $("#password").val();
+        var salt = g_passsword_salt;
+        var str = "" + salt.charAt(0) + salt.charAt(2) + inputPass + salt.charAt(5) + salt.charAt(4);
+        var mobile = $("#mobile").val();
+        var password = md5(str);
+        var myReg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if (!myReg.test(mobile)) {
+            layer.msg("请输入正确的帐号！");
+            return false;
+        }
+        $.ajax({
+            url: "http://localhost:8205/uaa/user/doLogin",
+            type: "POST",
+            data: {
+                mobile: mobile,
+                password: password
+            },
+            success: function (data) {
+                layer.closeAll();
+                if (data.code == 200) {
+                    layer.msg("成功");
+                    window.location.href = "http://localhost:8205/mission/goods/list";
+                } else  {
+                    layer.msg(data.msg);
+                }
+            },
+            error: function () {
+                layer.closeAll();
+            }
+        });
+    }
+</script>
+</html>

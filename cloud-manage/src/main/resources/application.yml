@@ -1,0 +1,21 @@
+# 端口
+server:
+  port: 8889
+
+spring:
+  profiles:
+    active: weiran
+  application:
+    name: cloud-manage
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置Nacos地址 ,暂且只配置服务发现管理，配置管理暂且没有弄
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cloud-mission?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+logging:
+  config: classpath:logback.xml

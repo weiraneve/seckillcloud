@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>商品列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- jquery -->
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/goods.css"/>
+</head>
+<body>
+<div class="seckill_content">
+    <div class="title"><h2>秒杀商品列表</h2></div>
+    <br/><br/>
+    <button class="btn btn-default" type="submit" onclick="logout()">注销</button>
+    <br/><br/>
+</div>
+<div id="show_data">
+
+</div>
+</body>
+<!-- jquery-validator -->
+<script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="/layer/layer.js"></script>
+<!-- md5.js -->
+<script type="text/javascript" src="/js/md5.min.js"></script>
+<!-- common.js -->
+<script type="text/javascript" src="/js/common.js"></script>
+<script>
+    $(function () {
+        $.getJSON("http://localhost:8205/mission/goods/getGoodsList", function (data) {
+            console.info(data);
+            let goodsName = '';
+            let goodsImg = '';
+            let goodsTitle = '';
+            let seckillPrice = '';
+            let goodsPrice = '';
+            let goodsId = '';
+
+            let html = '';
+            let goodsBoList = data.data.goodsBoList;
+            for (let i = 0; i < goodsBoList.length; i++) {
+                goodsName = goodsBoList[i].goodsName;
+                goodsImg = goodsBoList[i].goodsImg;
+                goodsTitle = goodsBoList[i].goodsTitle;
+                seckillPrice = goodsBoList[i].seckillPrice;
+                goodsPrice = goodsBoList[i].goodsPrice;
+                goodsId = goodsBoList[i].id;
+
+                html += "<div class ='all_seckill_goods'>\
+                            <div class='seckill_goods'>\
+                                <h4> " + goodsName + "</h4>\
+                                <img width='250' src=" + goodsImg + "/>\
+                                <br/><br/>\
+                                <div class='seckill_price'>\
+                                    <p id='goodsTitle'>" + goodsTitle + "</p>\
+                                    <p>\
+                                        <span class='price1' id='seckillPrice'>" + seckillPrice + "</span>\
+                                        <del><span class='price2' id='goodsPrice'>" + goodsPrice + "</span></del>\
+                                    </p>\
+                                    <a href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">\
+                                        <button class='btn btn-default' type='submit'>进入详情页...</button>\
+                                    </a>\
+                                </div>\
+                            </div>\
+                        </div>";
+            }
+            document.getElementById("show_data").innerHTML = html;
+        })
+    })
+
+    function logout() {
+        $.ajax({
+            url: "http://localhost:8205/uaa/user/logout",
+            type: "GET",
+            success: function () {
+                window.location.href = "http://localhost:8205/uaa/login";
+            },
+            error: function () {
+                layer.msg("客户端请求有误");
+            }
+        })
+    }
+</script>
+</html>
