@@ -58,8 +58,8 @@ public class RabbitmqConfig {
         factoryConfigurer.configure(factory,connectionFactory);
         // 设置消息在传输中的格式。在这里采用JSON的格式进行传输
         factory.setMessageConverter(new Jackson2JsonMessageConverter());
-        // 设置消息的确认消费模式。在这里为NONE，表示不需要确认消费
-        factory.setAcknowledgeMode(AcknowledgeMode.NONE);
+        // 设置消息的确认消费模式。NONE表示不需要确认消费;AUTO为自动确认;MANUAL为手动确认；自动确认在mq成功消费一条信息后回移除队列所有信息，而手动确认会只移除消费了的信息
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         // 设置并发消费者实例的初始数量。在这里为10个
         factory.setConcurrentConsumers(10);
         // 设置并发消费者实例的最大数量。在这里为15个
@@ -80,7 +80,7 @@ public class RabbitmqConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMandatory(true);
         // 发送消息后，如果发送成功，则输出“消息发送成功”的反馈信息
-//        rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> log.info("消息发送成功:correlationData({}),ack({}),cause({})", correlationData, ack, cause));
+        rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> log.info("消息发送成功:correlationData({}),ack({}),cause({})", correlationData, ack, cause));
         // 发送消息后，如果发送失败，则输出“消息发送失败-消息丢失”的反馈信息
         rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> log.info("消息丢失:exchange({}),route({}),replyCode({}),replyText({}),message:{}", exchange, routingKey, replyCode, replyText, message));
         // 定义消息传输的格式为JSON字符串格式

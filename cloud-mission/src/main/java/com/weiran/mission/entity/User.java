@@ -16,12 +16,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@ApiModel(value = "User对象")
+@ApiModel(description = "User对象")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty("主键")
     private Long id;
 
     @ApiModelProperty("用户名")
@@ -33,22 +34,19 @@ public class User implements Serializable {
     @ApiModelProperty("密码")
     private String password;
 
-    @ApiModelProperty("存放信息头部")
-    private String head;
-
-    @ApiModelProperty("登陆记录")
-    private Integer loginCount;
+    @ApiModelProperty("身份证号")
+    private String identityCardId;
 
     @ApiModelProperty("生成时间")
     @TableField(fill = FieldFill.INSERT)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)  //反序列化
     @JsonSerialize(using = LocalDateTimeSerializer.class)  //序列化
-    private LocalDateTime createDate;
+    private LocalDateTime createTime;
 
     @ApiModelProperty("最后一次登陆时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)  //反序列化
     @JsonSerialize(using = LocalDateTimeSerializer.class)  //序列化
-    private LocalDateTime lastLoginDate;
+    private LocalDateTime lastLoginTime;
 
 }

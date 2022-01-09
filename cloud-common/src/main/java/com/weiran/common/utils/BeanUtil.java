@@ -19,7 +19,7 @@ public class BeanUtil {
             return "" + value;
         } else if (clazz == String.class) {
             return (String)value;
-        } else if (clazz == long.class || clazz == Long.class) {
+        } else if (clazz == Long.class || clazz == Long.class) {
             return "" + value;
         } else {
             return JSONUtil.toJsonStr(value);
@@ -38,7 +38,7 @@ public class BeanUtil {
             return (T)Integer.valueOf(str);
         } else if (clazz == String.class) {
             return (T)str;
-        } else if (clazz == long.class || clazz == Long.class) {
+        } else if (clazz == Long.class || clazz == Long.class) {
             return  (T)Long.valueOf(str);
         } else {
             return JSONUtil.toBean(JSONUtil.parseObj(str), clazz);

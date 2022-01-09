@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * 秒杀订单控制器
+ * 订单控制器
  */
 @Controller
 @RequiredArgsConstructor
@@ -22,11 +22,12 @@ public class OrderController {
 
     final OrderService orderService;
 
-    @ApiOperation("根据OrderId返回订单详细信息")
-    @ApiImplicitParam(value = "订单Id", dataType = "long", required = true)
+    @ApiOperation("根据订单的id返回订单详细信息")
+    @ApiImplicitParam(value = "订单的id")
     @GetMapping("/detail")
     @ResponseBody
-    public Result<OrderDetailVo> info(@RequestParam("orderId") long orderId) {
-        return orderService.info(orderId);
+    public Result<OrderDetailVo> findOrderById(@RequestParam("orderId") long orderId) {
+        return orderService.findOrderById(orderId);
     }
+
 }

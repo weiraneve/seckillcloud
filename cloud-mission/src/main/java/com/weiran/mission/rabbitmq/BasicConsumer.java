@@ -1,14 +1,19 @@
 package com.weiran.mission.rabbitmq;
 
 import cn.hutool.json.JSONUtil;
-import com.weiran.mission.pojo.bo.GoodsBo;
-import com.weiran.mission.entity.User;
-import com.weiran.mission.service.GoodsService;
-import com.weiran.mission.service.SeckillOrderService;
+
+import com.weiran.mission.entity.Order;
+import com.weiran.mission.manager.OrderManager;
+import com.weiran.mission.service.SeckillGoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.support.AmqpHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import com.rabbitmq.client.Channel;
 
 /**
  * rabbitmq demo-消费者
@@ -18,23 +23,37 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BasicConsumer {
 
-    final SeckillOrderService seckillOrderService;
-    final GoodsService goodsService;
+    final OrderManager orderManager;
+    final SeckillGoodsService seckillGoodsService;
 
     /**
      * 监听并接收消费队列中的消息-在这里采用单一容器工厂实例即可
      */
-    @RabbitListener(queues = RabbitMqConstants.BASIC_QUEUE, containerFactory = "singleListenerContainer") // 设置消费者监听的队列以及监听的消息容器
-    public void consumeMsg(SeckillMessage seckillMessage) {
+    @RabbitListener(queues = RabbitMqConstants.BASIC_QUEUE, containerFactory = "multiListenerContainer") // 设置消费者监听的队列以及监听的消息容器
+    public void consumeMsg(SeckillMessage seckillMessage, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) Long tag) throws IOException {
         try {
             log.info("rabbitmq demo-消费者-监听消息：{} ", JSONUtil.toJsonStr(seckillMessage));
-            User user = seckillMessage.getUser();
+            long userId = seckillMessage.getUserId();
             long goodsId = seckillMessage.getGoodsId();
-            GoodsBo goodsBo = goodsService.getGoodsBoByGoodsId(goodsId);
-            // 减库存 下订单 写入秒杀订单
-            seckillOrderService.insertByUserAndGoodsBo(user, goodsBo);
+            // 减库存，下订单，写入订单表
+            Order order = new Order();
+            order.setUserId(userId);
+            order.setGoodsId(goodsId);
+            boolean flag = orderManager.save(order);
+            if (!flag) {
+                log.warn("写入订单表失败: {}", JSONUtil.toJsonStr(seckillMessage));
+                // 执行完业务逻辑后，手动进行确认消费，其中第一个参数为：消息的分发标识(全局唯一);第二个参数：是否允许批量确认消费
+                channel.basicAck(tag, false);
+                return;
+            }
+            log.info("成功写入订单表: {}", JSONUtil.toJsonStr(seckillMessage));
+            seckillGoodsService.reduceStock(goodsId);
+            // 执行完业务逻辑后，手动进行确认消费，其中第一个参数为：消息的分发标识(全局唯一);第二个参数：是否允许批量确认消费
+            channel.basicAck(tag, false);
         } catch (Exception e) {
-            log.error("rabbitmq demo-消费者-发生异常：", e.fillInStackTrace());
+            // 第二个参数reueue重新归入队列,true的话会重新归入队列,需要人为地处理此次异常消息,重新归入队列也会继续异常
+            channel.basicAck(tag, true);
+            log.error("rabbitmq demo-消费者-发生异常：", e);
         }
     }
 }

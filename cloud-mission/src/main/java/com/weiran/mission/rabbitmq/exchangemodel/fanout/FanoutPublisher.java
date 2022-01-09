@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * 广播fanoutExchange消息模型-生产者
- * @author zhengdayue
  */
 @Slf4j
 @Component

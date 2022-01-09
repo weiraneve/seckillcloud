@@ -30,33 +30,29 @@ public class UserController {
     @ResponseBody
     @ApiOperation("登陆，信息写进redis")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "响应", required = true),
-            @ApiImplicitParam(value = "会话", required = true),
-            @ApiImplicitParam(value = "登陆传递字段", required = true)
+            @ApiImplicitParam(value = "响应"),
+            @ApiImplicitParam(value = "会话"),
+            @ApiImplicitParam(value = "登陆传递字段")
     })
-    public Result doLogin(HttpServletResponse response, HttpSession session , LoginParam loginParam) {
+    public Result doLogin(HttpServletResponse response, HttpSession session, LoginParam loginParam) {
         return userService.doLogin(response, session, loginParam);
     }
 
     @PostMapping("user/doRegister")
     @ResponseBody
     @ApiOperation("注册")
-    @ApiImplicitParam(value = "注册传递字段", required = true)
+    @ApiImplicitParam(value = "注册传递字段")
     public Result doRegister(RegisterParam registerParam) {
         return userService.doRegister(registerParam);
     }
 
-    @GetMapping("/register")
-    public String register() {
-        return "/register.html";
-    }
-
-    @GetMapping("user/logout")
+    @RequestMapping("user/logout")
+    @ResponseBody
     public Result doLogout(HttpServletRequest request, HttpServletResponse response) {
         return userService.doLogout(request, response);
     }
 
-    @GetMapping("/login")
+    @RequestMapping("/login")
     public String login() {
         return "/login.html";
     }

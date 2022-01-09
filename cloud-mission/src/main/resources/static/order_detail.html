@@ -5,10 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- jquery -->
     <script type="text/javascript" src="/js/jquery.min.js"></script>
-    <!-- bootstrap -->
-    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/css/detail.css"/>
-    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
     <!-- jquery-validator -->
     <script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
@@ -33,23 +30,19 @@
             <h2 id="goodsName"></h2>
             <p class="title" text="goodsTitle"></p>
             <p>
-                <span class="price1"  id="orderPrice"></span>
+                <span class="price"  id="orderPrice"></span>
             </p>
             <div class="seckill_data">
                 <div>
                     <span>下单时间</span>
-                    <p id="createDate"></p>
-                </div>
-                <div>
-                    <span>订单状态</span>
-                    <p id="orderStatus"></p>
+                    <p id="createTime"></p>
                 </div>
             </div>
             <div class="count">
                 <span>购买人：</span>
                 <span>手机号：</span>
             </div>
-                <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
+                <button class="btn" type="submit" id="button">已经购买成功</button>
         </div>
     </div>
 </div>
@@ -57,20 +50,12 @@
 </html>
 <script>
     function render(detail){
-        var goodsBo = detail.goodsBo;
+        var goods = detail.goods;
         var order = detail.order;
-        $("#goodsName").text(goodsBo.goodsName);
-        $("#goodsImg").attr("src", goodsBo.goodsImg);
-        $("#orderPrice").text(order.goodsPrice);
-        $("#createDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));
-        var status = "";
-        if(order.status == 0){
-            status = "未支付"
-        } else if(order.status == 1){
-            status = "待发货";
-        }
-        $("#orderStatus").text(status);
-
+        $("#goodsName").text(goods.goodsName);
+        $("#goodsImg").attr("src", goods.goodsImg);
+        $("#orderPrice").text(goods.goodsPrice);
+        $("#createTime").text(new Date(order.createTime).format("yyyy-MM-dd hh:mm:ss"));
     }
 
     $(function(){
@@ -86,7 +71,6 @@
                 orderId:orderId
             },
             success:function(data){
-                console.log(data);
                 if(data.code == 200){
                     render(data.data);
                 } else if(data.code == 500216) {

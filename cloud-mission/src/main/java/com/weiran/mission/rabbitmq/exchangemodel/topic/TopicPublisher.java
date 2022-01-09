@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * 主题topicExchange消息模型-生产者
- * @author zhengdayue
  */
 @Slf4j
 @Component

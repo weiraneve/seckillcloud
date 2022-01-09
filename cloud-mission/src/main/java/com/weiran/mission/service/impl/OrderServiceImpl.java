@@ -2,14 +2,12 @@ package com.weiran.mission.service.impl;
 
 import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
-import com.weiran.common.redis.manager.RedisService;
-import com.weiran.mission.pojo.bo.GoodsBo;
-import com.weiran.mission.entity.OrderInfo;
-import com.weiran.mission.entity.SeckillOrder;
-import com.weiran.mission.manager.OrderInfoManager;
-import com.weiran.mission.service.GoodsService;
+
+import com.weiran.mission.entity.Goods;
+import com.weiran.mission.entity.Order;
+import com.weiran.mission.manager.GoodsManager;
+import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.service.OrderService;
-import com.weiran.mission.service.SeckillOrderService;
 import com.weiran.mission.pojo.vo.OrderDetailVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,27 +16,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    final OrderInfoManager orderInfoManager;
-    final RedisService redisService;
-    final SeckillOrderService seckillOrderService;
-    final GoodsService goodsService;
+    final OrderManager orderManager;
+    final GoodsManager goodsManager;
 
     // 查询订单信息
-    @Override
-    public Result<OrderDetailVo> info(long orderId) {
-        SeckillOrder seckillOrder = seckillOrderService.selectByOrderId(orderId);
-        if (seckillOrder == null) {
-            return null;
-        }
-        OrderInfo orderInfo = orderInfoManager.getById(orderId);
-        if (orderInfo == null) {
+    public Result<OrderDetailVo> findOrderById(long orderId) {
+        Order order = orderManager.getById(orderId);
+        if (order == null) {
             return Result.error(CodeMsg.ORDER_NOT_EXIST);
         }
-        long goodsId = orderInfo.getGoodsId();
-        GoodsBo goodsBo = goodsService.getGoodsBoByGoodsId(goodsId);
+        long goodsId = order.getGoodsId();
+        Goods goods = goodsManager.getById(goodsId);
         OrderDetailVo orderDetailVo = new OrderDetailVo();
-        orderDetailVo.setOrder(orderInfo);
-        orderDetailVo.setGoodsBo(goodsBo);
+        orderDetailVo.setOrder(order);
+        orderDetailVo.setGoods(goods);
         return Result.success(orderDetailVo);
     }
 }

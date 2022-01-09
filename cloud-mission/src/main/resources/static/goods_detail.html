@@ -5,8 +5,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <!-- jquery -->
     <script type="text/javascript" src="/js/jquery.min.js"></script>
-    <!-- bootstrap -->
-    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/css/detail.css"/>
 </head>
 <body>
@@ -22,17 +20,16 @@
             <h2 id="goodsName"></h2>
             <p class="title" id="goodsTitle"></p>
             <p>
-                <span class="price1" id="seckillPrice"></span>
-                <del><span class="price2" id="goodsPrice"></span></del>
+                <span class="price1" id="goodsPrice"></span>
             </p>
             <div class="seckill_data">
                 <div>
                     <span>秒杀开始时间</span>
-                    <p id="startDate"></p>
+                    <p id="startTime"></p>
                 </div>
                 <div>
                     <span>秒杀结束时间</span>
-                    <p id="endDate"></p>
+                    <p id="endTime"></p>
                 </div>
             </div>
             <div class="seckillStatus">
@@ -44,14 +41,13 @@
                 <span id="stockCount"></span>
             </div>
 
-            <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getSeckillPath()">立即秒杀</button>
+            <button class="btn" type="button" id="buyButton" onclick="getSeckillPath()">立即秒杀</button>
             <input type="hidden" name="goodsId" id="goodsId"/>
         </div>
     </div>
 </div>
 
 </body>
-<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 <!-- jquery-validator -->
 <script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script>
 <script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
@@ -151,28 +147,21 @@
     }
 
     function render(detail) {
-        console.log(detail);
         var remainSeconds = detail.remainSeconds;
-        var goodsBo = detail.goodsBo;
-        var user = detail.user;
-        if (user) {
-            $("#userTip").hide();
-        }
-        $("#goodsName").text(goodsBo.goodsName);
-        $("#goodsImg").attr("src", goodsBo.goodsImg);
-        $("#goodsTitle").text(goodsBo.goodsTitle);
-        $("#startDate").text(new Date(goodsBo.startDate).format("yyyy-MM-dd hh:mm:ss"));
-        $("#endDate").text(new Date(goodsBo.endDate).format("yyyy-MM-dd hh:mm:ss"));
+        var stockCount = detail.stockCount;
+        var goods = detail.goods;
+        $("#goodsName").text(goods.goodsName);
+        $("#goodsImg").attr("src", goods.goodsImg);
+        $("#startTime").text(new Date(goods.startTime).format("yyyy-MM-dd hh:mm:ss"));
+        $("#endTime").text(new Date(goods.endTime).format("yyyy-MM-dd hh:mm:ss"));
         $("#remainSeconds").val(remainSeconds);
-        $("#goodsId").val(goodsBo.id);
-        $("#goodsPrice").text(goodsBo.goodsPrice);
-        $("#seckillPrice").text(goodsBo.seckillPrice);
-        $("#stockCount").text(goodsBo.stockCount);
+        $("#goodsId").val(goods.id);
+        $("#goodsPrice").text(goods.goodsPrice);
+        $("#stockCount").text(stockCount);
         countDown();
     }
 
     $(function () {
-        //countDown();
         getDetail();
     });
 

@@ -1,9 +1,9 @@
 package com.weiran.mission.service;
 
 import com.weiran.common.obj.Result;
-import com.weiran.mission.pojo.bo.GoodsBo;
-import com.weiran.mission.pojo.vo.GoodsBoListVo;
+import com.weiran.mission.entity.Goods;
 import com.weiran.mission.pojo.vo.GoodsDetailVo;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface GoodsService {
     /**
      * 显示商品列表
      */
-    Result<GoodsBoListVo> getGoodsList();
+    Result<List<GoodsDetailVo>> getGoodsList();
 
     /**
      * 显示秒杀商品细节
@@ -20,13 +20,18 @@ public interface GoodsService {
     Result<GoodsDetailVo> getDetail(long goodsId);
 
     /**
-     * 查询全部的商品
+     * 增加商品
      */
-    List<GoodsBo> selectAllGoods();
+    Result addGoods(Goods goods);
 
     /**
-     * 根据商品id查询返回goodsBo
+     * 删除商品
      */
-    GoodsBo getGoodsBoByGoodsId(long goodsId);
+    Result deleteGoods(@RequestParam("id") long id);
+
+    /**
+     * 更改商品详情
+     */
+    Result changeGoods(Goods goods, @RequestParam("id") long id);
 
 }

@@ -1,19 +1,3 @@
-# BUG
-
-# 解决的疑难杂症
-- 当使用网关时，静态资源可以放网关下，如果是分别放下游服务静态资源包中，需要在代码中的js、css和img的路径加上/static/，和gateway配置中路径加上 /static/
-- 当页面静态化与controller层映射时，超过两层的映射路径 /user/login 返回的字符串必须要有斜线/ 而如果只有一层则不需要。摒弃了"redirect:/login.html" 那种情况
-- Swagger依赖版本可能会导致报错，doc.html页面功能需要另外加个依赖
-- 使用MP框架时，想要切换主键生成策略，那么在切换之前，最好对数据库表执行"TRUNCATE TABLE 'table name'" 操作，不然会有影响。
-- Druid 1.1.21以下的版本与MQ有冲突，高版本没有。1.1.22比较合适，更高版本的另外报错warn,连接失败。
-- Feign调用接口如果要传递参数，必须要用@RequestParam注解
-
-# 秒杀的代码逻辑和展望
-- 关于秒杀的业务逻辑，用户访问，在uaa模块登入时，进行资格筛选，认证后。进入秒杀商品列表页面，点入秒杀商品详情后，点击立即秒杀，如果在规定时间内（按钮没有置灰），并且没有重复秒杀，则开启秒杀。
-- 这里涉及到秒杀接口的URL加盐动态化，后端相关的秒杀代码，没有选择Redis的LUA脚本和Redisson分布式锁，因为项目中没有使用过多的Redis事务逻辑和Redis分布式逻辑。秒杀主要运用的是：Mysql加上乐观锁和Redis库存预热加载和Redis预减库存解决超卖；RabbitMQ消息队列使用串行化，保证项目的高可用和高并发。
-- 本身项目中秒杀模块也有注解加拦截器负责限流。关于限流、熔断等功能，还可以由网关来承载，这可能是未来改进的一个方向，暂且先不添加这方面的逻辑和功能。
-- Nginx对于Redis的分布式的一些配置未来也可以用上，增加高可用的程度。以及比较多的后台逻辑的代码继续跟进。
-
 # 秒杀设计的一些重点
 - 资源静态化，加快性能，前后端分离，让页面资源不经过后端，前端拥有自己的服务器，提前放入cdn服务器内容。
 - 服务单一职责，扛住高并发的系统需要单一职责。
@@ -121,8 +105,8 @@ RabbitMQ的高可用主要体现在消息的发送、传输和接收的过程中
 - 悲观锁、了关锁
 - SQL的一些写法，这里有疑惑的是，如果用MQ框架如何改善SQL写法。
 
-
 # 参考
+[如何设计一个秒杀系统总结](https://blog.csdn.net/yin767833376/article/details/103028616)
 [秒杀系统设计](https://youzi530.github.io/2021/11/04/miao-sha-xi-tong-she-ji/)
 [秒杀系统更高级的参考](https://github.com/qiurunze123/miaosha)
 [为什么现在又流行服务端渲染html](https://www.zhihu.com/question/59578433/answer/1936572256)
@@ -134,5 +118,5 @@ RabbitMQ的高可用主要体现在消息的发送、传输和接收的过程中
 [RabbitMq 入门介绍](https://blog.csdn.net/Fiuty_Da/article/details/114252362?spm=1001.2014.3001.5502)
 [高可用架构-消息队列](https://doocs.gitee.io/advanced-java/#/./docs/high-concurrency/how-to-ensure-high-availability-of-message-queues)
 [MyBatis-Plus 高级功能 —— 多数据源配置](https://blog.csdn.net/weixin_38111957/article/details/114100901)
-[Spring Cloud Gateway 限流适配多规则的解决方案](https://juejin.cn/post/6983914664157528095)
-[Linux上搭建Git服务器](https://segmentfault.com/a/1190000038415291)
+[Spring Cloud Gateway 自定义过滤器实现降级](https://cloud.tencent.com/developer/article/1650037)
+[前端性能测试工具](https://mp.weixin.qq.com/s/BsUfVqfIQUAsi6z-C-jhug)

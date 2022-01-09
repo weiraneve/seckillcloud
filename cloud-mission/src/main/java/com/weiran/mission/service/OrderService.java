@@ -8,6 +8,6 @@ public interface OrderService {
     /**
      * 查询订单信息
      */
-    Result<OrderDetailVo> info(long orderId);
+    Result<OrderDetailVo> findOrderById(long orderId);
 
 }

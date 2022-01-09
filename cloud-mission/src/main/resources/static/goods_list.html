@@ -5,71 +5,161 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <!-- jquery -->
     <script type="text/javascript" src="/js/jquery.min.js"></script>
-    <!-- bootstrap -->
-    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/goods.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/list.css"/>
 </head>
 <body>
-<div class="seckill_content">
-    <div class="title"><h2>秒杀商品列表</h2></div>
-    <br/><br/>
-    <button class="btn btn-default" type="submit" onclick="logout()">注销</button>
-    <br/><br/>
+
+<div class="topbar">
+    <div class="container">
+        <div class="topbar-nav">
+            <a href="#">银行业务</a><span>|</span>
+            <a href="#">开放平台</a><span>|</span>
+        </div>
+        <div class="topbar-cart">
+            <a>
+                <button type="submit" onclick="logout()">注销</button>
+            </a>
+        </div>
+    </div>
 </div>
-<div id="show_data">
+
+<div class="header">
+    <div class="container">
+        <div class="header-logo"><a href="#" class="lr">官网</a></div>
+        <div class="header-nav">
+            <ul class="nav-list clearfix">
+                <li class="nav-category">
+                    <a href="#">全部商品分类</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">A类业务</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">B类业务</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="seckill">
+    <div class="seckill-head">
+        <h1>秒杀</h1>
+    </div>
+
+    <div class="container">
+
+        <div id="seckillNav" class="seckill-nav">
+            <ul class="n" id="tabs">
+                <li class="active"><em></em><span>已经开始</span></li>
+                <li><em></em><span>今日即将开始</span> </li>
+                <li><em></em><span>未来即将开启</span></li>
+                <li><em></em><span>抢购已结束</span></li>
+            </ul>
+        </div>
+
+        <div id="lists" class="seckill-goods">
+
+            <ul class="clearfix active">
+                <div id="show_data_0"></div>
+            </ul>
+
+            <ul class="clearfix">
+                <div id="show_data_1"></div>
+            </ul>
+
+            <ul class="clearfix">
+                <div id="show_data_2"></div>
+            </ul>
+
+            <ul class="clearfix">
+                <div id="show_data_3"></div>
+            </ul>
+
+        </div>
+
+        <p class="seckill-notice">*秒杀活动规则：<br> 1.秒杀商品是否参加活动、最终秒杀成功的商品，以订单结算页显示为准，活动包括但不限于优惠券、赠品、满减、满赠等；
+            <br> 2.秒杀商品数量有限，活动以下单支付成功为准，请加入购物车后尽快下单支付;
+            <br> 3.秒杀价不含运费，最终以订单结算页价格为准；
+            <br> 4.订单中商品的数量、型号等，以订单结算页为准。
+            <br> 温馨提示：因可能存在系统缓存、页面更新导致价格变动异常等不确定性情况出现，如您发现活动商品标价或促销信息有异常，请您立即联系客服，以便我们及时补正。
+        </p>
+
+    </div>
 
 </div>
-</body>
-<!-- jquery-validator -->
-<script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script>
-<script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
+
+
 <!-- layer -->
 <script type="text/javascript" src="/layer/layer.js"></script>
-<!-- md5.js -->
-<script type="text/javascript" src="/js/md5.min.js"></script>
-<!-- common.js -->
-<script type="text/javascript" src="/js/common.js"></script>
 <script>
     $(function () {
         $.getJSON("http://localhost:8205/mission/goods/getGoodsList", function (data) {
-            console.info(data);
+            let goodsId = '';
             let goodsName = '';
             let goodsImg = '';
             let goodsTitle = '';
-            let seckillPrice = '';
             let goodsPrice = '';
-            let goodsId = '';
-
-            let html = '';
-            let goodsBoList = data.data.goodsBoList;
-            for (let i = 0; i < goodsBoList.length; i++) {
-                goodsName = goodsBoList[i].goodsName;
-                goodsImg = goodsBoList[i].goodsImg;
-                goodsTitle = goodsBoList[i].goodsTitle;
-                seckillPrice = goodsBoList[i].seckillPrice;
-                goodsPrice = goodsBoList[i].goodsPrice;
-                goodsId = goodsBoList[i].id;
-
-                html += "<div class ='all_seckill_goods'>\
-                            <div class='seckill_goods'>\
-                                <h4> " + goodsName + "</h4>\
-                                <img width='250' src=" + goodsImg + "/>\
-                                <br/><br/>\
-                                <div class='seckill_price'>\
-                                    <p id='goodsTitle'>" + goodsTitle + "</p>\
-                                    <p>\
-                                        <span class='price1' id='seckillPrice'>" + seckillPrice + "</span>\
-                                        <del><span class='price2' id='goodsPrice'>" + goodsPrice + "</span></del>\
-                                    </p>\
-                                    <a href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">\
-                                        <button class='btn btn-default' type='submit'>进入详情页...</button>\
-                                    </a>\
-                                </div>\
+            let show_data_0 = '';
+            let show_data_1 = '';
+            let show_data_2 = '';
+            let show_data_3 = '';
+            let goodsDetailList = data.data;
+            for (let i = 0; i < goodsDetailList.length; i++) {
+                let goods = goodsDetailList[i].goods;
+                let remainSeconds = goodsDetailList[i].remainSeconds;
+                goodsId = goods.id;
+                goodsName = goods.goodsName;
+                goodsImg = goods.goodsImg;
+                goodsTitle = goods.goodsTitle;
+                goodsPrice = goods.goodsPrice;
+                // 剩余时间等于0，正在秒杀中；剩余时间大于0，还没有开始秒杀；小于0，已经结束秒杀。大于0且小于86400为一天内
+                if (remainSeconds === 0) {
+                    show_data_0 += "<li>\
+                                    <div class='bg'><img src=" + goodsImg + " alt='' /></div>\
+                                    <div class='info'>\
+                                        <a class='name' href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">" + goodsName + "</a>\
+                                        <p class='tips'>" + goodsTitle +"</p>\
+                                        <p class='price'>" + goodsPrice +"</p>\
+                                        <a class='btn' href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">进入秒杀详情</a>\
+                                    </div>\
+                                </li>";
+                } else if (remainSeconds > 0 && remainSeconds < 86400) {
+                    show_data_1 += "<li>\
+                            <div class='bg'><img src=" + goodsImg + " alt='' /></div>\
+                            <div class='info'>\
+                                <a class='name' href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">" + goodsName + "</a>\
+                                <p class='tips'>" + goodsTitle +"</p>\
+                                <p class='price'>" + goodsPrice +"</p>\
+                                <a class='btn' href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">进入秒杀详情</a>\
                             </div>\
-                        </div>";
+                        </li>";
+                } else if (remainSeconds > 86400) {
+                    show_data_2 += "<li>\
+                            <div class='bg'><img src=" + goodsImg + " alt='' /></div>\
+                            <div class='info'>\
+                                <a class='name' href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">" + goodsName + "</a>\
+                                <p class='tips'>" + goodsTitle +"</p>\
+                                <p class='price'>" + goodsPrice +"</p>\
+                                <a class='btn' href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">进入秒杀详情</a>\
+                            </div>\
+                        </li>";
+                } else if (remainSeconds < 0) {
+                    show_data_3 += "<li>\
+                            <div class='bg'><img src=" + goodsImg + " alt='' /></div>\
+                            <div class='info'>\
+                                <a class='name' href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">" + goodsName + "</a>\
+                                <p class='tips'>" + goodsTitle +"</p>\
+                                <p class='price'>" + goodsPrice +"</p>\
+                                <a class='btn' href=http://localhost:8205/mission/goods_detail.html?goodsId=" + goodsId + ">进入秒杀详情</a>\
+                            </div>\
+                        </li>";
+                }
             }
-            document.getElementById("show_data").innerHTML = html;
+            document.getElementById("show_data_0").innerHTML = show_data_0;
+            document.getElementById("show_data_1").innerHTML = show_data_1;
+            document.getElementById("show_data_2").innerHTML = show_data_2;
+            document.getElementById("show_data_3").innerHTML = show_data_3;
         })
     })
 
@@ -77,8 +167,12 @@
         $.ajax({
             url: "http://localhost:8205/uaa/user/logout",
             type: "GET",
-            success: function () {
-                window.location.href = "http://localhost:8205/uaa/login";
+            success: function (data) {
+                if (data.code == 200) {
+                    window.location.href = "http://localhost:8205/uaa/login";
+                } else  {
+                    layer.msg(data.msg);
+                }
             },
             error: function () {
                 layer.msg("客户端请求有误");
@@ -86,4 +180,39 @@
         })
     }
 </script>
+
+<script>
+    function index() {
+        var tabs = document.getElementById("tabs").getElementsByTagName("li");
+        var lists = document.getElementById("lists").getElementsByTagName("ul");
+
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].onclick = showlist;
+        }
+
+        function showlist() {
+            for (var i = 0; i < tabs.length; i++) {
+                if (tabs[i] === this) {
+                    tabs[i].className = "active";
+                    lists[i].className = "clearfix active";
+                } else {
+                    tabs[i].className = "";
+                    lists[i].className = "clearfix";
+                }
+            }
+        }
+
+        var seckillNav = document.getElementById("seckillNav");
+        window.onscroll = function() {
+            var scrollTop = document.documentElement.scrollTop || 0;
+            if (scrollTop >= 260) {
+                seckillNav.className = "seckill-nav seckill-navfixed";
+            } else {
+                seckillNav.className = "seckill-nav";
+            }
+        };
+    }
+    window.onload = index;
+</script>
+</body>
 </html>

@@ -23,10 +23,11 @@ import java.util.Enumeration;
 @Configuration
 public class FeignConfig implements RequestInterceptor {
 
-    @Bean
-    Logger.Level feignLevel() {
-        return Logger.Level.FULL;
-    }
+//    // 日志打印功能
+//    @Bean
+//    Logger.Level feignLevel() {
+//        return Logger.Level.FULL;
+//    }
 
     @Override
     public void apply(RequestTemplate requestTemplate) {

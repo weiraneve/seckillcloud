@@ -10,12 +10,12 @@ spring:
       discovery:
         server-addr: localhost:8848 #配置Nacos地址 ,暂且只配置服务发现管理，配置管理暂且没有弄
     gateway:
-      # 全局fallback
-      default-filters:
-        - name: Hystrix
-          args:
-            name: defaultFallback
-            fallbackUri: forward:/defaultFallback
+      # 全局自定义过滤器Hystrix实现降级处理，但此处如果使用，则让秒杀性能大减。
+#      default-filters:
+#        - name: Hystrix
+#          args:
+#            name: defaultFallback
+#            fallbackUri: forward:/defaultFallback
       # 路由（routes：路由，它由唯一标识（ID）、目标服务地址（uri）、一组断言（predicates）和一组过滤器组成（filters）。filters 不是必需参数。）
       routes:
         - id: cloud-uaa

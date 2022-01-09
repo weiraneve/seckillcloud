@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * 优先级队列-生产者
- * @author zhengdayue
  */
 @Slf4j
 @Component

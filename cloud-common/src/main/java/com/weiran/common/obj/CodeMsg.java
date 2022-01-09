@@ -39,6 +39,9 @@ public class CodeMsg {
 	// 注册模块 5006XX
 	public static CodeMsg REPEATED_REGISTER = new CodeMsg(500600, "手机号码已注册");
 
+	// 用户模块 5007XX
+	public static CodeMsg No_SIFT_PASS = new CodeMsg(500700, "客户初筛未通过");
+
 	public CodeMsg() {
 	}
 			

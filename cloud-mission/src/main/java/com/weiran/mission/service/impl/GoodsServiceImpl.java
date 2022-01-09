@@ -1,24 +1,23 @@
 package com.weiran.mission.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
-import com.weiran.common.redis.key.GoodsBoKey;
+import com.weiran.common.redis.key.GoodsKey;
+import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.mission.pojo.bo.GoodsBo;
 import com.weiran.mission.entity.Goods;
-import com.weiran.mission.entity.SeckillGoods;
 import com.weiran.mission.manager.GoodsManager;
-import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.service.GoodsService;
-import com.weiran.mission.pojo.vo.GoodsBoListVo;
 import com.weiran.mission.pojo.vo.GoodsDetailVo;
+import com.weiran.mission.service.SeckillGoodsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneId;
+import javax.annotation.PostConstruct;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,117 +25,115 @@ import java.util.List;
 public class GoodsServiceImpl implements GoodsService {
 
     final GoodsManager goodsManager;
-    final SeckillGoodsManager seckillGoodsManager;
     final RedisService redisService;
-    final ApplicationContext applicationContext;
+    final SeckillGoodsService seckillGoodsService;
 
-    // 存储项目中所有goodsBo的id
-    private List<Long> goodsBoIdList = new ArrayList<>();
+    /**
+     * 系统初始化，把商品信息加载到Redis缓存中。后续客户访问都从缓存中读取。
+     */
+    @PostConstruct
+    public void initGoodsInfo() {
+        List<Goods> goodsList = goodsManager.list();
+        if (goodsList == null) {
+            return;
+        }
+        for (Goods goods : goodsList) {
+            // 加载商品的详情信息
+            redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        }
+    }
 
     // 显示商品列表
     @Override
-    public Result<GoodsBoListVo> getGoodsList() {
-        // 从Redis中读取商品数据，这样多次访问都从缓存中取，减少数据库的压力
-        List<GoodsBo> goodsBoList = new ArrayList<>();
-        for (Long goodsBoId : goodsBoIdList) {
-            GoodsBo goodsBo = redisService.get(GoodsBoKey.goodsKey, "" + goodsBoId, GoodsBo.class);
-            goodsBoList.add(goodsBo);
+    public Result<List<GoodsDetailVo>> getGoodsList() {
+        List<GoodsDetailVo> goodsDetailVoList = new ArrayList<>();
+
+        for (long goodsId = 1L;; goodsId++) {
+            // 判断goodId的key是否存在
+            boolean flag = redisService.exists(GoodsKey.goodsKey, "" + goodsId);
+            if (!flag) {
+                break;
+            }
+            Result<GoodsDetailVo> result = getDetail(goodsId);
+            GoodsDetailVo goodsDetailVo = result.getData();
+            goodsDetailVoList.add(goodsDetailVo);
         }
-        GoodsBoListVo goodsBoListVo = new GoodsBoListVo();
-        goodsBoListVo.setGoodsBoList(goodsBoList);
-        Result result = new Result();
-        result.setData(goodsBoListVo);
+        Result<List<GoodsDetailVo>> result = new Result<>();
+        result.setData(goodsDetailVoList);
         return result;
     }
 
-    // 显示秒杀商品细节
+    // 显示商品细节。剩余时间等于0，正在秒杀中；剩余时间大于0，还没有开始秒杀；小于0，已经结束秒杀。
     @Override
     public Result<GoodsDetailVo> getDetail(long goodsId) {
-        GoodsBo goodsBo = getGoodsBoByGoodsId(goodsId);
-        if (goodsBo == null) {
+        // 从Redis中读取商品数据，这样多次访问都从缓存中取，减少数据库的压力
+        Goods goods = redisService.get(GoodsKey.goodsKey, "" + goodsId, Goods.class);
+        // 用goodsId取出存在Redis中的库存
+        int stockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
+        if (goods == null) {
             return Result.error(CodeMsg.NO_GOODS);
         } else {
-            long startAt = goodsBo.getStartDate().getTime();
-            long endAt = goodsBo.getEndDate().getTime();
-            long now = System.currentTimeMillis();
-
-            int seckillStatus;
-            int remainSeconds;
+            long startAt = Timestamp.valueOf(goods.getStartTime()).getTime(); // 秒杀开始时间
+            long endAt = Timestamp.valueOf(goods.getEndTime()).getTime(); // 秒杀结束时间
+            long now = System.currentTimeMillis(); // 系统当前时间
+            int remainSeconds; // 定义剩余时间
             if (now < startAt) { // 秒杀还没开始，倒计时
-                seckillStatus = 0;
                 remainSeconds = (int) ((startAt - now) / 1000);
             } else if (now > endAt) { // 秒杀已经结束
-                seckillStatus = 2;
                 remainSeconds = -1;
             } else { // 秒杀进行中
-                seckillStatus = 1;
                 remainSeconds = 0;
             }
             GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
-            goodsDetailVo.setGoodsBo(goodsBo);
+            goodsDetailVo.setGoods(goods);
+            goodsDetailVo.setStockCount(stockCount);
             goodsDetailVo.setRemainSeconds(remainSeconds);
-            goodsDetailVo.setSeckillStatus(seckillStatus);
             return Result.success(goodsDetailVo);
         }
     }
 
-    // 查询全部的商品
+    // 增加商品
     @Override
-    public List<GoodsBo> selectAllGoods() {
-        List<GoodsBo> resultList = new ArrayList<>();
-        List<Goods> goodsList = goodsManager.list();
-        List<SeckillGoods> seckillGoodsList = seckillGoodsManager.list();
-        for (Goods goods : goodsList) {
-            for (SeckillGoods seckillGoods : seckillGoodsList) {
-                if (goods.getId() == seckillGoods.getGoodsId()) {
-                    GoodsBo goodsBo = new GoodsBo();
-                    goodsBo.setId(goods.getId());
-                    goodsBoIdList.add(goods.getId());
-                    goodsBo.setGoodsName(goods.getGoodsName());
-                    goodsBo.setGoodsTitle(goods.getGoodsTitle());
-                    goodsBo.setGoodsImg(goods.getGoodsImg());
-                    goodsBo.setGoodsPrice(goods.getGoodsPrice());
-                    goodsBo.setGoodsStock(goods.getGoodsStock());
-                    // LocalDateTime转为Date
-                    goodsBo.setCreateDate(Date.from(goods.getCreateDate().atZone(ZoneId.systemDefault()).toInstant()));
-                    goodsBo.setUpdateDate(Date.from(goods.getUpdateDate().atZone(ZoneId.systemDefault()).toInstant()));
-                    goodsBo.setSeckillPrice(seckillGoods.getSeckillPrice());
-                    goodsBo.setStockCount(seckillGoods.getStockCount());
-                    goodsBo.setStartDate(Date.from(seckillGoods.getStartDate().atZone(ZoneId.systemDefault()).toInstant()));
-                    goodsBo.setEndDate(Date.from(seckillGoods.getEndDate().atZone(ZoneId.systemDefault()).toInstant()));
-                    resultList.add(goodsBo);
-                }
-            }
+    public Result addGoods(Goods goods) {
+        boolean flag = goodsManager.save(goods);
+        //
+        if (!flag) {
+            return new Result(CodeMsg.SERVER_ERROR);
         }
-        return resultList;
+        // 增加对应缓存
+        redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        // 增加库存对应缓存
+        redisService.set(SeckillGoodsKey.seckillCount, "" + goods.getId(), goods.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        return new Result(CodeMsg.SUCCESS);
     }
 
-    // 根据商品id查询返回goodsBo
+    // 删除商品
     @Override
-    public GoodsBo getGoodsBoByGoodsId(long goodsId) {
-        GoodsBo goodsBo = new GoodsBo();
-        List<Goods> goodsList = goodsManager.list();
-        List<SeckillGoods> seckillGoodsList = seckillGoodsManager.list();
-        for (Goods goods : goodsList) {
-            for (SeckillGoods seckillGoods : seckillGoodsList) {
-                if (goods.getId() == goodsId && seckillGoods.getGoodsId() == goodsId) {
-                    goodsBo.setId(goods.getId());
-                    goodsBo.setGoodsName(goods.getGoodsName());
-                    goodsBo.setGoodsTitle(goods.getGoodsTitle());
-                    goodsBo.setGoodsImg(goods.getGoodsImg());
-                    goodsBo.setGoodsPrice(goods.getGoodsPrice());
-                    goodsBo.setGoodsStock(goods.getGoodsStock());
-                    // LocalDateTime转为Date
-                    goodsBo.setCreateDate(Date.from(goods.getCreateDate().atZone(ZoneId.systemDefault()).toInstant()));
-                    goodsBo.setUpdateDate(Date.from(goods.getUpdateDate().atZone(ZoneId.systemDefault()).toInstant()));
-                    goodsBo.setSeckillPrice(seckillGoods.getSeckillPrice());
-                    goodsBo.setStockCount(seckillGoods.getStockCount());
-                    goodsBo.setStartDate(Date.from(seckillGoods.getStartDate().atZone(ZoneId.systemDefault()).toInstant()));
-                    goodsBo.setEndDate(Date.from(seckillGoods.getEndDate().atZone(ZoneId.systemDefault()).toInstant()));
-                }
-            }
+    public Result deleteGoods(long id) {
+        boolean flag = goodsManager.remove(Wrappers.<Goods>lambdaQuery().eq(Goods::getId, id));
+        if (!flag) {
+            return new Result(CodeMsg.SERVER_ERROR);
         }
-        return goodsBo;
+        // 删除对应缓存
+        redisService.decrease(GoodsKey.goodsKey, "" + id);
+        // 删除库存对应缓存
+        redisService.decrease(SeckillGoodsKey.seckillCount, "" + id);
+        return new Result(CodeMsg.SUCCESS);
     }
+
+    // 更改商品详情
+    @Override
+    public Result changeGoods(Goods goods, long id) {
+        boolean flag = goodsManager.update(goods, Wrappers.<Goods>lambdaQuery().eq(Goods::getId, id));
+        if (!flag) {
+            return new Result(CodeMsg.SERVER_ERROR);
+        }
+        // 更改对应缓存
+        redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        // 更改库存对应缓存
+        redisService.set(SeckillGoodsKey.seckillCount, "" + id, goods.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        return new Result(CodeMsg.SUCCESS);
+    }
+
 }
 
