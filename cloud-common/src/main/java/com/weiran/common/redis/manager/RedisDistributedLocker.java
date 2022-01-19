@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * Redisson分布式锁
  */
 @RequiredArgsConstructor
-public class RedisDistributedLocker implements DistributedLocker{
+public class RedisDistributedLocker implements DistributedLocker {
 
     final RedissonClient redissonClient;
 

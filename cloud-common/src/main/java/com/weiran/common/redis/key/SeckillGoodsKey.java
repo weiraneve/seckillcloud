@@ -8,4 +8,6 @@ public class SeckillGoodsKey extends BasePrefix {
     }
 
     public static SeckillGoodsKey seckillCount = new SeckillGoodsKey("sc");
+
+    public static SeckillGoodsKey seckillInfo = new SeckillGoodsKey("si");
 }

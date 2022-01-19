@@ -1,4 +1,4 @@
-package com.weiran.mission.controller;
+package com.weiran.test;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
@@ -7,19 +7,19 @@ import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
+import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.MD5Util;
 import com.weiran.mission.entity.Order;
 import com.weiran.mission.entity.SeckillGoods;
 import com.weiran.mission.entity.User;
-
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
-import com.weiran.mission.rabbitmq.BasicPublisher;
 import com.weiran.mission.rabbitmq.SeckillMessage;
 import com.weiran.mission.rabbitmq.ackmodel.manual.ManualAckPublisher;
 import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +33,7 @@ import java.util.UUID;
 /**
  * Jmeter测试
  */
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class TestJmeterController {
@@ -42,6 +43,7 @@ public class TestJmeterController {
     final OrderManager orderManager;
     final SeckillGoodsManager seckillGoodsManager;
     final ManualAckPublisher manualAckPublisher;
+    final RedisLua redisLua;
 
     // 内存标记，减少redis访问
     private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
@@ -128,7 +130,7 @@ public class TestJmeterController {
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由RabbitMQ来执行，做到削峰填谷
-        manualAckPublisher.sendMsg(seckillMessage);
+        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
 
 //        // 不用MQ
 //        Goods goodsBo = goodsService.getGoodsBoByGoodsId(goodsId);

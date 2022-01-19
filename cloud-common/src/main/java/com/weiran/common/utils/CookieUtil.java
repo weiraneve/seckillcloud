@@ -18,8 +18,7 @@ public class CookieUtil {
 
     /**
      * 从请求头信息中获得Cookies，并对比cookies的name是否为设置的token，是则返回cookies的value
-     *
-     * HttpServletRequest 当客户端通过HTTP协议访问服务器时，HTTP请求头中的所有信息都封装在这个对象中
+     * HttpServletRequest 当客户端通过HTTP协议访问服务器时，HTTP请求头中的所有信息都封装在这个对象中。
      */
     public static String readLoginToken(HttpServletRequest request) {
         Cookie[] cookie_list = request.getCookies();
@@ -54,7 +53,7 @@ public class CookieUtil {
         // 单位是秒。
         // 如果这个maxAge不设置的话，cookie就不会写入硬盘，而是写在内存。只在当前页面有效。
         cookie.setMaxAge(60 * 60 * 24 * 365); // 如果是-1，代表永久
-//        log.info("write cookieName:{},cookieValue:{}",ck.getName(),ck.getValue());
+//        log.info("write cookieName:{}, cookieValue:{}", ck.getName(), ck.getValue());
         response.addCookie(cookie);
     }
 
@@ -69,7 +68,7 @@ public class CookieUtil {
                     ck.setDomain(COOKIE_DOMAIN);
                     ck.setPath("/");
                     ck.setMaxAge(0); // 设置成0，代表删除此cookie。
-                   // log.info("del cookieName:{},cookieValue:{}",ck.getName(),ck.getValue());
+//                    log.info("del cookieName:{}, cookieValue:{}", ck.getName(), ck.getValue());
                     response.addCookie(ck);
                     return;
                 }

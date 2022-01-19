@@ -12,7 +12,6 @@ import com.weiran.mission.entity.Order;
 import com.weiran.mission.entity.SeckillGoods;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
-import com.weiran.mission.rabbitmq.BasicPublisher;
 import com.weiran.mission.rabbitmq.SeckillMessage;
 import com.weiran.mission.rabbitmq.ackmodel.manual.ManualAckPublisher;
 import com.weiran.mission.service.SeckillService;
@@ -90,7 +89,7 @@ public class SeckillServiceImpl implements SeckillService {
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由RabbitMQ来执行，做到削峰填谷
-        manualAckPublisher.sendMsg(seckillMessage);
+        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
         return Result.success(0); // 排队中
     }
 

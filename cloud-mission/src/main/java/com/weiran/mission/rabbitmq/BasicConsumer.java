@@ -29,7 +29,7 @@ public class BasicConsumer {
     /**
      * 监听并接收消费队列中的消息-在这里采用单一容器工厂实例即可
      */
-    @RabbitListener(queues = RabbitMqConstants.BASIC_QUEUE, containerFactory = "multiListenerContainer") // 设置消费者监听的队列以及监听的消息容器
+    @RabbitListener(queues = RabbitMqConstants.BASIC_QUEUE, containerFactory = "singleListenerContainer") // 设置消费者监听的队列以及监听的消息容器
     public void consumeMsg(SeckillMessage seckillMessage, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) Long tag) throws IOException {
         try {
             log.info("rabbitmq demo-消费者-监听消息：{} ", JSONUtil.toJsonStr(seckillMessage));

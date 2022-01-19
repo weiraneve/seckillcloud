@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="APP_Name" value="gateway" />
+    <property name="APP_Name" value="monitor" />
     　　　<contextName>${APP_Name}</contextName>
     <!--定义日志文件的存储地址 使用相对路径-->
-    <property name="LOG_HOME" value="log/cloud-gateway" />
+    <property name="LOG_HOME" value="log/cloud-monitor" />
 
     <!-- 彩色日志依赖的渲染类 -->
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />

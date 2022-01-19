@@ -7,10 +7,31 @@ spring:
     active: weiran
   application:
     name: cloud-manage
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    timeout: 5000 # 连接超时时间（毫秒）
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848 #配置Nacos地址 ,暂且只配置服务发现管理，配置管理暂且没有弄
+        server-addr: localhost:8848 # 配置Nacos服务发现地址
+  boot:
+    admin:
+      client:
+        url: http://localhost:8890 # Spring Boot Admin 监控服务器端地址
+
+management:
+  endpoints:
+    web:
+      # 开放指定节点 /actuator/（info, health, beans, env, metrics）或者全部
+      exposure:
+        include: '*'
+  # 在访问/actuator/health时显示完整信息
+  endpoint:
+    logfile:
+      external-file: log/cloud-manage/manage.log
 
 logging:
   config: classpath:logback.xml

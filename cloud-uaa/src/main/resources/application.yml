@@ -1,31 +1,42 @@
 server:
   port: 8088
 
-# 这里redis配置与高版本的依赖的redis配置不同
-redis:
-  host: 127.0.0.1
-  port: 6379
-  password: 123456
-  poolMaxIdle: 500
-  poolMaxTotal: 1000
-  poolMaxWait: 500
-  timeout: 10
-
 spring:
   profiles:
     active: weiran
   application:
     name: cloud-uaa
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    timeout: 5000 # 连接超时时间（毫秒）
   cloud:
     nacos:
       discovery:
         server-addr: localhost:8848
+  boot:
+    admin:
+      client:
+        url: http://localhost:8890 # Spring Boot Admin 监控服务器端地址
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/cloud-uaa?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
+
+management:
+  endpoints:
+    web:
+      # 开放指定节点 /actuator/（info, health, beans, env, metrics）或者全部
+      exposure:
+        include: '*'
+  # 在访问/actuator/health时显示完整信息
+  endpoint:
+    logfile:
+      external-file: log/cloud-uaa/uaa.log
 
 logging:
   config: classpath:logback.xml

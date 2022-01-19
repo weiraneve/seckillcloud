@@ -31,8 +31,8 @@ public class UserServiceImpl implements UserService {
 
     final UserManager userManager;
     final RedisService redisService;
-    final RedisLua redisLua;
     final SiftService siftService;
+    final RedisLua redisLua;
 
     @Override
     public Result doLogin(HttpServletResponse response, HttpSession session, LoginParam loginParam) {
@@ -122,9 +122,9 @@ public class UserServiceImpl implements UserService {
     }
 
     // 利用LUA脚本统计访问次数，功能只是测试，没有统计到每个账号访问网站的次数。
-    private void CountLogin() {
-        redisLua.visitorCount(Constant.COUNT_LOGIN);
-        String count = redisLua.getVisitorCount(Constant.COUNT_LOGIN).toString();
+    private void countLogin() {
+        redisLua.addVisitorCount(Constant.COUNT_LOGIN);
+        Long count = redisLua.getVisitorCount(Constant.COUNT_LOGIN);
         log.info("访问网站的次数为:{}", count);
     }
 }

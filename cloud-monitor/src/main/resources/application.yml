@@ -1,0 +1,11 @@
+server:
+  port: 8890
+
+spring:
+  profiles:
+    active: weiran
+  application:
+    name: cloud-monitor
+
+logging:
+  config: classpath:logback.xml

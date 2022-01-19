@@ -11,6 +11,7 @@
         <module name="cloud-common" />
         <module name="cloud-uaa" />
         <module name="cloud-mission" />
+        <module name="cloud-monitor" />
         <module name="cloud-gateway" />
       </profile>
     </annotationProcessing>
@@ -26,6 +27,7 @@
       <module name="cloud-gateway" options="-parameters" />
       <module name="cloud-manage" options="-parameters" />
       <module name="cloud-mission" options="-parameters" />
+      <module name="cloud-monitor" options="-parameters" />
       <module name="cloud-uaa" options="-parameters" />
       <module name="seckill" options="-parameters" />
     </option>
