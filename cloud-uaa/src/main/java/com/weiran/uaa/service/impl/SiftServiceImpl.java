@@ -5,6 +5,7 @@ import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.uaa.entity.Sift;
 import com.weiran.uaa.entity.Status;
+import com.weiran.uaa.entity.User;
 import com.weiran.uaa.manager.SiftManager;
 import com.weiran.uaa.manager.StatusManager;
 import com.weiran.uaa.service.SiftService;
@@ -20,7 +21,7 @@ public class SiftServiceImpl implements SiftService {
 
     // 通过对客户状态表对查询，判断是否有准入资格，并写入筛选表
     @Override
-    public Result findByStatus(long userId) {
+    public Result<User> findByStatus(long userId) {
         Status status = statusManager.getOne(Wrappers.<Status>lambdaQuery().eq(Status::getUserId, userId));
         // 贷款逾期记录(拒绝3年内逾期2次以上，金额小于 1000 元，3 天内还清除外)
         int exceedRecord = status.getExceedRecord();
@@ -33,15 +34,21 @@ public class SiftServiceImpl implements SiftService {
         Sift sift = new Sift();
         sift.setUserId(userId);
         sift.setIdentityCardId(status.getIdentityCardId());
+        Result<User> result = new Result<>();
+        User user = new User();
+        user.setId(userId);
+        result.setData(user);
         if (exceedRecord > 2 || workStatus.equals("无业") || workStatus.equals("失业")
                 || dishonest == 1 || age < 18) {
             sift.setSiftPass(0); // 不通过
             changeSift(sift);
-            return new Result(CodeMsg.No_SIFT_PASS);
+            result.setCode(CodeMsg.No_SIFT_PASS.getCode());
+            return result;
         }
         sift.setSiftPass(1); // 通过
         changeSift(sift);
-        return new Result(CodeMsg.SUCCESS);
+        result.setCode(CodeMsg.SUCCESS.getCode());
+        return result;
     }
 
     // 通过传入的对象改动筛选表

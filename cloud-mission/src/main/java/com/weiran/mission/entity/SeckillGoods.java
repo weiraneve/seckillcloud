@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -30,12 +29,9 @@ public class SeckillGoods implements Serializable {
     @Version // 乐观锁字段
     private int version;
 
+    @ApiModelProperty("创建时间")
+    private LocalDateTime createdAt;
+
     @ApiModelProperty("更新时间")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-
-    @ApiModelProperty("生成时间")
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
-
+    private LocalDateTime updatedAt;
 }

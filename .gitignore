@@ -36,3 +36,4 @@ build/
 */target/
 .txlcn/
 .txlcn
+/.idea/

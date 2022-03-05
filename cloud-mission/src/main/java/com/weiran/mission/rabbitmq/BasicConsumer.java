@@ -51,7 +51,7 @@ public class BasicConsumer {
             // 执行完业务逻辑后，手动进行确认消费，其中第一个参数为：消息的分发标识(全局唯一);第二个参数：是否允许批量确认消费
             channel.basicAck(tag, false);
         } catch (Exception e) {
-            // 第二个参数reueue重新归入队列,true的话会重新归入队列,需要人为地处理此次异常消息,重新归入队列也会继续异常
+            // 第二个参数requeue重新归入队列,true的话会重新归入队列,需要人为地处理此次异常消息,重新归入队列也会继续异常
             channel.basicAck(tag, true);
             log.error("rabbitmq demo-消费者-发生异常：", e);
         }

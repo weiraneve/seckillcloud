@@ -1,8 +1,10 @@
 package com.weiran.mission.service.impl;
 
-import com.weiran.common.obj.CodeMsg;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.obj.Result;
 
+import com.weiran.common.redis.key.UserKey;
+import com.weiran.common.redis.manager.RedisService;
 import com.weiran.mission.entity.Goods;
 import com.weiran.mission.entity.Order;
 import com.weiran.mission.manager.GoodsManager;
@@ -12,24 +14,37 @@ import com.weiran.mission.pojo.vo.OrderDetailVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     final OrderManager orderManager;
     final GoodsManager goodsManager;
+    final RedisService redisService;
 
-    // 查询订单信息
-    public Result<OrderDetailVo> findOrderById(long orderId) {
-        Order order = orderManager.getById(orderId);
-        if (order == null) {
-            return Result.error(CodeMsg.ORDER_NOT_EXIST);
+    // 返回客户的所有订单数据
+    @Override
+    public Result<List<OrderDetailVo>> getOrderList(HttpServletRequest request) {
+        String authInfo = request.getHeader("Authorization");
+        String loginToken = authInfo.split("Bearer ")[1];
+        long userId = redisService.get(UserKey.getById, loginToken, Long.class);
+        List<OrderDetailVo> orderDetailVoList = new ArrayList<>();
+        List<Order> orderList = orderManager.list(Wrappers.<Order>lambdaQuery().eq(Order::getUserId, userId));
+        for (Order order : orderList) {
+            OrderDetailVo orderDetailVo = new OrderDetailVo();
+            Goods goods = goodsManager.getById(order.getGoodsId());
+            orderDetailVo.setOrderId(order.getId());
+            orderDetailVo.setGoodsId(order.getGoodsId());
+            orderDetailVo.setGoodsName(goods.getGoodsName());
+            orderDetailVo.setCreatedAt(order.getCreatedAt());
+
+            orderDetailVoList.add(orderDetailVo);
         }
-        long goodsId = order.getGoodsId();
-        Goods goods = goodsManager.getById(goodsId);
-        OrderDetailVo orderDetailVo = new OrderDetailVo();
-        orderDetailVo.setOrder(order);
-        orderDetailVo.setGoods(goods);
-        return Result.success(orderDetailVo);
+
+        return new Result<>(orderDetailVoList);
     }
 }

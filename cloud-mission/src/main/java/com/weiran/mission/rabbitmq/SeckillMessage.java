@@ -1,7 +1,6 @@
 package com.weiran.mission.rabbitmq;
 
 
-import com.weiran.mission.entity.User;
 import lombok.Data;
 
 /**

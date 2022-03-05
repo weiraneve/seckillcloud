@@ -22,10 +22,10 @@ public class SeckillController  {
     /**
      * 秒杀接口
      */
-    @PostMapping(value = "/{path}/seckill")
+    @GetMapping
     @ResponseBody
     public Result<Integer> doSeckill(@RequestParam("goodsId") long goodsId,
-                                @PathVariable("path") String path,
+                                @RequestParam("path") String path,
                                 HttpServletRequest request) {
 
         return seckillService.doSeckill(goodsId, path, request);
@@ -47,7 +47,7 @@ public class SeckillController  {
      * 返回一个唯一的path的id
      */
     @AccessLimit(seconds = 5, maxCount = 5)
-    @GetMapping(value = "/path")
+    @GetMapping(value = "/getPath")
     @ResponseBody
     public Result<String> getSeckillPath(HttpServletRequest request, @RequestParam("goodsId") long goodsId) {
         return seckillService.getSeckillPath(request, goodsId);

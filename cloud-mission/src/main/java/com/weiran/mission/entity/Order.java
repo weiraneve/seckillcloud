@@ -26,8 +26,10 @@ public class Order implements Serializable {
     @ApiModelProperty("商品id")
     private Long goodsId;
 
-    @ApiModelProperty("订单生成的时间")
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    @ApiModelProperty("创建时间")
+    private LocalDateTime createdAt;
+
+    @ApiModelProperty("更新时间")
+    private LocalDateTime updatedAt;
 
 }

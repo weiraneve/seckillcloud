@@ -5,20 +5,19 @@ import com.weiran.uaa.param.LoginParam;
 import com.weiran.uaa.param.RegisterParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 public interface UserService {
 
     /**
      * 登陆
+     * @return
      */
-    Result doLogin(HttpServletResponse response, HttpSession session, LoginParam loginParam);
+    Result doLogin(LoginParam loginParam);
 
     /**
      * 注销
      */
-    Result doLogout(HttpServletRequest request, HttpServletResponse response);
+    Result doLogout(HttpServletRequest request);
 
     /**
      * 注册

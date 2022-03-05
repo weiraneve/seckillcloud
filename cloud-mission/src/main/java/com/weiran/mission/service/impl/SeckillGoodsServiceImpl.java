@@ -51,7 +51,7 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
             return new Result(CodeMsg.SERVER_ERROR);
         }
         // 删除对应缓存
-        redisService.decrease(SeckillGoodsKey.seckillCount, "" + goodsId);
+        redisService.delete(SeckillGoodsKey.seckillCount, "" + goodsId);
         return new Result(CodeMsg.SUCCESS);
     }
 

@@ -38,11 +38,11 @@ public class Status implements Serializable {
     @ApiModelProperty("客户年龄(拒绝小于18岁)")
     private Integer age;
 
-    @ApiModelProperty("生成时间")
-    private LocalDateTime createTime;
+    @ApiModelProperty("创建时间")
+    private LocalDateTime createdAt;
 
     @ApiModelProperty("更新时间")
-    private LocalDateTime updateTime;
+    private LocalDateTime updatedAt;
 
 
 }

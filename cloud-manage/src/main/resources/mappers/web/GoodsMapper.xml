@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiran.manage.mapper.web.GoodsMapper">
+
+    <resultMap id="goodsResultMap" type="com.weiran.manage.entity.web.Goods">
+        <result column="id" property="id"/>
+        <result column="goodsName" property="goods_name"/>
+        <result column="goodsImg" property="goods_img"/>
+        <result column="isUsing" property="is_using"/>
+        <result column="goodsTitle" property="goods_title"/>
+        <result column="goodsPrice" property="goods_price"/>
+        <result column="goodsStock" property="goods_stock"/>
+        <result column="startTime" property="start_time"/>
+        <result column="endTime" property="end_time"/>
+    </resultMap>
+
+    <!--查询全部-->
+    <select id="findGoods" resultMap="goodsResultMap">
+        select id,goods_name,goods_img,is_using,goods_title,goods_price,goods_stock,start_time,end_time
+        from goods
+    </select>
+
+    <!--通过商品名模糊查询-->
+    <select id="findByGoodsNameLike" resultMap="goodsResultMap">
+        select * from goods where goods_name LIKE CONCAT(CONCAT('%', #{goodsName}), '%')
+    </select>
+
+    <!--通过ID查询-->
+    <select id="selectById" resultType="com.weiran.manage.entity.web.Goods">
+        select *
+        from goods
+        where id = #{id}
+            limit 1
+    </select>
+
+    <!--根据ids查询-->
+    <select id="findGoodsByIds" resultType="com.weiran.manage.entity.web.Goods" parameterType="java.util.List">
+        select *
+        from goods
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <!--新增-->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO goods (goods_name,goods_img,is_using,goods_title,goods_price,goods_stock,start_time,end_time)
+        VALUES (#{goods.goodsName},
+                #{goods.goodsImg},
+                #{goods.isUsing},
+                #{goods.goodsTitle},
+                #{goods.goodsPrice},
+                #{goods.goodsStock},
+                #{goods.startTime},
+                #{goods.endTime});
+    </insert>
+
+    <!--删除-->
+    <delete id="delete">
+        delete
+        from goods
+        where id = #{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deletes" parameterType = "java.util.List">
+        delete
+        from goods
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过更新goods-->
+    <update id="update">
+        UPDATE goods
+        SET goods_name = #{goods.goodsName},
+            goods_img  = #{goods.goodsImg},
+            is_using  = #{goods.isUsing},
+            goods_title = #{goods.goodsTitle},
+            goods_price = #{goods.goodsPrice},
+            goods_stock = #{goods.goodsStock},
+            start_time = #{goods.startTime},
+            end_time = #{goods.endTime}
+        WHERE id = #{goods.id}
+    </update>
+
+    <!--通过id更新goods的Using状态-->
+    <update id="updateUsingById">
+        UPDATE goods
+        SET is_using = !is_using
+        WHERE id = #{id};
+    </update>
+
+</mapper>

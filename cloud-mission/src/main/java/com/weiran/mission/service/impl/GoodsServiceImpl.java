@@ -38,7 +38,6 @@ public class GoodsServiceImpl implements GoodsService {
             return;
         }
         for (Goods goods : goodsList) {
-            // 加载商品的详情信息
             redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
         }
     }
@@ -47,15 +46,19 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Result<List<GoodsDetailVo>> getGoodsList() {
         List<GoodsDetailVo> goodsDetailVoList = new ArrayList<>();
-
-        for (long goodsId = 1L;; goodsId++) {
-            // 判断goodId的key是否存在
-            boolean flag = redisService.exists(GoodsKey.goodsKey, "" + goodsId);
-            if (!flag) {
-                break;
+        // 这里想要遍历缓存中所有商品，但没有更好的办法
+        for (long goodsId = 1L; goodsId < 50L; goodsId++) {
+            // 是否存在
+            if (!redisService.exists(GoodsKey.goodsKey, "" + goodsId)) {
+                continue;
             }
             Result<GoodsDetailVo> result = getDetail(goodsId);
+            // 如果是null，则说明商品信息为不可用，不发送给前端
+            if (result == null) {
+                continue;
+            }
             GoodsDetailVo goodsDetailVo = result.getData();
+            if (goodsDetailVo.getGoods().getIsUsing())
             goodsDetailVoList.add(goodsDetailVo);
         }
         Result<List<GoodsDetailVo>> result = new Result<>();
@@ -68,35 +71,34 @@ public class GoodsServiceImpl implements GoodsService {
     public Result<GoodsDetailVo> getDetail(long goodsId) {
         // 从Redis中读取商品数据，这样多次访问都从缓存中取，减少数据库的压力
         Goods goods = redisService.get(GoodsKey.goodsKey, "" + goodsId, Goods.class);
-        // 用goodsId取出存在Redis中的库存
-        int stockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
-        if (goods == null) {
-            return Result.error(CodeMsg.NO_GOODS);
-        } else {
-            long startAt = Timestamp.valueOf(goods.getStartTime()).getTime(); // 秒杀开始时间
-            long endAt = Timestamp.valueOf(goods.getEndTime()).getTime(); // 秒杀结束时间
-            long now = System.currentTimeMillis(); // 系统当前时间
-            int remainSeconds; // 定义剩余时间
-            if (now < startAt) { // 秒杀还没开始，倒计时
-                remainSeconds = (int) ((startAt - now) / 1000);
-            } else if (now > endAt) { // 秒杀已经结束
-                remainSeconds = -1;
-            } else { // 秒杀进行中
-                remainSeconds = 0;
-            }
-            GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
-            goodsDetailVo.setGoods(goods);
-            goodsDetailVo.setStockCount(stockCount);
-            goodsDetailVo.setRemainSeconds(remainSeconds);
-            return Result.success(goodsDetailVo);
+        // 判断商品信息是否可用
+        if (!goods.getIsUsing()) {
+            return null;
         }
+        // 用goodsId取出存在Redis中的秒杀商品中的库存值
+        int stockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
+        long startAt = Timestamp.valueOf(goods.getStartTime()).getTime(); // 秒杀开始时间
+        long endAt = Timestamp.valueOf(goods.getEndTime()).getTime(); // 秒杀结束时间
+        long now = System.currentTimeMillis(); // 系统当前时间
+        int remainSeconds; // 定义剩余时间
+        if (now < startAt) { // 秒杀还没开始，倒计时
+            remainSeconds = (int) ((startAt - now) / 1000);
+        } else if (now > endAt) { // 秒杀已经结束
+            remainSeconds = -1;
+        } else { // 秒杀进行中
+            remainSeconds = 0;
+        }
+        GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
+        goodsDetailVo.setGoods(goods);
+        goodsDetailVo.setStockCount(stockCount);
+        goodsDetailVo.setRemainSeconds(remainSeconds);
+        return Result.success(goodsDetailVo);
     }
 
     // 增加商品
     @Override
     public Result addGoods(Goods goods) {
         boolean flag = goodsManager.save(goods);
-        //
         if (!flag) {
             return new Result(CodeMsg.SERVER_ERROR);
         }
@@ -115,9 +117,9 @@ public class GoodsServiceImpl implements GoodsService {
             return new Result(CodeMsg.SERVER_ERROR);
         }
         // 删除对应缓存
-        redisService.decrease(GoodsKey.goodsKey, "" + id);
+        redisService.delete(GoodsKey.goodsKey, "" + id);
         // 删除库存对应缓存
-        redisService.decrease(SeckillGoodsKey.seckillCount, "" + id);
+        redisService.delete(SeckillGoodsKey.seckillCount, "" + id);
         return new Result(CodeMsg.SUCCESS);
     }
 

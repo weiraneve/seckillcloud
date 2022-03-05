@@ -21,11 +21,6 @@ public class GoodsController {
 
     final GoodsService goodsService;
 
-    @GetMapping("/list")
-    public String listPage() {
-        return "/goods_list.html";
-    }
-
     @ApiOperation("获得商品列表")
     @GetMapping("/getGoodsList")
     @ResponseBody

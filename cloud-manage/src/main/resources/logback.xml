@@ -37,7 +37,7 @@
     </appender>
 
     <!--可以打印actuator的HTTP request mapping信息-->
-<!--    <logger name="org.springframework.boot.actuate.endpoint.web.servlet" level="trace"/>-->
+    <!--    <logger name="org.springframework.boot.actuate.endpoint.web.servlet" level="trace"/>-->
 
     <!-- 日志输出级别 注意：如果不写<appender-ref ref="FILE" /> ，将导致springboot admin找不到文件，无法查看日志 -->
     <root level="INFO">

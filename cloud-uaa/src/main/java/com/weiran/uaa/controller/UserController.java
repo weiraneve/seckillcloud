@@ -13,8 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * 登陆控制器
@@ -30,12 +28,10 @@ public class UserController {
     @ResponseBody
     @ApiOperation("登陆，信息写进redis")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "响应"),
-            @ApiImplicitParam(value = "会话"),
             @ApiImplicitParam(value = "登陆传递字段")
     })
-    public Result doLogin(HttpServletResponse response, HttpSession session, LoginParam loginParam) {
-        return userService.doLogin(response, session, loginParam);
+    public Result doLogin(@RequestBody LoginParam loginParam) {
+        return userService.doLogin(loginParam);
     }
 
     @PostMapping("user/doRegister")
@@ -48,13 +44,8 @@ public class UserController {
 
     @RequestMapping("user/logout")
     @ResponseBody
-    public Result doLogout(HttpServletRequest request, HttpServletResponse response) {
-        return userService.doLogout(request, response);
-    }
-
-    @RequestMapping("/login")
-    public String login() {
-        return "/login.html";
+    public Result doLogout(HttpServletRequest request) {
+        return userService.doLogout(request);
     }
 
     @ApiOperation("后台查询本次成功参与活动的用户信息")

@@ -8,7 +8,6 @@ import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.CookieUtil;
 import com.weiran.common.utils.MD5Util;
 import com.weiran.uaa.entity.User;
 import com.weiran.uaa.manager.UserManager;
@@ -19,10 +18,9 @@ import com.weiran.uaa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import cn.hutool.crypto.SecureUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 @Slf4j
 @Service
@@ -34,34 +32,42 @@ public class UserServiceImpl implements UserService {
     final SiftService siftService;
     final RedisLua redisLua;
 
+    // 登陆
     @Override
-    public Result doLogin(HttpServletResponse response, HttpSession session, LoginParam loginParam) {
+    public Result doLogin(LoginParam loginParam) {
         Result<User> userResult = login(loginParam);
-        if (userResult.isSuccess()) {
-            User user = userResult.getData();
-            long userId = user.getId();
-            CookieUtil.writeLoginToken(response, session.getId());
-            log.info(loginParam.getMobile() + "登陆成功");
-            redisService.set(UserKey.getById, session.getId(), userId, RedisCacheTimeEnum.REDIS_SESSION_EXTIME.getValue());
-        } else if (userResult.getCode() == 500700) {
-            log.info("{}" , "客户初筛未通过");
-        } else {
-            log.info(loginParam.getMobile() + "登陆失败");
+        if (!userResult.isSuccess() ) {
+            if (userResult.getCode() == CodeMsg.No_SIFT_PASS.getCode()) {
+                log.info("客户{}初筛未通过", userResult.getData().getId());
+            } else if (userResult.getCode() == CodeMsg.PASSWORD_ERROR.getCode()) {
+                log.info("{} 号码登陆失败，密码错误" , loginParam.getMobile());
+            } else if (userResult.getCode() == CodeMsg.MOBILE_NOT_EXIST.getCode()) {
+                log.info("{} 号码登陆，无此手机号", loginParam.getMobile());
+            }
             return userResult;
         }
-        return Result.success(CodeMsg.SUCCESS);
+        User user = userResult.getData();
+        long userId  = user.getId();
+        // 将用户手机号进行MD5加盐加密，作为Token给到前端服务器
+        String salt = "love";
+        String loginToken = SecureUtil.md5(user.getPhone() + salt);
+        log.info("用户" + userId + " 登陆成功");
+        redisService.set(UserKey.getById, loginToken, userId, RedisCacheTimeEnum.LOGIN_EXTIME.getValue());
+        return Result.success(loginToken);
     }
 
+    // 注销
     @Override
-    public Result doLogout(HttpServletRequest request, HttpServletResponse response) {
-        String token = CookieUtil.readLoginToken(request);
-        CookieUtil.delLoginToken(request, response);
-        long userId = redisService.get(UserKey.getById, token, Long.class);
-        redisService.delete(UserKey.getById, token);
-        log.info(userId + "已经注销");
+    public Result doLogout(HttpServletRequest request) {
+        String authInfo = request.getHeader("Authorization");
+        String loginToken = authInfo.split("Bearer ")[1]; // 只要Bearer 之后的部分
+        long userId = redisService.get(UserKey.getById, loginToken, Long.class);
+        redisService.delete(UserKey.getById, loginToken);
+        log.info("用户" + userId + " 已经注销");
         return Result.success(CodeMsg.SUCCESS);
     }
 
+    // 注册
     @Override
     public Result doRegister(RegisterParam registerParam) {
         String phone = registerParam.getMobile();
@@ -100,14 +106,14 @@ public class UserServiceImpl implements UserService {
     // 登陆方法，检查比对传入的登陆字段
     private Result<User> login(LoginParam loginParam) {
         User user = checkPhone(loginParam.getMobile());
+        if (user == null) {
+            return Result.error(CodeMsg.MOBILE_NOT_EXIST);
+        }
         String dbPwd = user.getPassword(); // 数据库查询到的加盐后的密码
         //密码置为空 防止泄漏
         user.setPassword("");
         Long userId = user.getId();
         // 可以设计为邮箱登陆、手机登陆等
-        if (userId == null) {
-            return Result.error(CodeMsg.MOBILE_NOT_EXIST);
-        }
         String salt = "9d5b364d";
         String calcPass = MD5Util.formPassToDBPass(loginParam.getPassword(), salt);
         // 数据库里存储的都是密码本身加加盐后的密文

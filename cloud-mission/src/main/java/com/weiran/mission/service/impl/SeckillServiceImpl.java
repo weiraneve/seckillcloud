@@ -6,7 +6,6 @@ import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.*;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.CookieUtil;
 import com.weiran.common.utils.MD5Util;
 import com.weiran.mission.entity.Order;
 import com.weiran.mission.entity.SeckillGoods;
@@ -17,6 +16,7 @@ import com.weiran.mission.rabbitmq.ackmodel.manual.ManualAckPublisher;
 import com.weiran.mission.service.SeckillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -56,8 +56,10 @@ public class SeckillServiceImpl implements SeckillService {
 
     // 执行秒杀
     @Override
+    @Transactional
     public Result<Integer> doSeckill(long goodsId, String path, HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
+        String authInfo = request.getHeader("Authorization");
+        String loginToken = authInfo.split("Bearer ")[1];
         long userId = redisService.get(UserKey.getById, loginToken, Long.class);
         // 验证path
         boolean check = checkPath(userId, goodsId, path);
@@ -96,7 +98,8 @@ public class SeckillServiceImpl implements SeckillService {
     // 客户端轮询查询是否下单成功
     @Override
     public Result<Long> seckillResult(long goodsId, HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
+        String authInfo = request.getHeader("Authorization");
+        String loginToken = authInfo.split("Bearer ")[1];
         Long userId = redisService.get(UserKey.getById, loginToken, Long.class);
         if (userId == null) {
             return Result.error(CodeMsg.USER_NO_LOGIN);
@@ -122,7 +125,8 @@ public class SeckillServiceImpl implements SeckillService {
     // 返回一个唯一的path的id
     @Override
     public Result<String> getSeckillPath(HttpServletRequest request, long goodsId) {
-        String loginToken = CookieUtil.readLoginToken(request);
+        String authInfo = request.getHeader("Authorization");
+        String loginToken = authInfo.split("Bearer ")[1];
         Long userId = redisService.get(UserKey.getById, loginToken, Long.class);
         if (userId == null) {
             return Result.error(CodeMsg.USER_NO_LOGIN);

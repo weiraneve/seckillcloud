@@ -37,14 +37,19 @@ public class User implements Serializable {
     @ApiModelProperty("身份证号")
     private String identityCardId;
 
-    @ApiModelProperty("生成时间")
+    @ApiModelProperty("创建时间")
     @TableField(fill = FieldFill.INSERT)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)  //反序列化
     @JsonSerialize(using = LocalDateTimeSerializer.class)  //序列化
-    private LocalDateTime createTime;
+    private LocalDateTime createdAt;
+
+    @ApiModelProperty("更新时间")
+    @TableField(fill = FieldFill.UPDATE)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)  //反序列化
+    @JsonSerialize(using = LocalDateTimeSerializer.class)  //序列化
+    private LocalDateTime updatedAt;
 
     @ApiModelProperty("最后一次登陆时间")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)  //反序列化
     @JsonSerialize(using = LocalDateTimeSerializer.class)  //序列化
     private LocalDateTime lastLoginTime;

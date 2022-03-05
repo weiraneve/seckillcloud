@@ -21,6 +21,7 @@ import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -98,7 +99,8 @@ public class TestJmeterController {
     }
 
     // 进行秒杀
-    private Result<Integer> doSeckill(Long userId, long goodsId, String path) {
+    @Transactional
+    Result<Integer> doSeckill(Long userId, long goodsId, String path) {
         // 验证path
         boolean check = checkPath(userId, goodsId, path);
         if (!check) {

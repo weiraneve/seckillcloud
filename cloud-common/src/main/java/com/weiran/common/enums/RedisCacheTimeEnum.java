@@ -6,9 +6,9 @@ package com.weiran.common.enums;
 public enum RedisCacheTimeEnum {
 
     /**
-     * redis会话中的存在时间 30分钟
+     * 用户认证token的存在时间 12小时
      */
-    REDIS_SESSION_EXTIME(60 * 30),
+    LOGIN_EXTIME(60 * 30 * 24),
 
     /**
      * 12小时

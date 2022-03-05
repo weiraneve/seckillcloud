@@ -29,11 +29,11 @@ public class Sift implements Serializable {
     @ApiModelProperty("身份证号")
     private String identityCardId;
 
-    @ApiModelProperty("生成时间")
-    private LocalDateTime createTime;
+    @ApiModelProperty("创建时间")
+    private LocalDateTime createdAt;
 
     @ApiModelProperty("更新时间")
-    private LocalDateTime updateTime;
+    private LocalDateTime updatedAt;
 
 
 }

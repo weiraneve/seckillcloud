@@ -8,11 +8,12 @@ public class MD5Util {
 	public static String md5(String src) {
 		return SecureUtil.md5(src);
 	}
-	
+
+	// 前端服务器登陆验证的加盐
 	private static final String salt = "9d5b364d";
 	
 	public static String inputPassToFormPass(String inputPass) {
-		String str = ""+salt.charAt(0)+salt.charAt(2) + inputPass +salt.charAt(5) + salt.charAt(4);
+		String str = "" + salt.charAt(0) + salt.charAt(2) + inputPass + salt.charAt(5) + salt.charAt(4);
 		return md5(str);
 	}
 	

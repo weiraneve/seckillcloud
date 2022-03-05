@@ -3,7 +3,6 @@ package com.weiran.uaa.interceptor;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,20 +17,18 @@ public class LoginInterceptor implements HandlerInterceptor {
     final RedisService redisService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String loginToken = CookieUtil.readLoginToken(request);
-        long userId = -1L;
-        if (loginToken != null) {
-            userId = redisService.get(UserKey.getById, loginToken, Long.class);
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        String authInfo = request.getHeader("Authorization"); // 认证信息储存在前端服务器里，每次请求后端服务器接口则会在请求头header中带上
+        String loginToken = authInfo.split("Bearer ")[1]; // 只要Bearer 之后的部分
+        Long userId;
+        userId = redisService.get(UserKey.getById, loginToken, Long.class);
+        if (userId == null) {
+            // 认证失败，response返回403-状态码，让前端服务器重新登录
+            response.setStatus(403);
+            return true;
         }
-        if (userId == -1L) {
-            // 未登陆，则重定向。
-            response.sendRedirect("http://localhost:8205/uaa/login");
-            return false;
-        } else {
-            // 如果user不为空，则重置session的时间，即调用expire命令，这里则取缔了过滤器的功能。
-            redisService.expire(UserKey.getById , loginToken, RedisCacheTimeEnum.REDIS_SESSION_EXTIME.getValue());
-        }
+        // 如果userId不为空，则重置登陆token的有效时间，即调用expire命令，这里则取缔了过滤器的功能。
+        redisService.expire(UserKey.getById , loginToken, RedisCacheTimeEnum.LOGIN_EXTIME.getValue());
         return true;
     }
 }
