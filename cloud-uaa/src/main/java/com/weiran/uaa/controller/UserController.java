@@ -1,15 +1,15 @@
 package com.weiran.uaa.controller;
 
 import com.weiran.common.obj.Result;
+import com.weiran.uaa.annotations.AccessLimit;
 import com.weiran.uaa.param.LoginParam;
 import com.weiran.uaa.param.RegisterParam;
+import com.weiran.uaa.param.UpdatePassParam;
 import com.weiran.uaa.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,41 +17,38 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 登陆控制器
  */
-@Controller
+@RestController
 @RequiredArgsConstructor
 @Api("登陆控制器")
 public class UserController {
 
     final UserService userService;
 
+    @AccessLimit(timeout = 1, limit = 3)
     @PostMapping("user/doLogin")
-    @ResponseBody
     @ApiOperation("登陆，信息写进redis")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "登陆传递字段")
-    })
+    @ApiImplicitParam(value = "登陆传递字段")
     public Result doLogin(@RequestBody LoginParam loginParam) {
         return userService.doLogin(loginParam);
     }
 
     @PostMapping("user/doRegister")
-    @ResponseBody
     @ApiOperation("注册")
     @ApiImplicitParam(value = "注册传递字段")
-    public Result doRegister(RegisterParam registerParam) {
+    public Result doRegister(@RequestBody RegisterParam registerParam) {
         return userService.doRegister(registerParam);
     }
 
+    @PostMapping("user/updatePass")
+    @ApiOperation("更换密码")
+    public Result updatePass(@RequestBody UpdatePassParam updatePassParam, HttpServletRequest request) {
+        return userService.updatePass(updatePassParam, request);
+    }
+
     @RequestMapping("user/logout")
-    @ResponseBody
+    @ApiOperation("注销")
     public Result doLogout(HttpServletRequest request) {
         return userService.doLogout(request);
     }
 
-    @ApiOperation("后台查询本次成功参与活动的用户信息")
-    @RequestMapping(value = "/user/inquiryUser")
-    @ResponseBody
-    public Result inquiryUser(@RequestParam("userId") long userId) {
-        return userService.inquiryUser(userId);
-    }
 }

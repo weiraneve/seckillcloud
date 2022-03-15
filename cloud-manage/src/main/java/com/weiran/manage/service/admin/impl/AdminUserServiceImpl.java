@@ -1,5 +1,6 @@
 package com.weiran.manage.service.admin.impl;
 
+import com.weiran.common.utils.BeanUtil;
 import com.weiran.manage.config.security.JwtUserService;
 import com.weiran.manage.mapper.admin.*;
 import com.weiran.manage.entity.admin.RoleDTO;

@@ -1,6 +1,7 @@
 package com.weiran.uaa.config;
 
-import com.weiran.uaa.interceptor.LoginInterceptor;
+import com.weiran.uaa.interceptor.AccessInterceptor;
+import com.weiran.uaa.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,7 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    final LoginInterceptor loginInterceptor;
+    final AuthInterceptor authInterceptor;
+    final AccessInterceptor accessInterceptor;
 
     /**
      * 注册拦截器
@@ -25,17 +27,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(loginInterceptor)
+        registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/goods/**", "/seckill/**", "/order/**")
                 .excludePathPatterns("/login", "/test", "/register", "/user/**", "/static/**");
-    }
 
-    /**
-     * 配置静态资源路径
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addInterceptor(accessInterceptor)
+                .addPathPatterns("/user/**");
+
     }
 
 }

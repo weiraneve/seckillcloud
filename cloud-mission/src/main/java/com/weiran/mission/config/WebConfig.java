@@ -1,7 +1,7 @@
 package com.weiran.mission.config;
 
-import com.weiran.mission.interceptor.LimitInterceptor;
-import com.weiran.mission.interceptor.LoginInterceptor;
+import com.weiran.mission.interceptor.SeckillInterceptor;
+import com.weiran.mission.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -15,8 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    final LimitInterceptor limitInterceptor;
-    final LoginInterceptor loginInterceptor;
+    final SeckillInterceptor seckillInterceptor;
+    final AuthInterceptor authInterceptor;
 
     /**
      * 注册拦截器
@@ -27,10 +27,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(limitInterceptor)
+        registry.addInterceptor(seckillInterceptor)
                 .addPathPatterns("/seckill/**");
 
-        registry.addInterceptor(loginInterceptor)
+        registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/goods/**", "/seckill/**", "/order/**")
                 .excludePathPatterns("/test", "/static/**");
     }

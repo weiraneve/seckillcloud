@@ -23,7 +23,7 @@ public class Sift implements Serializable {
     @ApiModelProperty("用户id")
     private Long userId;
 
-    @ApiModelProperty(value = "初筛是否通过 1通过 0未通过")
+    @ApiModelProperty(value = "初筛是否通过(0未通过 1通过)")
     private Integer siftPass;
 
     @ApiModelProperty("身份证号")

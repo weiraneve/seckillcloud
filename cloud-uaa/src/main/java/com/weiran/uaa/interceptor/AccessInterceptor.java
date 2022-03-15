@@ -1,11 +1,11 @@
-package com.weiran.mission.interceptor;
+package com.weiran.uaa.interceptor;
 
 import cn.hutool.json.JSONUtil;
 import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.AccessKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.mission.annotations.AccessLimit;
+import com.weiran.uaa.annotations.AccessLimit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,16 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 
+
 /**
- * 限流拦截器
- *
- * 在一个用户访问接口的时候我们把访问次数写到缓存中，在加上一个有效期。
- * 通过拦截器. 做一个注解 @AccessLimit 然后封装这个注解，可以有效地设置每次访问多少次，有效时间是否需要登录
+ * 拦截器，在规定时间内限制同一IP访问接口的次数
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LimitInterceptor implements HandlerInterceptor {
+public class AccessInterceptor implements HandlerInterceptor {
 
     final RedisService redisService;
 
@@ -36,26 +34,26 @@ public class LimitInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
 //            log.info("打印拦截方法handler ：{} ", handler);
             HandlerMethod handlerMethod = (HandlerMethod) handler;
-            // 这一套流程是：先定义注解，然后在想使用的方法上加上注解，然后在拦截器或者处理器这里这样写。这里的用处是，限流
+            // 这一套流程是：先定义注解，然后在想使用的方法上加上注解，然后在拦截器或者处理器这里这样写。
             AccessLimit accessLimit = handlerMethod.getMethodAnnotation(AccessLimit.class);
             if (accessLimit == null) {
                 return true;
             }
             // 从用到方法上注解取值
-            int seconds = accessLimit.seconds();
-            int maxCount = accessLimit.maxCount();
-            //当前请求到url的路径
-            String requestURI = request.getRequestURI();
+            int timeout = accessLimit.timeout();
+            int limit = accessLimit.limit();
+            // 获得客户访问的IP
+            String ip = request.getRemoteAddr();
             AccessKey accessKey = AccessKey.withExpire;
             // 把redis对应access的key前缀和请求url和整数int的类信息去redis取出相应的对象
-            Integer count = redisService.get(accessKey, requestURI, Integer.class);
+            Integer count = redisService.get(accessKey, ip, Integer.class);
             // 这里是，对于打上限流注解的方法，当限制小于maxCount时，redis里的对应的key的value值加1，如果大于等于maxCount，则由这里的拦截器直接返回访问繁忙信息，进行拦截。
             if (count  == null) {
-                redisService.set(accessKey, requestURI, 1, seconds);
-            } else if (count < maxCount) {
-                redisService.increase(accessKey, requestURI);
+                redisService.set(accessKey, ip, 1, timeout);
+            } else if (count < limit) {
+                redisService.increase(accessKey, ip);
             } else {
-                log.info("访问太频繁!");
+                log.info("用户IP{}，访问太频繁!", ip);
                 render(response, CodeMsg.ACCESS_LIMIT_REACHED);
                 return false;
             }
@@ -66,7 +64,6 @@ public class LimitInterceptor implements HandlerInterceptor {
     private void render(HttpServletResponse response, CodeMsg codeMsg) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
         OutputStream out = response.getOutputStream();
-
         String str = JSONUtil.toJsonStr(Result.error(codeMsg));
         out.write(str.getBytes("UTF-8"));
         out.flush();

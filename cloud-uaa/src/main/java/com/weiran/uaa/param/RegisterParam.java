@@ -9,15 +9,15 @@ import lombok.Data;
 public class RegisterParam {
 
     // 手机号
-    private String mobile;
+    private String registerMobile;
+
+    // 用户名
+    private String registerUsername;
+
+    // 身份证号码
+    private String registerIdentity;
 
     // 密码
-    private String password;
-    
-    // 身份证号码
-    private String identityCardId;
-
-    // 用户姓名
-    private String username;
+    private String registerPassword;
 
 }

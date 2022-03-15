@@ -129,6 +129,9 @@ RabbitMQ的高可用主要体现在消息的发送、传输和接收的过程中
 Spring Boot Admin（SBA）是一个开源的社区项目，用于管理和监控 Spring Boot 应用程序。应用程序可以通过 http 的方式，或 Spring Cloud 服务发现机制注册到 SBA 中，然后就可以实现对 Spring Boot 项目的可视化管理和查看了。
 Spring Boot Admin 可以监控 Spring Boot 单机或集群项目，它提供详细的健康 （Health）信息、内存信息、JVM 系统和环境属性、垃圾回收信息、日志设置和查看、定时任务查看、Spring Boot 缓存查看和管理等功能。
 
+# 国密算法
+SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分组密码算法，SM2为非对称加密，即有公钥加密，私钥解密。对称加密为统一公钥加密。
+
 # 参考
 [如何设计一个秒杀系统总结](https://blog.csdn.net/yin767833376/article/details/103028616)
 [秒杀系统设计](https://youzi530.github.io/2021/11/04/miao-sha-xi-tong-she-ji/)
@@ -148,3 +151,6 @@ Spring Boot Admin 可以监控 Spring Boot 单机或集群项目，它提供详�
 [Springboot admin监控](https://mp.weixin.qq.com/s/V0IQIEA81cxk2DfEs1Ul9A)
 [SpringBoot admin配置](https://blog.csdn.net/fenglllle/article/details/109342775)
 [Springboot admin 配合邮件警告](https://www.cnblogs.com/duanxz/p/9559385.html)
+[RocketMQ 知识点和使用](https://juejin.cn/post/6941913162870423588)
+[Hutool 国密使用文档](https://www.bookstack.cn/read/hutool-5.6.0-zh/9fd3df43ca890fc4.md)
+[SpringBoot Docker容器化部署](https://blog.csdn.net/DBC_121/article/details/105135260)

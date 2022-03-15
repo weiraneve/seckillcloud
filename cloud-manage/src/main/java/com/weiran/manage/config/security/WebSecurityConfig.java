@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 // 无需认证的路径
-                .antMatchers("/upload", "/session/findByUsername", "/login").permitAll()
+                .antMatchers("/actuator/**", "/upload", "/session/findByUsername", "/login").permitAll()
 //                .antMatchers("/system","/system/**").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()

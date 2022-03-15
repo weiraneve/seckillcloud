@@ -9,7 +9,7 @@ import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.MD5Util;
+import com.weiran.common.utils.SM3Util;
 import com.weiran.mission.entity.Order;
 import com.weiran.mission.entity.SeckillGoods;
 import com.weiran.mission.entity.User;
@@ -147,8 +147,8 @@ public class TestJmeterController {
         if (userId == null || goodsId <= 0) {
             return null;
         }
-        // 随机返回一个唯一的id，加上123456的盐，然后md5加密
-        String str = MD5Util.md5(UUID.randomUUID() + "123456");
+        // 随机返回一个唯一的id，加上123456的盐，然后sm3加密
+        String str = SM3Util.sm3(UUID.randomUUID() + "123456");
         redisService.set(SeckillKey.getSeckillPath, "" + userId + "_" + goodsId, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
         return str;
     }

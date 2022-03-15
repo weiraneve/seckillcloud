@@ -3,6 +3,7 @@ package com.weiran.uaa.service;
 import com.weiran.common.obj.Result;
 import com.weiran.uaa.param.LoginParam;
 import com.weiran.uaa.param.RegisterParam;
+import com.weiran.uaa.param.UpdatePassParam;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +26,8 @@ public interface UserService {
     Result doRegister(RegisterParam registerParam);
 
     /**
-     * 后台查询本次成功参与活动的用户信息
+     * 更换密码
      */
-    Result inquiryUser(long userId);
+    Result updatePass(UpdatePassParam updatePassParam, HttpServletRequest request);
+
 }

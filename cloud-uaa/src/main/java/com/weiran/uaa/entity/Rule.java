@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 
 
 @Data
-@ApiModel(description = "贷款表")
-public class Loan implements Serializable {
+@ApiModel(description = "筛选规则表")
+public class Rule implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -20,11 +20,20 @@ public class Loan implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty("用户id")
-    private Long userId;
+    @ApiModelProperty("规定逾期年份")
+    private Integer exceedYear;
 
-    @ApiModelProperty("身份证号")
-    private String identityCardId;
+    @ApiModelProperty("规定逾期次数")
+    private Integer exceedCount;
+
+    @ApiModelProperty("规定逾期金额")
+    private Integer exceedMoney;
+
+    @ApiModelProperty("规定逾期天数之内还清")
+    private Integer exceedDay;
+
+    @ApiModelProperty("限定客户年龄")
+    private Integer limitAge;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createdAt;

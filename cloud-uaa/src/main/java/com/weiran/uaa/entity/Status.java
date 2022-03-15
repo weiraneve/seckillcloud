@@ -26,16 +26,16 @@ public class Status implements Serializable {
     @ApiModelProperty("身份证号")
     private String identityCardId;
 
-    @ApiModelProperty("贷款逾期记录(拒绝3年内逾期2次以上，金额小于 1000 元，3 天内还清除外)")
+    @ApiModelProperty("贷款逾期记录(0为正常，1为有)")
     private Integer exceedRecord;
 
-    @ApiModelProperty("客户工作状态(拒绝无业、失业)")
-    private String workStatus;
+    @ApiModelProperty("客户工作状态(0为正常，1为无业、失业的拒绝情况)")
+    private Integer workStatus;
 
-    @ApiModelProperty("客户是否被列入失信名单(拒绝被列入名单)")
+    @ApiModelProperty("客户是否被列入失信名单(0为正常，1为被列入名单)")
     private Integer dishonest;
 
-    @ApiModelProperty("客户年龄(拒绝小于18岁)")
+    @ApiModelProperty("客户年龄(0为正常，1为非正常)")
     private Integer age;
 
     @ApiModelProperty("创建时间")

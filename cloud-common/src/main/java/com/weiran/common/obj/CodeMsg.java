@@ -37,10 +37,16 @@ public class CodeMsg {
 	public static CodeMsg REPEATED_SECKILL = new CodeMsg(500501, "不能重复秒杀");
 
 	// 注册模块 5006XX
-	public static CodeMsg REPEATED_REGISTER = new CodeMsg(500600, "手机号码已注册");
+	public static CodeMsg REPEATED_REGISTER_MOBILE = new CodeMsg(500600, "手机号码已注册");
+	public static CodeMsg REPEATED_REGISTER_USERNAME = new CodeMsg(500601, "用户名已经被注册");
+	public static CodeMsg REPEATED_REGISTER_IDENTITY = new CodeMsg(500602, "身份证已经被注册");
 
 	// 用户模块 5007XX
 	public static CodeMsg No_SIFT_PASS = new CodeMsg(500700, "客户初筛未通过");
+
+	// 密码模块 5008XX
+	public static CodeMsg OLD_PASSWORD_ERROR = new CodeMsg(500800, "旧密码有误");
+	public static CodeMsg UPDATE_PASSWORD_ERROR = new CodeMsg(500801, "更新密码失败");
 
 	public CodeMsg() {
 	}

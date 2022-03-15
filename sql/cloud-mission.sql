@@ -11,7 +11,7 @@
  Target Server Version : 80021
  File Encoding         : 65001
 
- Date: 05/03/2022 20:28:09
+ Date: 15/03/2022 09:27:16
 */
 
 SET NAMES utf8mb4;
@@ -57,13 +57,12 @@ CREATE TABLE `order_info` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='订单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表';
 
 -- ----------------------------
 -- Records of order_info
 -- ----------------------------
 BEGIN;
-INSERT INTO `order_info` VALUES (1, 1, 1, '2022-03-02 18:20:39', '2022-03-05 20:27:12');
 COMMIT;
 
 -- ----------------------------
@@ -84,9 +83,9 @@ CREATE TABLE `seckill_goods` (
 -- Records of seckill_goods
 -- ----------------------------
 BEGIN;
-INSERT INTO `seckill_goods` VALUES (1, 1, 200, 12, '2022-03-02 18:21:36', '2022-03-05 19:26:35');
+INSERT INTO `seckill_goods` VALUES (1, 1, 196, 17, '2022-03-02 18:21:36', '2022-03-05 19:26:35');
 INSERT INTO `seckill_goods` VALUES (2, 2, 100, 0, '2022-03-02 18:21:36', '2022-03-02 18:21:36');
-INSERT INTO `seckill_goods` VALUES (3, 3, 100, 0, '2022-03-02 18:21:36', '2022-03-02 18:21:36');
+INSERT INTO `seckill_goods` VALUES (3, 3, 99, 1, '2022-03-02 18:21:36', '2022-03-02 18:21:36');
 INSERT INTO `seckill_goods` VALUES (4, 4, 99, 1, '2022-03-02 18:21:36', '2022-03-02 18:21:36');
 COMMIT;
 

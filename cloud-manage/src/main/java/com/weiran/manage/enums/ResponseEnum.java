@@ -43,9 +43,10 @@ public enum ResponseEnum implements BaseEnum {
     IMAGE_VIOLATION_FAIL(504, "图片违规"),
 
     /**
-     * goods相关
+     * 模型相关
      */
     Goods_CREATE_FAIL(600, "goods创建失败"),
+    RULE_UPDATE_FAIL(601, "rule更新失败"),
 
     /**
      * 系统相关

@@ -6,13 +6,14 @@ import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.*;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.MD5Util;
+import com.weiran.common.utils.SM3Util;
 import com.weiran.mission.entity.Order;
 import com.weiran.mission.entity.SeckillGoods;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.rabbitmq.SeckillMessage;
 import com.weiran.mission.rabbitmq.ackmodel.manual.ManualAckPublisher;
+import com.weiran.mission.rocketmq.MessageSender;
 import com.weiran.mission.service.SeckillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class SeckillServiceImpl implements SeckillService {
     final RedisService redisService;
     final SeckillGoodsManager seckillGoodsManager;
     final OrderManager orderManager;
-    final ManualAckPublisher manualAckPublisher;
+    final MessageSender messageSender;
 
     // 内存标记，减少redis访问
     private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
@@ -91,7 +92,8 @@ public class SeckillServiceImpl implements SeckillService {
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由RabbitMQ来执行，做到削峰填谷
-        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
+//        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
+        messageSender.asyncSend(seckillMessage); // 这里使用RocketMQ
         return Result.success(0); // 排队中
     }
 
@@ -149,8 +151,8 @@ public class SeckillServiceImpl implements SeckillService {
         if (userId == null || goodsId == null) {
             return null;
         }
-        // 随机返回一个唯一的id，加上123456的盐，然后md5加密
-        String str = MD5Util.md5(UUID.randomUUID() + "123456");
+        // 随机返回一个唯一的id，加上123456的盐，然后sm3加密
+        String str = SM3Util.sm3(UUID.randomUUID() + "123456");
         redisService.set(SeckillKey.getSeckillPath, "" + userId + "_" + goodsId, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
         return str;
     }

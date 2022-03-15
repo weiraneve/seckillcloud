@@ -8,6 +8,6 @@ public interface SiftService {
     /**
      * 通过对客户状态表对查询，判断是否有准入资格，并写入筛选表
      */
-    Result<User> findByStatus(long userId);
+    Result<User> findByStatus(User user);
 
 }

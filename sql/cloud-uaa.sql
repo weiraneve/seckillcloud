@@ -11,30 +11,33 @@
  Target Server Version : 80021
  File Encoding         : 65001
 
- Date: 05/03/2022 20:28:17
+ Date: 15/03/2022 10:18:04
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for loan
+-- Table structure for rule
 -- ----------------------------
-DROP TABLE IF EXISTS `loan`;
-CREATE TABLE `loan` (
+DROP TABLE IF EXISTS `rule`;
+CREATE TABLE `rule` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id` bigint DEFAULT NULL COMMENT '用户id',
-  `identity_card_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '身份证号',
+  `exceed_year` int DEFAULT NULL COMMENT '规定逾期年份',
+  `exceed_count` int DEFAULT NULL COMMENT '规定逾期次数',
+  `exceed_money` int DEFAULT NULL COMMENT '规定逾期金额',
+  `exceed_day` int DEFAULT NULL COMMENT '规定逾期天数之内还清',
+  `limit_age` int DEFAULT NULL COMMENT '限定客户年龄',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='贷款表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='筛选规则表';
 
 -- ----------------------------
--- Records of loan
+-- Records of rule
 -- ----------------------------
 BEGIN;
-INSERT INTO `loan` VALUES (1, 1, '510302200010300534', '2022-03-02 18:27:32', '2022-03-02 18:27:32');
+INSERT INTO `rule` VALUES (1, 3, 2, 1000, 3, 18, '2022-03-02 18:27:32', '2022-03-11 16:22:00');
 COMMIT;
 
 -- ----------------------------
@@ -44,7 +47,7 @@ DROP TABLE IF EXISTS `sift`;
 CREATE TABLE `sift` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` bigint DEFAULT NULL COMMENT '用户id',
-  `sift_pass` tinyint DEFAULT NULL COMMENT '初筛是否通过',
+  `sift_pass` int DEFAULT NULL COMMENT '初筛是否通过(0未通过 1通过)',
   `identity_card_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '身份证号',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -79,7 +82,7 @@ CREATE TABLE `status` (
 -- Records of status
 -- ----------------------------
 BEGIN;
-INSERT INTO `status` VALUES (1, 1, '510302200010300534', 1, '就业', 0, 22, '2022-03-02 18:27:54', '2022-03-02 18:27:54');
+INSERT INTO `status` VALUES (1, 1, '510302200010300534', 0, '0', 0, 0, '2022-03-02 18:27:54', '2022-03-10 22:58:02');
 COMMIT;
 
 -- ----------------------------
@@ -90,7 +93,7 @@ CREATE TABLE `user` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户名',
   `phone` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '登陆手机号',
-  `password` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '密码',
+  `password` varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '密码',
   `identity_card_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '身份证号',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -102,7 +105,7 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES (1, '孙念', '18077200000', '4d790edb1978380fd58836a214111701', '510302200010300531', '2022-03-02 18:22:19', '2022-03-02 18:22:19', '2022-01-01 00:00:00');
+INSERT INTO `user` VALUES (1, '孙念', '18077200000', '9508534c15e39a3f5a586aec9be941f6c249e646e06857ea0c3b0c33545dc679', '510302200010300531', '2022-02-27 06:22:19', '2022-03-06 00:31:32', '2021-12-28 12:00:00');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

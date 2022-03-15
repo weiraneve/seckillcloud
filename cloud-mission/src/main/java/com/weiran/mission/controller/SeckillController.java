@@ -1,10 +1,9 @@
 package com.weiran.mission.controller;
 
 import com.weiran.common.obj.Result;
-import com.weiran.mission.annotations.AccessLimit;
+import com.weiran.mission.annotations.SeckillLimit;
 import com.weiran.mission.service.SeckillService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 秒杀控制器
  */
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("seckill")
 public class SeckillController  {
@@ -23,7 +22,6 @@ public class SeckillController  {
      * 秒杀接口
      */
     @GetMapping
-    @ResponseBody
     public Result<Integer> doSeckill(@RequestParam("goodsId") long goodsId,
                                 @RequestParam("path") String path,
                                 HttpServletRequest request) {
@@ -38,17 +36,17 @@ public class SeckillController  {
      * 0： 排队中
      */
     @GetMapping(value = "/result")
-    @ResponseBody
     public Result<Long> seckillResult(@RequestParam("goodsId") long goodsId, HttpServletRequest request) {
         return seckillService.seckillResult(goodsId, request);
     }
 
     /**
      * 返回一个唯一的path的id
+     *
+     * 注解配合拦截器，限制规定时间内访问次数
      */
-    @AccessLimit(seconds = 5, maxCount = 5)
+    @SeckillLimit(seconds = 5, maxCount = 5)
     @GetMapping(value = "/getPath")
-    @ResponseBody
     public Result<String> getSeckillPath(HttpServletRequest request, @RequestParam("goodsId") long goodsId) {
         return seckillService.getSeckillPath(request, goodsId);
     }
