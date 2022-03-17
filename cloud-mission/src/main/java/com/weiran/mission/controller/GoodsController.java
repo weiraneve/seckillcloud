@@ -1,7 +1,6 @@
 package com.weiran.mission.controller;
 
 import com.weiran.common.obj.Result;
-import com.weiran.mission.entity.Goods;
 import com.weiran.mission.service.GoodsService;
 import com.weiran.mission.pojo.vo.GoodsDetailVo;
 import io.swagger.annotations.ApiOperation;
@@ -32,23 +31,5 @@ public class GoodsController {
         return goodsService.getDetail(goodsId);
     }
 
-    @ApiOperation("增加商品")
-    @RequestMapping("/addGoods")
-    public Result addGoods(Goods goods) {
-        return goodsService.addGoods(goods);
-    }
-
-    @ApiOperation("删除商品")
-    @RequestMapping("/deleteGoods")
-    public Result deleteGoods(@RequestParam("id") long id) {
-        return goodsService.deleteGoods(id);
-    }
-
-    @ApiOperation("更改商品详情")
-    @RequestMapping("/changeGoods")
-    public Result changeGoods(Goods goods, @RequestParam("id") long id) {
-        return goodsService.changeGoods(goods, id);
-    }
-    
 }
 

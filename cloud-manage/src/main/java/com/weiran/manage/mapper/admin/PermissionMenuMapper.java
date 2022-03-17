@@ -1,8 +1,8 @@
 package com.weiran.manage.mapper.admin;
 
 import com.weiran.manage.request.admin.MenuReq;
-import com.weiran.manage.entity.admin.PermissionMenuDTO;
-import com.weiran.manage.entity.admin.TreeRoleMenuDTO;
+import com.weiran.manage.dto.admin.PermissionMenuDTO;
+import com.weiran.manage.dto.admin.TreeRoleMenuDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

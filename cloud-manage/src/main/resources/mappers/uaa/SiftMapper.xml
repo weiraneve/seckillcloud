@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiran.manage.mapper.uaa.SiftMapper">
 
-    <resultMap id="siftResultMap" type="com.weiran.manage.entity.uaa.SiftDTO">
+    <resultMap id="siftResultMap" type="com.weiran.manage.dto.uaa.SiftDTO">
         <result column="id" property="id"/>
         <result column="user_id" property="userId"/>
         <result column="sift_pass" property="siftPass"/>

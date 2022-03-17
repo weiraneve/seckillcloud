@@ -1,14 +1,13 @@
 package com.weiran.manage.service.admin.impl;
 
-import com.weiran.common.utils.BeanUtil;
 import com.weiran.manage.config.security.JwtUserService;
 import com.weiran.manage.mapper.admin.*;
-import com.weiran.manage.entity.admin.RoleDTO;
-import com.weiran.manage.entity.admin.PermissionMenuDTO;
+import com.weiran.manage.dto.admin.RoleDTO;
+import com.weiran.manage.dto.admin.PermissionMenuDTO;
 import com.weiran.manage.request.admin.*;
 import com.weiran.manage.service.admin.AdminUserService;
 import com.weiran.manage.utils.TreeHelper;
-import com.weiran.manage.entity.admin.AdminUserDTO;
+import com.weiran.manage.dto.admin.AdminUserDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;

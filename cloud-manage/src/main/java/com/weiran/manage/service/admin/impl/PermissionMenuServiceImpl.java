@@ -1,8 +1,8 @@
 package com.weiran.manage.service.admin.impl;
 
 import com.weiran.manage.mapper.admin.PermissionMenuMapper;
-import com.weiran.manage.entity.admin.PermissionMenuDTO;
-import com.weiran.manage.entity.admin.TreeRoleMenuDTO;
+import com.weiran.manage.dto.admin.PermissionMenuDTO;
+import com.weiran.manage.dto.admin.TreeRoleMenuDTO;
 import com.weiran.manage.request.admin.MenuReq;
 import com.weiran.manage.service.admin.PermissionMenuService;
 import com.weiran.manage.utils.TreeHelper;

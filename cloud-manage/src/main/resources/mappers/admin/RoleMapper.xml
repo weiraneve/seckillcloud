@@ -4,17 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiran.manage.mapper.admin.RoleMapper">
 
-    <resultMap id="role" type="com.weiran.manage.entity.admin.RoleDTO">
+    <resultMap id="role" type="com.weiran.manage.dto.admin.RoleDTO">
         <result property="id" column="id"/>
         <result property="role" column="role"/>
         <result property="roleName" column="role_name"/>
     </resultMap>
 
-    <resultMap id="roleDTO" type="com.weiran.manage.entity.admin.RoleDTO">
+    <resultMap id="roleDTO" type="com.weiran.manage.dto.admin.RoleDTO">
         <result property="id" column="id"/>
         <result property="role" column="role"/>
         <result property="roleName" column="role_name"/>
-        <collection property="permissions" column="{roleId = id}" ofType="com.weiran.manage.entity.admin.PermissionDTO" javaType="ArrayList"
+        <collection property="permissions" column="{roleId = id}" ofType="com.weiran.manage.dto.admin.PermissionDTO" javaType="ArrayList"
                     select="com.weiran.manage.mapper.admin.PermissionMapper.findByIdRoleId"/>
     </resultMap>
 

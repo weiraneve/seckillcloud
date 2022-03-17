@@ -1,9 +1,9 @@
-package com.weiran.manage.entity.web;
+package com.weiran.manage.dto.web;
 
 import lombok.Data;
 
 @Data
-public class SeckillGoods {
+public class SeckillGoodsDTO {
 
     // 主键
     private Long id;

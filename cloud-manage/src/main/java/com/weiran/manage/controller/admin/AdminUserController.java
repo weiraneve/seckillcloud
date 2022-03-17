@@ -1,7 +1,7 @@
 package com.weiran.manage.controller.admin;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.entity.admin.AdminUserDTO;
+import com.weiran.manage.dto.admin.AdminUserDTO;
 import com.weiran.manage.request.admin.AdminUserPermissionDTO;
 import com.weiran.manage.request.admin.AdminUserReq;
 import com.weiran.manage.response.ResultVO;

@@ -1,7 +1,7 @@
 package com.weiran.manage.controller.uaa;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.entity.uaa.SiftDTO;
+import com.weiran.manage.dto.uaa.SiftDTO;
 import com.weiran.manage.response.ResultVO;
 import com.weiran.manage.service.uaa.SiftService;
 import lombok.RequiredArgsConstructor;

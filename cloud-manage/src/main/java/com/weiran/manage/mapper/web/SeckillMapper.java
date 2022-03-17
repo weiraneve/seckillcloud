@@ -1,8 +1,7 @@
 package com.weiran.manage.mapper.web;
 
 
-import com.weiran.manage.entity.web.Goods;
-import com.weiran.manage.entity.web.SeckillGoods;
+import com.weiran.manage.dto.web.SeckillGoodsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,17 +13,17 @@ public interface SeckillMapper {
     /**
      * 查询全部
      */
-    List<SeckillGoods> findSeckill();
+    List<SeckillGoodsDTO> findSeckill();
 
     /**
      * 通过goodsId模糊查询
      */
-    List<SeckillGoods> findByGoodsIdLike(Long goodsId);
+    List<SeckillGoodsDTO> findByGoodsIdLike(Long goodsId);
 
     /**
      * 增加秒杀商品
      */
-    int add(@Param("seckillGoods") SeckillGoods seckillGoods);
+    int add(@Param("seckillGoodsDTO") SeckillGoodsDTO seckillGoodsDTO);
 
     /**
      * 删除秒杀商品
@@ -34,6 +33,6 @@ public interface SeckillMapper {
     /**
      * 更新
      */
-    Integer update(@Param("seckillGoods") SeckillGoods seckillGoods);
+    Integer update(@Param("seckillGoodsDTO") SeckillGoodsDTO seckillGoodsDTO);
 
 }

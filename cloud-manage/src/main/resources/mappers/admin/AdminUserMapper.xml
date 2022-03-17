@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiran.manage.mapper.admin.AdminUserMapper">
-    <resultMap id="user" type="com.weiran.manage.entity.admin.AdminUserDTO">
+    <resultMap id="user" type="com.weiran.manage.dto.admin.AdminUserDTO">
         <result property="id" column="id"/>
         <result property="phone" column="phone"/>
         <result property="username" column="username"/>
@@ -13,10 +13,10 @@
         <result property="avatar" column="avatar"/>
         <result property="role" column="role"/>
 
-        <collection property="permissions" column="{adminUserId = id}" ofType="com.weiran.manage.entity.admin.PermissionDTO" javaType="ArrayList"
+        <collection property="permissions" column="{adminUserId = id}" ofType="com.weiran.manage.dto.admin.PermissionDTO" javaType="ArrayList"
                     select="com.weiran.manage.mapper.admin.PermissionMapper.findByAdminUserId"/>
 
-        <collection property="roles" column="{roles = role}" ofType="com.weiran.manage.entity.admin.RoleDTO" javaType="ArrayList"
+        <collection property="roles" column="{roles = role}" ofType="com.weiran.manage.dto.admin.RoleDTO" javaType="ArrayList"
                     select="com.weiran.manage.mapper.admin.RoleMapper.findRolesByRoles"/>
     </resultMap>
 

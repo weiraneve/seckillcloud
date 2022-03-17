@@ -1,7 +1,7 @@
 package com.weiran.manage.controller.web;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.entity.web.Goods;
+import com.weiran.manage.dto.web.GoodsDTO;
 import com.weiran.manage.enums.ResponseEnum;
 import com.weiran.manage.response.ResultVO;
 import com.weiran.manage.service.web.GoodsService;
@@ -24,7 +24,7 @@ public class GoodsController {
      */
     @GetMapping
     public ResultVO goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, String goodsName) {
-        PageInfo<Goods> goods = goodsService.findGoods(page, pageSize, goodsName);
+        PageInfo<GoodsDTO> goods = goodsService.findGoods(page, pageSize, goodsName);
         return ResultVO.success(goods);
     }
 
@@ -32,8 +32,8 @@ public class GoodsController {
      * 新增goods
      */
     @PostMapping
-    public ResultVO goodsCreate(@RequestBody Goods goods) {
-        boolean createSuccess = goodsService.create(goods);
+    public ResultVO goodsCreate(@RequestBody GoodsDTO goodsDTO) {
+        boolean createSuccess = goodsService.create(goodsDTO);
         return createSuccess ? ResultVO.success() : ResultVO.fail(ResponseEnum.Goods_CREATE_FAIL);
     }
 
@@ -42,8 +42,8 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public ResultVO goodsUpdate(@RequestBody Goods goods) {
-        boolean updateSuccess = goodsService.update(goods);
+    public ResultVO goodsUpdate(@RequestBody GoodsDTO goodsDTO) {
+        boolean updateSuccess = goodsService.update(goodsDTO);
         return updateSuccess ? ResultVO.success() : ResultVO.fail(ResponseEnum.Goods_CREATE_FAIL);
     }
 
@@ -53,8 +53,8 @@ public class GoodsController {
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/{id}/edit")
     public ResultVO goodsEdit(@PathVariable("id") Long id) {
-        Goods goods = goodsService.selectById(id);
-        return ResultVO.success(goods);
+        GoodsDTO goodsDTO = goodsService.selectById(id);
+        return ResultVO.success(goodsDTO);
     }
 
     /**

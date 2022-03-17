@@ -1,4 +1,4 @@
-package com.weiran.manage.entity.uaa;
+package com.weiran.manage.dto.uaa;
 
 import lombok.Data;
 

@@ -1,14 +1,14 @@
 package com.weiran.manage.service.web;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.entity.web.Goods;
+import com.weiran.manage.dto.web.GoodsDTO;
 
 public interface GoodsService {
 
     /**
      * 查询所有goods
      */
-    PageInfo<Goods> findGoods(Integer page, Integer pageSize, String goodsName);
+    PageInfo<GoodsDTO> findGoods(Integer page, Integer pageSize, String goodsName);
 
     /**
      * 单个删除goods
@@ -18,17 +18,17 @@ public interface GoodsService {
     /**
      * 新增goods
      */
-    boolean create(Goods goods);
+    boolean create(GoodsDTO goodsDTO);
 
     /**
      * 修改goods
      */
-    boolean update(Goods goods);
+    boolean update(GoodsDTO goodsDTO);
 
     /**
      * 选择单个goods
      */
-    Goods selectById(Long id);
+    GoodsDTO selectById(Long id);
 
     /**
      * 修改是否可用

@@ -1,7 +1,7 @@
 package com.weiran.manage.service.uaa;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.entity.uaa.SiftDTO;
+import com.weiran.manage.dto.uaa.SiftDTO;
 
 public interface SiftService {
 

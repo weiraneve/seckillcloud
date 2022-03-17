@@ -1,6 +1,6 @@
 package com.weiran.manage.controller.admin;
 
-import com.weiran.manage.entity.admin.PermissionMenuDTO;
+import com.weiran.manage.dto.admin.PermissionMenuDTO;
 import com.weiran.manage.response.ResultVO;
 import com.weiran.manage.service.admin.AdminUserService;
 import lombok.RequiredArgsConstructor;

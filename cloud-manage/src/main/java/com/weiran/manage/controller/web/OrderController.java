@@ -1,7 +1,7 @@
 package com.weiran.manage.controller.web;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.entity.web.Order;
+import com.weiran.manage.dto.web.OrderDTO;
 import com.weiran.manage.response.ResultVO;
 import com.weiran.manage.service.web.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class OrderController {
     public ResultVO findByOrders(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                  @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                  Long id) {
-        PageInfo<Order> order = orderService.findByOrders(page, pageSize, id);
+        PageInfo<OrderDTO> order = orderService.findByOrders(page, pageSize, id);
         return ResultVO.success(order);
     }
 

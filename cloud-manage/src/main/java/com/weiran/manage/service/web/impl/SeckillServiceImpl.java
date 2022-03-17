@@ -2,8 +2,8 @@ package com.weiran.manage.service.web.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.weiran.manage.dto.web.SeckillGoodsDTO;
 import com.weiran.manage.mapper.web.SeckillMapper;
-import com.weiran.manage.entity.web.SeckillGoods;
 import com.weiran.manage.service.web.SeckillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,22 +19,22 @@ public class SeckillServiceImpl implements SeckillService {
 
     // 分页查询
     @Override
-    public PageInfo<SeckillGoods> findSeckill(Integer page, Integer pageSize, Long goodsId) {
+    public PageInfo<SeckillGoodsDTO> findSeckill(Integer page, Integer pageSize, Long goodsId) {
         PageHelper.startPage(page, pageSize);
-        List<SeckillGoods> seckillGoodsList;
+        List<SeckillGoodsDTO> seckillGoodsDTOList;
         if (StringUtils.isEmpty(goodsId)) {
-            seckillGoodsList = seckillMapper.findSeckill();
+            seckillGoodsDTOList = seckillMapper.findSeckill();
         } else {
             // 如果有字段传入，则模糊查询
-            seckillGoodsList = seckillMapper.findByGoodsIdLike(goodsId);
+            seckillGoodsDTOList = seckillMapper.findByGoodsIdLike(goodsId);
         }
-        return new PageInfo<>(seckillGoodsList);
+        return new PageInfo<>(seckillGoodsDTOList);
     }
 
     // 增加秒杀商品
     @Override
-    public void addSeckillGoods(SeckillGoods seckillGoods) {
-        seckillMapper.add(seckillGoods);
+    public void addSeckillGoods(SeckillGoodsDTO seckillGoodsDTO) {
+        seckillMapper.add(seckillGoodsDTO);
     }
 
     // 删除秒杀商品

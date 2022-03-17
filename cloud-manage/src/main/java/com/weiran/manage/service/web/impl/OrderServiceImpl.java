@@ -1,7 +1,7 @@
 package com.weiran.manage.service.web.impl;
 
 import com.weiran.manage.mapper.web.OrderMapper;
-import com.weiran.manage.entity.web.Order;
+import com.weiran.manage.dto.web.OrderDTO;
 import com.weiran.manage.service.web.OrderService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -19,14 +19,14 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
 
     @Override
-    public PageInfo<Order> findByOrders(Integer page, Integer pageSize, Long id) {
+    public PageInfo<OrderDTO> findByOrders(Integer page, Integer pageSize, Long id) {
         PageHelper.startPage(page,pageSize);
-        List<Order> orderList;
+        List<OrderDTO> orderDTOList;
         if (StringUtils.isEmpty(id)) {
-            orderList = orderMapper.findByOrder();
+            orderDTOList = orderMapper.findByOrder();
         } else {
-            orderList = orderMapper.findOrderById(id);
+            orderDTOList = orderMapper.findOrderById(id);
         }
-        return new PageInfo<>(orderList);
+        return new PageInfo<>(orderDTOList);
     }
 }

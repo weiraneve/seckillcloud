@@ -1,8 +1,8 @@
 package com.weiran.manage.utils;
 
 
-import com.weiran.manage.entity.admin.PermissionMenuDTO;
-import com.weiran.manage.entity.admin.TreeRoleMenuDTO;
+import com.weiran.manage.dto.admin.PermissionMenuDTO;
+import com.weiran.manage.dto.admin.TreeRoleMenuDTO;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;

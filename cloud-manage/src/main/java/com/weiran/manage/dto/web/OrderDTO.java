@@ -1,4 +1,4 @@
-package com.weiran.manage.entity.web;
+package com.weiran.manage.dto.web;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.util.Date;
 
 
 @Data
-public class Order {
+public class OrderDTO {
 
     // 主键
     private Long id;

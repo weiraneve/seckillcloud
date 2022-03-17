@@ -1,6 +1,6 @@
 package com.weiran.manage.controller.admin;
 
-import com.weiran.manage.entity.admin.AdminUserDTO;
+import com.weiran.manage.dto.admin.AdminUserDTO;
 import com.weiran.manage.enums.ResponseEnum;
 import com.weiran.manage.exception.CustomizeException;
 import com.weiran.manage.request.admin.AdminUserInfoReq;

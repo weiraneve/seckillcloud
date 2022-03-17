@@ -2,7 +2,7 @@ package com.weiran.manage.mapper.admin;
 
 import com.weiran.manage.request.admin.AdminUserInfoReq;
 import com.weiran.manage.request.admin.AdminUserReq;
-import com.weiran.manage.entity.admin.AdminUserDTO;
+import com.weiran.manage.dto.admin.AdminUserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

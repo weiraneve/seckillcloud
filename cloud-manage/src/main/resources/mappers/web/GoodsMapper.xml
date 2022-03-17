@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiran.manage.mapper.web.GoodsMapper">
 
-    <resultMap id="goodsResultMap" type="com.weiran.manage.entity.web.Goods">
+    <resultMap id="goodsResultMap" type="com.weiran.manage.dto.web.GoodsDTO">
         <result column="id" property="id"/>
         <result column="goodsName" property="goods_name"/>
         <result column="goodsImg" property="goods_img"/>
@@ -28,7 +28,7 @@
     </select>
 
     <!--通过ID查询-->
-    <select id="selectById" resultType="com.weiran.manage.entity.web.Goods">
+    <select id="selectById" resultType="com.weiran.manage.dto.web.GoodsDTO">
         select *
         from goods
         where id = #{id}
@@ -36,7 +36,7 @@
     </select>
 
     <!--根据ids查询-->
-    <select id="findGoodsByIds" resultType="com.weiran.manage.entity.web.Goods" parameterType="java.util.List">
+    <select id="findGoodsByIds" resultType="com.weiran.manage.dto.web.GoodsDTO" parameterType="java.util.List">
         select *
         from goods
         where id in
@@ -48,14 +48,14 @@
     <!--新增-->
     <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO goods (goods_name,goods_img,is_using,goods_title,goods_price,goods_stock,start_time,end_time)
-        VALUES (#{goods.goodsName},
-                #{goods.goodsImg},
-                #{goods.isUsing},
-                #{goods.goodsTitle},
-                #{goods.goodsPrice},
-                #{goods.goodsStock},
-                #{goods.startTime},
-                #{goods.endTime});
+        VALUES (#{goodsDTO.goodsName},
+                #{goodsDTO.goodsImg},
+                #{goodsDTO.isUsing},
+                #{goodsDTO.goodsTitle},
+                #{goodsDTO.goodsPrice},
+                #{goodsDTO.goodsStock},
+                #{goodsDTO.startTime},
+                #{goodsDTO.endTime});
     </insert>
 
     <!--删除-->
@@ -78,15 +78,15 @@
     <!--通过更新goods-->
     <update id="update">
         UPDATE goods
-        SET goods_name = #{goods.goodsName},
-            goods_img  = #{goods.goodsImg},
-            is_using  = #{goods.isUsing},
-            goods_title = #{goods.goodsTitle},
-            goods_price = #{goods.goodsPrice},
-            goods_stock = #{goods.goodsStock},
-            start_time = #{goods.startTime},
-            end_time = #{goods.endTime}
-        WHERE id = #{goods.id}
+        SET goods_name = #{goodsDTO.goodsName},
+            goods_img  = #{goodsDTO.goodsImg},
+            is_using  = #{goodsDTO.isUsing},
+            goods_title = #{goodsDTO.goodsTitle},
+            goods_price = #{goodsDTO.goodsPrice},
+            goods_stock = #{goodsDTO.goodsStock},
+            start_time = #{goodsDTO.startTime},
+            end_time = #{goodsDTO.endTime}
+        WHERE id = #{goodsDTO.id}
     </update>
 
     <!--通过id更新goods的Using状态-->

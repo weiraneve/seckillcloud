@@ -1,6 +1,6 @@
 package com.weiran.manage.mapper.uaa;
 
-import com.weiran.manage.entity.uaa.Rule;
+import com.weiran.manage.dto.uaa.RuleDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,11 +13,11 @@ public interface RuleMapper {
     /**
      * 获得Rule
      */
-    List<Rule> findRule();
+    List<RuleDTO> findRule();
 
     /**
      * 更新Rule
      */
-    Integer update(@Param("rule") Rule rule);
+    Integer update(@Param("ruleDTO") RuleDTO ruleDTO);
 
 }

@@ -1,9 +1,6 @@
 package com.weiran.mission.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.weiran.common.enums.RedisCacheTimeEnum;
-import com.weiran.common.obj.CodeMsg;
-import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.mission.entity.SeckillGoods;
@@ -29,42 +26,6 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         seckillGoods.setStockCount(preStockCount);
         boolean flag = seckillGoodsManager.update(seckillGoods, Wrappers.<SeckillGoods>lambdaUpdate().eq(SeckillGoods::getGoodsId, goodsId));
         return (flag) ? 1 : 0;
-    }
-
-    // 在库存表增加
-    @Override
-    public Result addSeckillGoods(SeckillGoods seckillGoods) {
-        boolean flag = seckillGoodsManager.save(seckillGoods);
-        if (!flag) {
-            return new Result(CodeMsg.SERVER_ERROR);
-        }
-        // 增加对应缓存
-        redisService.set(SeckillGoodsKey.seckillCount, "" + seckillGoods.getGoodsId(), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        return new Result(CodeMsg.SUCCESS);
-    }
-
-    // 在库存表删除
-    @Override
-    public Result deleteSeckillGoods(long goodsId) {
-        boolean flag = seckillGoodsManager.remove(Wrappers.<SeckillGoods>lambdaQuery().eq(SeckillGoods::getGoodsId, goodsId));
-        if (!flag) {
-            return new Result(CodeMsg.SERVER_ERROR);
-        }
-        // 删除对应缓存
-        redisService.delete(SeckillGoodsKey.seckillCount, "" + goodsId);
-        return new Result(CodeMsg.SUCCESS);
-    }
-
-    // 在库存表更改
-    @Override
-    public Result changeSeckillGoods(SeckillGoods seckillGoods, long goodsId) {
-        boolean flag = seckillGoodsManager.update(seckillGoods, Wrappers.<SeckillGoods>lambdaQuery().eq(SeckillGoods::getGoodsId, goodsId));
-        if (!flag) {
-            return new Result(CodeMsg.SERVER_ERROR);
-        }
-        // 改对应缓存
-        redisService.set(SeckillGoodsKey.seckillCount, "" + goodsId, seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        return new Result(CodeMsg.SUCCESS);
     }
 
 }

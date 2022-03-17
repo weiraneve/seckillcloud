@@ -1,7 +1,7 @@
 package com.weiran.manage.service.admin;
 
-import com.weiran.manage.entity.admin.AdminUserDTO;
-import com.weiran.manage.entity.admin.PermissionMenuDTO;
+import com.weiran.manage.dto.admin.AdminUserDTO;
+import com.weiran.manage.dto.admin.PermissionMenuDTO;
 import com.github.pagehelper.PageInfo;
 import com.weiran.manage.request.admin.*;
 

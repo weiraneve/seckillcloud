@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiran.manage.mapper.admin.PermissionMapper">
-    <resultMap id="permission" type="com.weiran.manage.entity.admin.PermissionDTO">
+    <resultMap id="permission" type="com.weiran.manage.dto.admin.PermissionDTO">
         <result property="id" column="id"/>
         <result property="permission" column="permission"/>
         <result property="permissionName" column="permission_name"/>

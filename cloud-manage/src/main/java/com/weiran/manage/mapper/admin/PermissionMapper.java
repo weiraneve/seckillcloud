@@ -1,7 +1,7 @@
 package com.weiran.manage.mapper.admin;
 
 import com.weiran.manage.request.admin.PermissionReq;
-import com.weiran.manage.entity.admin.PermissionDTO;
+import com.weiran.manage.dto.admin.PermissionDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

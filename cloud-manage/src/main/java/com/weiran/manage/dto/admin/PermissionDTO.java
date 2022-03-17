@@ -1,4 +1,4 @@
-package com.weiran.manage.entity.admin;
+package com.weiran.manage.dto.admin;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.weiran.manage.entity.web;
+package com.weiran.manage.dto.web;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class Goods {
+public class GoodsDTO {
 
     // 主键
     private Long id;

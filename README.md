@@ -1,6 +1,5 @@
 # 前言
-上传的第五版
-做了一定的优化，将RocketMQ加入，默认使用RocketMQ，但没有删除RabittmQ的相关代码。以及补全和完善了注册和更改密码的代码逻辑，以及完成登陆接口的防止同一ip恶意多频率访问。并实现一个完成度相对简略的对于客户能否拥有秒杀资格的后台灵活配置功能。这一块的逻辑完成度不高的原因是，没有对应的每个用户的被筛选的数据，空有筛选的规则。项目中的加密部分换为国密SM3加密。
+优化了controller层的入参，一律使用req、vo、dto等符合规范的形式，删去了部分冗余代码。
 - [客户端前端服务器](https://github.com/weiran1999/seckill-front)
 - [后台前端服务器](https://github.com/weiran1999/admin-manager)
 
@@ -16,7 +15,7 @@
 - cloud-common
 通用模块。负责一些通用的依赖管理和一些通用代码复用。
 - cloud-manage
-后台管理系统模块。后端提供接口给React框架下的后台前端服务器，实现前后端分离。
+后台管理系统模块。后端提供接口给React框架下的后台前端服务器，实现前后端分离。其中配置商品图片的功能有qiniu云以及对应依赖提供。
 - cloud-uaa
 用户认证中心模块，统一登陆，与客户注册功能。
 - cloud-mission
@@ -26,7 +25,7 @@
 - 首先将SQL导入自己的数据库，用户名root、密码123456即可。Mysql的表名得是SQL文件名。
 - 启动Nacos，如果没有则先安装，安装后按网上文章博客启动。
 - 启动本地的Redis，密码要配置为123456即可。如果本地没有安装Redis，则先安装。
-- 如果使用RabbitMQ则启动本地的RocketMQ（RabbitMQ），用户名和密码才去默认即可。如果本地没有安装RocketMQ，则先安装。如果使用RocketMQ，则可以先下载RocketMQ与可视化软件，然后分别启动。
+- 如果使用RocketMQ则启动本地的RocketMQ（如果使用RabbitMQ，则进行相似步骤），用户名和密码才去默认即可。如果本地没有安装RocketMQ，则先安装。如果使用RocketMQ，则可以先下载RocketMQ与可视化软件，然后分别启动。
 - 依次启动项目中的cloud-gateway、cloud-uaa、cloud-mission、cloud-manage模块，如果不用到后台管理系统可以不启动cloud-manage模块。
 - 其中参数都可以了解后自行在项目里更改。
 - cloud-monitor模块的SpringBoot Admin监控技术栈，使用只需要开启网关后访问http://localhost:8205/monitor 或者直接访问monitor端口。

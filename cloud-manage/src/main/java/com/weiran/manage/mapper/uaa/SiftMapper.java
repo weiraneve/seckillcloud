@@ -1,6 +1,6 @@
 package com.weiran.manage.mapper.uaa;
 
-import com.weiran.manage.entity.uaa.SiftDTO;
+import com.weiran.manage.dto.uaa.SiftDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

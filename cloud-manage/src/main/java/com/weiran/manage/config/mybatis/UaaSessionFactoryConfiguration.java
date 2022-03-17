@@ -43,7 +43,7 @@ public class UaaSessionFactoryConfiguration {
         SqlSessionFactoryBean sfb = new SqlSessionFactoryBean();
         sfb.setDataSource(dataSource);
         sfb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/uaa/**.xml"));
-        sfb.setTypeAliasesPackage("com.weiran.manage.model.uaa");
+        sfb.setTypeAliasesPackage("com.weiran.manage.dto.uaa");
         sfb.setVfs(SpringBootVFS.class);
         SqlSessionFactory factory = sfb.getObject();
         assert factory != null;

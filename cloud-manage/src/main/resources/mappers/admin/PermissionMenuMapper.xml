@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiran.manage.mapper.admin.PermissionMenuMapper">
-    <resultMap id="roleMenu" type="com.weiran.manage.entity.admin.PermissionMenuDTO">
+    <resultMap id="roleMenu" type="com.weiran.manage.dto.admin.PermissionMenuDTO">
         <result property="id" column="id"/>
         <result property="level" column="level"/>
         <result property="sort" column="sort"/>
@@ -12,11 +12,11 @@
         <result property="icon" column="icon"/>
         <result property="permissionId" column="permission_id"/>
         <result property="parentId" column="parent_id"/>
-        <association property="permission" column="{permissionId = permission_id}" javaType="com.weiran.manage.entity.admin.PermissionDTO"
+        <association property="permission" column="{permissionId = permission_id}" javaType="com.weiran.manage.dto.admin.PermissionDTO"
                      select="com.weiran.manage.mapper.admin.PermissionMapper.findById"/>
     </resultMap>
 
-    <resultMap id="treeRoleMenu" type="com.weiran.manage.entity.admin.TreeRoleMenuDTO">
+    <resultMap id="treeRoleMenu" type="com.weiran.manage.dto.admin.TreeRoleMenuDTO">
         <result property="value" column="value"/>
         <result property="title" column="title"/>
         <result property="key" column="key"/>

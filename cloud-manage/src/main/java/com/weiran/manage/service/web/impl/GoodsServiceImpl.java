@@ -7,10 +7,10 @@ import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.redis.key.GoodsKey;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.manage.entity.web.SeckillGoods;
+import com.weiran.manage.dto.web.GoodsDTO;
+import com.weiran.manage.dto.web.SeckillGoodsDTO;
 import com.weiran.manage.exception.CustomizeException;
 import com.weiran.manage.mapper.web.GoodsMapper;
-import com.weiran.manage.entity.web.Goods;
 import com.weiran.manage.enums.ResponseEnum;
 import com.weiran.manage.mapper.web.SeckillMapper;
 import com.weiran.manage.service.web.GoodsService;
@@ -38,30 +38,30 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 查询所有goods
     @Override
-    public PageInfo<Goods> findGoods(Integer page, Integer pageSize, String goodsName) {
+    public PageInfo<GoodsDTO> findGoods(Integer page, Integer pageSize, String goodsName) {
         PageHelper.startPage(page, pageSize);
-        List<Goods> goodsList;
+        List<GoodsDTO> goodsDTOList;
         if (StringUtils.isEmpty(goodsName)) {
-            goodsList = goodsMapper.findGoods();
+            goodsDTOList = goodsMapper.findGoods();
         } else {
             // 如果有字段传入，则模糊查询
-            goodsList = goodsMapper.findByGoodsNameLike(goodsName);
+            goodsDTOList = goodsMapper.findByGoodsNameLike(goodsName);
         }
-        return new PageInfo<>(goodsList);
+        return new PageInfo<>(goodsDTOList);
     }
 
     // 新增商品
     @Override
-    public boolean create(Goods goods) {
-        int row = goodsMapper.add(goods);
+    public boolean create(GoodsDTO goodsDTO) {
+        int row = goodsMapper.add(goodsDTO);
         // 表增加后，在缓存中增加
         if (row > 0) {
-            SeckillGoods seckillGoods = new SeckillGoods();
-            seckillGoods.setStockCount(goods.getGoodsStock());
-            seckillGoods.setGoodsId(goods.getId());
-            seckillMapper.add(seckillGoods);
-            redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-            redisService.set(SeckillGoodsKey.seckillCount, "" + goods.getId(), goods.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+            SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
+            seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
+            seckillGoodsDTO.setGoodsId(goodsDTO.getId());
+            seckillMapper.add(seckillGoodsDTO);
+            redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+            redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
         }
         return row > 0;
     }
@@ -69,10 +69,10 @@ public class GoodsServiceImpl implements GoodsService {
     // 删除指定商品
     @Override
     public void delete(Long id) {
-        Goods goods = goodsMapper.selectById(id);
-        if (goods.getGoodsImg() != null) {
+        GoodsDTO goodsDTO = goodsMapper.selectById(id);
+        if (goodsDTO.getGoodsImg() != null) {
             try {
-                URL url = new URL(goods.getGoodsImg());
+                URL url = new URL(goodsDTO.getGoodsImg());
                 imageScalaKit.delete(url.getPath().replaceFirst("/",""));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -97,16 +97,16 @@ public class GoodsServiceImpl implements GoodsService {
     // 删除
     @Async
     void deleteGoods(List<String> goodsIds) {
-        List<Goods> goodsList = goodsMapper.findGoodsByIds(goodsIds);
-        for (Goods goods : goodsList) {
+        List<GoodsDTO> goodsDTOList = goodsMapper.findGoodsByIds(goodsIds);
+        for (GoodsDTO goodsDTO : goodsDTOList) {
             try {
-                URL url = new URL(goods.getGoodsImg());
+                URL url = new URL(goodsDTO.getGoodsImg());
                 imageScalaKit.delete(url.getPath().replaceFirst("/",""));
                 // 删除对应缓存
-                redisService.delete(GoodsKey.goodsKey, "" + goods.getId());
-                redisService.delete(SeckillGoodsKey.seckillCount, "" + goods.getId());
-                goodsMapper.delete(goods.getId());
-                seckillMapper.delete(goods.getId());
+                redisService.delete(GoodsKey.goodsKey, "" + goodsDTO.getId());
+                redisService.delete(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId());
+                goodsMapper.delete(goodsDTO.getId());
+                seckillMapper.delete(goodsDTO.getId());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -115,39 +115,39 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 更新商品
     @Override
-    public boolean update(Goods goods) {
-        int row = goodsMapper.update(goods);
+    public boolean update(GoodsDTO goodsDTO) {
+        int row = goodsMapper.update(goodsDTO);
         if (row > 0) {
             // 更改对应缓存
-            redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+            redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
             // 更改秒杀对应缓存
-            redisService.set(SeckillGoodsKey.seckillCount, "" + goods.getId(), goods.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-            SeckillGoods seckillGoods = new SeckillGoods();
-            seckillGoods.setGoodsId(goods.getId());
-            seckillGoods.setStockCount(goods.getGoodsStock());
+            redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+            SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
+            seckillGoodsDTO.setGoodsId(goodsDTO.getId());
+            seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
             // 更改秒杀库
-            seckillMapper.update(seckillGoods);
+            seckillMapper.update(seckillGoodsDTO);
         }
         return row > 0;
     }
 
     // 选择单个商品
     @Override
-    public Goods selectById(Long id) {
-        Goods goods = goodsMapper.selectById(id);
-        if (goods == null) {
+    public GoodsDTO selectById(Long id) {
+        GoodsDTO goodsDTO = goodsMapper.selectById(id);
+        if (goodsDTO == null) {
             throw new CustomizeException(ResponseEnum.RESOURCE_NOT_FOUND);
         }
-        return goods;
+        return goodsDTO;
     }
 
     // 修改商品的是否可用
     @Override
     public void updateUsingById(Long id) {
         goodsMapper.updateUsingById(id);
-        Goods goods = redisService.get(GoodsKey.goodsKey, "" + id, Goods.class);
-        goods.setIsUsing(BooleanUtil.negate(goods.getIsUsing())); // 布尔值取反
+        GoodsDTO goodsDTO = redisService.get(GoodsKey.goodsKey, "" + id, GoodsDTO.class);
+        goodsDTO.setIsUsing(BooleanUtil.negate(goodsDTO.getIsUsing())); // 布尔值取反
         // 商品缓存中更改
-        redisService.set(GoodsKey.goodsKey, "" + id, goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(GoodsKey.goodsKey, "" + id, goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
     }
 }

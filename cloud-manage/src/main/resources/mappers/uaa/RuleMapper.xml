@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiran.manage.mapper.uaa.RuleMapper">
 
-    <resultMap id="ruleResultMap" type="com.weiran.manage.entity.uaa.Rule">
+    <resultMap id="ruleResultMap" type="com.weiran.manage.dto.uaa.RuleDTO">
         <result column="id" property="id"/>
         <result column="exceed_year" property="exceedYear"/>
         <result column="exceed_count" property="exceedCount"/>
@@ -22,12 +22,12 @@
     <!--通过更新rule-->
     <update id="update">
         UPDATE rule
-        SET exceed_year = #{rule.exceedYear},
-            exceed_count  = #{rule.exceedCount},
-            exceed_money  = #{rule.exceedMoney},
-            exceed_day = #{rule.exceedDay},
-            limit_age = #{rule.limitAge}
-        WHERE id = #{rule.id}
+        SET exceed_year = #{ruleDTO.exceedYear},
+            exceed_count  = #{ruleDTO.exceedCount},
+            exceed_money  = #{ruleDTO.exceedMoney},
+            exceed_day = #{ruleDTO.exceedDay},
+            limit_age = #{ruleDTO.limitAge}
+        WHERE id = #{ruleDTO.id}
     </update>
 
 </mapper>

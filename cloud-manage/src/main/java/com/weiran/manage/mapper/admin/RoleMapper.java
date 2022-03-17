@@ -1,6 +1,6 @@
 package com.weiran.manage.mapper.admin;
 
-import com.weiran.manage.entity.admin.RoleDTO;
+import com.weiran.manage.dto.admin.RoleDTO;
 import com.weiran.manage.request.admin.RoleReq;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

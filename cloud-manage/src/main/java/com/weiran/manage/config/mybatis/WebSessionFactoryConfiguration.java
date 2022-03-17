@@ -40,7 +40,7 @@ public class WebSessionFactoryConfiguration {
         SqlSessionFactoryBean sfb = new SqlSessionFactoryBean();
         sfb.setDataSource(dataSource);
         sfb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/web/**.xml"));
-        sfb.setTypeAliasesPackage("com.weiran.manage.model.web");
+        sfb.setTypeAliasesPackage("com.weiran.manage.dto.web");
         sfb.setVfs(SpringBootVFS.class);
         SqlSessionFactory factory = sfb.getObject();
         Objects.requireNonNull(factory).getConfiguration().setMapUnderscoreToCamelCase(true);

@@ -3,19 +3,19 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiran.manage.mapper.admin.UserRolePermissionMapper">
-    <resultMap id="userRolePermission" type="com.weiran.manage.entity.admin.UserRolePermissionDTO">
+    <resultMap id="userRolePermission" type="com.weiran.manage.dto.admin.UserRolePermissionDTO">
         <result property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="roleId" column="role_id"/>
         <result property="permissionId" column="permission_id"/>
 
-        <association property="role" column="{roleId = role_id}" javaType="com.weiran.manage.entity.admin.RoleDTO"
+        <association property="role" column="{roleId = role_id}" javaType="com.weiran.manage.dto.admin.RoleDTO"
                      select="com.weiran.manage.mapper.admin.RoleMapper.findById"/>
 
-        <association property="permission" column="{permissionId = permission_id}" javaType="com.weiran.manage.entity.admin.PermissionDTO"
+        <association property="permission" column="{permissionId = permission_id}" javaType="com.weiran.manage.dto.admin.PermissionDTO"
                      select="com.weiran.manage.mapper.admin.PermissionMapper.findById"/>
 
-        <association property="adminUser" column="{userId = user_id}" javaType="com.weiran.manage.entity.admin.AdminUserDTO"
+        <association property="adminUser" column="{userId = user_id}" javaType="com.weiran.manage.dto.admin.AdminUserDTO"
                      select="com.weiran.manage.mapper.admin.AdminUserMapper.findById"/>
     </resultMap>
 

@@ -1,8 +1,6 @@
 package com.weiran.mission.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
-import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.GoodsKey;
 import com.weiran.common.redis.key.SeckillGoodsKey;
@@ -93,48 +91,6 @@ public class GoodsServiceImpl implements GoodsService {
         goodsDetailVo.setStockCount(stockCount);
         goodsDetailVo.setRemainSeconds(remainSeconds);
         return Result.success(goodsDetailVo);
-    }
-
-    // 增加商品
-    @Override
-    public Result addGoods(Goods goods) {
-        boolean flag = goodsManager.save(goods);
-        if (!flag) {
-            return new Result(CodeMsg.SERVER_ERROR);
-        }
-        // 增加对应缓存
-        redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        // 增加库存对应缓存
-        redisService.set(SeckillGoodsKey.seckillCount, "" + goods.getId(), goods.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        return new Result(CodeMsg.SUCCESS);
-    }
-
-    // 删除商品
-    @Override
-    public Result deleteGoods(long id) {
-        boolean flag = goodsManager.remove(Wrappers.<Goods>lambdaQuery().eq(Goods::getId, id));
-        if (!flag) {
-            return new Result(CodeMsg.SERVER_ERROR);
-        }
-        // 删除对应缓存
-        redisService.delete(GoodsKey.goodsKey, "" + id);
-        // 删除库存对应缓存
-        redisService.delete(SeckillGoodsKey.seckillCount, "" + id);
-        return new Result(CodeMsg.SUCCESS);
-    }
-
-    // 更改商品详情
-    @Override
-    public Result changeGoods(Goods goods, long id) {
-        boolean flag = goodsManager.update(goods, Wrappers.<Goods>lambdaQuery().eq(Goods::getId, id));
-        if (!flag) {
-            return new Result(CodeMsg.SERVER_ERROR);
-        }
-        // 更改对应缓存
-        redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        // 更改库存对应缓存
-        redisService.set(SeckillGoodsKey.seckillCount, "" + id, goods.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        return new Result(CodeMsg.SUCCESS);
     }
 
 }

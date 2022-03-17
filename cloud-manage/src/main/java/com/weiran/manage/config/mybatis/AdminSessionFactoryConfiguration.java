@@ -43,7 +43,7 @@ public class AdminSessionFactoryConfiguration {
         SqlSessionFactoryBean sfb = new SqlSessionFactoryBean();
         sfb.setDataSource(dataSource);
         sfb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/admin/**.xml"));
-        sfb.setTypeAliasesPackage("com.weiran.manage.model.admin");
+        sfb.setTypeAliasesPackage("com.weiran.manage.dto.admin");
         sfb.setVfs(SpringBootVFS.class);
         SqlSessionFactory factory = sfb.getObject();
         assert factory != null;

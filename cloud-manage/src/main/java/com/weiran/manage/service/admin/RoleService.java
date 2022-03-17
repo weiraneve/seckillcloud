@@ -1,6 +1,6 @@
 package com.weiran.manage.service.admin;
 
-import com.weiran.manage.entity.admin.RoleDTO;
+import com.weiran.manage.dto.admin.RoleDTO;
 import com.weiran.manage.request.admin.RoleReq;
 import com.github.pagehelper.PageInfo;
 

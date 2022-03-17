@@ -1,7 +1,7 @@
 package com.weiran.manage.controller.admin;
 
-import com.weiran.manage.entity.admin.PermissionMenuDTO;
-import com.weiran.manage.entity.admin.TreeRoleMenuDTO;
+import com.weiran.manage.dto.admin.PermissionMenuDTO;
+import com.weiran.manage.dto.admin.TreeRoleMenuDTO;
 import com.weiran.manage.enums.ResponseEnum;
 import com.weiran.manage.request.admin.MenuReq;
 import com.weiran.manage.response.ResultVO;

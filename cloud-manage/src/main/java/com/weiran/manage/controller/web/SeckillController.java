@@ -1,7 +1,7 @@
 package com.weiran.manage.controller.web;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.entity.web.SeckillGoods;
+import com.weiran.manage.dto.web.SeckillGoodsDTO;
 import com.weiran.manage.response.ResultVO;
 import com.weiran.manage.service.web.SeckillService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class SeckillController {
      */
     @GetMapping
     public ResultVO seckillIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, Long goodsId) {
-        PageInfo<SeckillGoods> seckill = seckillService.findSeckill(page, pageSize, goodsId);
+        PageInfo<SeckillGoodsDTO> seckill = seckillService.findSeckill(page, pageSize, goodsId);
         return ResultVO.success(seckill);
     }
 

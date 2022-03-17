@@ -6,7 +6,7 @@ import com.weiran.manage.mapper.admin.PermissionMapper;
 import com.weiran.manage.mapper.admin.PermissionMenuMapper;
 import com.weiran.manage.mapper.admin.RolePermissionMapper;
 import com.weiran.manage.mapper.admin.UserRolePermissionMapper;
-import com.weiran.manage.entity.admin.PermissionDTO;
+import com.weiran.manage.dto.admin.PermissionDTO;
 import com.weiran.manage.request.admin.PermissionReq;
 import com.weiran.manage.enums.ResponseEnum;
 import com.github.pagehelper.PageHelper;

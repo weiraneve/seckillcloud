@@ -3,7 +3,7 @@ package com.weiran.manage.service.admin.impl;
 import com.weiran.manage.exception.CustomizeException;
 import com.weiran.manage.mapper.admin.RolePermissionMapper;
 import com.weiran.manage.mapper.admin.UserRolePermissionMapper;
-import com.weiran.manage.entity.admin.RoleDTO;
+import com.weiran.manage.dto.admin.RoleDTO;
 import com.weiran.manage.request.admin.RoleReq;
 import com.weiran.manage.enums.ResponseEnum;
 import com.weiran.manage.service.admin.RoleService;

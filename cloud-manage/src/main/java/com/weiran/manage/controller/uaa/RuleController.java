@@ -1,7 +1,6 @@
 package com.weiran.manage.controller.uaa;
 
-import com.weiran.manage.entity.uaa.Rule;
-import com.weiran.manage.entity.web.Goods;
+import com.weiran.manage.dto.uaa.RuleDTO;
 import com.weiran.manage.enums.ResponseEnum;
 import com.weiran.manage.response.ResultVO;
 import com.weiran.manage.service.uaa.RuleService;
@@ -26,11 +25,11 @@ public class RuleController {
      */
     @GetMapping
     public ResultVO ruleIndex() {
-        List<Rule> rule = ruleService.findRule();
-        if (rule == null) {
+        List<RuleDTO> ruleDTO = ruleService.findRule();
+        if (ruleDTO == null) {
             return ResultVO.fail("查询rule失败");
         }
-        return ResultVO.success(rule);
+        return ResultVO.success(ruleDTO);
     }
 
     /**
@@ -38,8 +37,8 @@ public class RuleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public ResultVO ruleUpdate(@RequestBody Rule rule) {
-        boolean updateSuccess = ruleService.update(rule);
+    public ResultVO ruleUpdate(@RequestBody RuleDTO ruleDTO) {
+        boolean updateSuccess = ruleService.update(ruleDTO);
         return updateSuccess ? ResultVO.success() : ResultVO.fail(ResponseEnum.RULE_UPDATE_FAIL);
     }
 

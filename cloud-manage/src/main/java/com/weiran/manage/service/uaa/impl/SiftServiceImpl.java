@@ -3,7 +3,7 @@ package com.weiran.manage.service.uaa.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.manage.mapper.uaa.SiftMapper;
-import com.weiran.manage.entity.uaa.SiftDTO;
+import com.weiran.manage.dto.uaa.SiftDTO;
 import com.weiran.manage.service.uaa.SiftService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

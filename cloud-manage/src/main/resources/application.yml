@@ -51,10 +51,6 @@ security:
       secret-key: 6142b3c6f0e34477a899597cbd8ec45a2a5bd162415e617c0a32495215b8bc2ea01a3285149f94ae0f8a
       expire-length: 604800000
 
-mybatis-plus:
-  mapper-locations: classpath:mappers/**/*.xml
-  type-aliases-package: com.weiran.manage.entity
-
 qiniu:
   # Access私钥
   accessKey: 1zgIjoBBjvstfgD57-NPDqljc1FIS12yK7VIPIFf

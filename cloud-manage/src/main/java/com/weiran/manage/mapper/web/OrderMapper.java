@@ -1,6 +1,6 @@
 package com.weiran.manage.mapper.web;
 
-import com.weiran.manage.entity.web.Order;
+import com.weiran.manage.dto.web.OrderDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -17,11 +17,11 @@ public interface OrderMapper {
     /**
      * 查询订单
      */
-    List<Order> findByOrder();
+    List<OrderDTO> findByOrder();
 
     /**
      * 根据传入的id查询订单
      */
-    List<Order> findOrderById(Long id);
+    List<OrderDTO> findOrderById(Long id);
 
 }
