@@ -1,6 +1,7 @@
 package com.weiran.mission.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
@@ -12,15 +13,17 @@ import com.weiran.mission.entity.SeckillGoods;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.rabbitmq.SeckillMessage;
-import com.weiran.mission.rabbitmq.ackmodel.manual.ManualAckPublisher;
 import com.weiran.mission.rocketmq.MessageSender;
 import com.weiran.mission.service.SeckillService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +36,7 @@ public class SeckillServiceImpl implements SeckillService {
     final SeckillGoodsManager seckillGoodsManager;
     final OrderManager orderManager;
     final MessageSender messageSender;
+    final RedisTemplate<String, Object> redisTemplate;
 
     // 内存标记，减少redis访问
     private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
@@ -51,6 +55,8 @@ public class SeckillServiceImpl implements SeckillService {
             redisService.set(SeckillGoodsKey.seckillCount, "" + seckillGoods.getGoodsId(), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
             if (seckillGoods.getStockCount() > 0) {
                 localOverMap.put(seckillGoods.getId(), true);
+            } else {
+                localOverMap.put(seckillGoods.getId(), false);
             }
         }
     }
@@ -72,21 +78,27 @@ public class SeckillServiceImpl implements SeckillService {
         if (!over) {
             return Result.error(CodeMsg.SECKILL_OVER);
         }
-        // 查询剩余数量
-        int stock = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
-        if (stock <= 0) {
-            localOverMap.put(goodsId, false);
-            return Result.error(CodeMsg.SECKILL_OVER);
-        }
-        // 判断是否已经秒杀到了, 防止重复秒杀
+        // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
+        Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
-                .eq(Order::getUserId, userId)
-                .eq(Order::getGoodsId, goodsId));
+                .eq(Order::getId, orderId));
         if (order != null) {
             return Result.error(CodeMsg.REPEATED_SECKILL);
         }
-        // 预减库存
-        redisService.decrease(SeckillGoodsKey.seckillCount, "" + goodsId);
+        // LUA脚本判断库存和预减库存
+        String stockScript = "local stock = tonumber(redis.call('get',KEYS[1]));" +
+                "if (stock <= 0) then" +
+                "    return -1;" +
+                "    end;" +
+                "if (stock > 0) then" +
+                "    return redis.call('incrby', KEYS[1], -1);" +
+                "    end;";
+
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(stockScript, Long.class);
+        Long count = redisTemplate.execute(redisScript, Collections.singletonList(RedisConstant.SECKILL_KEY + goodsId));
+        if (count == -1) {
+            return Result.error(CodeMsg.SECKILL_OVER);
+        }
         // 入队
         SeckillMessage seckillMessage = new SeckillMessage();
         seckillMessage.setUserId(userId);

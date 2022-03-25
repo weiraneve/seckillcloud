@@ -25,10 +25,6 @@ public class SeckillGoods implements Serializable {
     @ApiModelProperty("剩余库存")
     private int stockCount;
 
-    @ApiModelProperty("版本号")
-    @Version // 乐观锁字段
-    private int version;
-
     @ApiModelProperty("创建时间")
     private LocalDateTime createdAt;
 

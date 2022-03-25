@@ -53,9 +53,9 @@ security:
 
 qiniu:
   # Access私钥
-  accessKey: 1zgIjoBBjvstfgD57-NPDqljc1FIS12yK7VIPIFf
+  accessKey: ENC(3yvK6uv/C/83akxjvhdsKje2PY+tPSWMIr9awy/A/G3I1f4SaiMUk4khCV524Sa/vwx2AYrC3og=)
   # Secret私钥
-  secretKey: odT16TymgI4Sq3y7Ure1nMZRCWY6ZW8n31FtSeBm
+  secretKey: ENC(FrkBmkUKj/F/xGWEM7gZlKaP3cqiNV2I1aFGtr86I7mqMXUnWRNP5dibkvih4kcNgTd6OQHZtEk=)
   # 对象存储空间名
   bucket: weiran1999
   # 域名
@@ -71,6 +71,12 @@ management:
   endpoint:
     logfile:
       external-file: log/cloud-manage/manage.log
+
+# 配置文件加密
+jasypt:
+  encryptor:
+    # 密钥
+    password: 123
 
 logging:
   config: classpath:logback.xml

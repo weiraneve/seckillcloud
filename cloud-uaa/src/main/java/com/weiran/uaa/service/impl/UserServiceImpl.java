@@ -2,7 +2,7 @@ package com.weiran.uaa.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.weiran.common.enums.Constant;
+import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import cn.hutool.crypto.SecureUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
 @Service
@@ -54,6 +56,13 @@ public class UserServiceImpl implements UserService {
         String loginToken = SecureUtil.md5(user.getPhone() + salt);
         log.info("用户" + userId + " 登陆成功");
         redisService.set(UserKey.getById, loginToken, userId, RedisCacheTimeEnum.LOGIN_EXTIME.getValue());
+        // 更新用户的最后登陆时间
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+        simpleDateFormat.format(date);
+        user.setPassword(loginParam.getPassword());
+        user.setLastLoginTime(date);
+        userManager.updateById(user);
         return Result.success(loginToken);
     }
 
@@ -143,8 +152,8 @@ public class UserServiceImpl implements UserService {
 
     // 利用LUA脚本统计访问次数，功能只是测试，没有统计到每个账号访问网站的次数。
     private void countLogin() {
-        redisLua.addVisitorCount(Constant.COUNT_LOGIN);
-        Long count = redisLua.getVisitorCount(Constant.COUNT_LOGIN);
+        redisLua.addVisitorCount(RedisConstant.COUNT_LOGIN);
+        Long count = redisLua.getVisitorCount(RedisConstant.COUNT_LOGIN);
         log.info("访问网站的次数为:{}", count);
     }
 }

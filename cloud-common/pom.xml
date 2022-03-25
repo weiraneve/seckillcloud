@@ -39,11 +39,11 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
         <!--redisson-->
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson</artifactId>
-            <version>3.10.1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.redisson</groupId>-->
+<!--            <artifactId>redisson</artifactId>-->
+<!--            <version>3.10.1</version>-->
+<!--        </dependency>-->
         <!--Swagger-->
         <dependency>
             <groupId>io.springfox</groupId>

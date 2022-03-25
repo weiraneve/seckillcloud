@@ -1,5 +1,5 @@
 /*
- Navicat Premium Data Transfer
+ Navicat MySQL Data Transfer
 
  Source Server         : localhost_3306
  Source Server Type    : MySQL
@@ -11,7 +11,7 @@
  Target Server Version : 80021
  File Encoding         : 65001
 
- Date: 15/03/2022 10:18:04
+ Date: 25/03/2022 21:01:55
 */
 
 SET NAMES utf8mb4;
@@ -37,7 +37,7 @@ CREATE TABLE `rule` (
 -- Records of rule
 -- ----------------------------
 BEGIN;
-INSERT INTO `rule` VALUES (1, 3, 2, 1000, 3, 18, '2022-03-02 18:27:32', '2022-03-11 16:22:00');
+INSERT INTO `rule` VALUES (1, 3, 2, 1000, 3, 18, '2022-03-02 18:27:32', '2022-03-17 10:31:10');
 COMMIT;
 
 -- ----------------------------
@@ -52,13 +52,14 @@ CREATE TABLE `sift` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='初筛表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='初筛表';
 
 -- ----------------------------
 -- Records of sift
 -- ----------------------------
 BEGIN;
-INSERT INTO `sift` VALUES (1, 1, 1, '510302200010300534', '2022-03-02 18:27:46', '2022-03-02 18:27:46');
+INSERT INTO `sift` VALUES (1, 1, 1, '510302200010300531', '2022-03-02 18:27:46', '2022-03-15 11:39:40');
+INSERT INTO `sift` VALUES (2, 2, 1, '510302199910310531', '2022-03-15 11:40:29', '2022-03-15 11:43:33');
 COMMIT;
 
 -- ----------------------------
@@ -99,13 +100,14 @@ CREATE TABLE `user` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `last_login_time` datetime DEFAULT NULL COMMENT '最后一次登陆时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='客户表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='客户表';
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES (1, '孙念', '18077200000', '9508534c15e39a3f5a586aec9be941f6c249e646e06857ea0c3b0c33545dc679', '510302200010300531', '2022-02-27 06:22:19', '2022-03-06 00:31:32', '2021-12-28 12:00:00');
+INSERT INTO `user` VALUES (1, '孙念', '18077200000', '9508534c15e39a3f5a586aec9be941f6c249e646e06857ea0c3b0c33545dc679', '510302200010300531', '2022-02-26 16:22:19', '2022-03-25 20:59:09', '2022-03-25 20:59:31');
+INSERT INTO `user` VALUES (2, 'sun', '18077200001', '9508534c15e39a3f5a586aec9be941f6c249e646e06857ea0c3b0c33545dc679', '510302199910310531', '2022-03-15 11:40:17', '2022-03-25 20:51:07', '2022-03-21 02:36:03');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

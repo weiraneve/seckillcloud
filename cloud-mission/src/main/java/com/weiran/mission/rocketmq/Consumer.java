@@ -14,6 +14,8 @@ import org.apache.rocketmq.spring.annotation.SelectorType;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.stereotype.Component;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 /**
  * 消费者类
  */
@@ -30,14 +32,17 @@ public class Consumer implements RocketMQListener<SeckillMessage> {
 
     @Override
     public void onMessage(SeckillMessage seckillMessage) {
+        log.info("rocketmq 消费者接收消息: {}", JSONUtil.toJsonStr(seckillMessage));
+        long userId = seckillMessage.getUserId();
+        long goodsId = seckillMessage.getGoodsId();
+        // 减库存，下订单，写入订单表
+        Order order = new Order();
+        // 幂等机制创建订单id
+        Long orderId = goodsId * 1000000 + userId;
+        order.setId(orderId);
+        order.setUserId(userId);
+        order.setGoodsId(goodsId);
         try {
-            log.info("rocketmq 消费者接收消息: {}", JSONUtil.toJsonStr(seckillMessage));
-            long userId = seckillMessage.getUserId();
-            long goodsId = seckillMessage.getGoodsId();
-            // 减库存，下订单，写入订单表
-            Order order = new Order();
-            order.setUserId(userId);
-            order.setGoodsId(goodsId);
             boolean flag = orderManager.save(order);
             if (!flag) {
                 log.warn("写入订单表失败: {}", JSONUtil.toJsonStr(seckillMessage));
@@ -46,7 +51,13 @@ public class Consumer implements RocketMQListener<SeckillMessage> {
             log.info("成功写入订单表: {}", JSONUtil.toJsonStr(seckillMessage));
             seckillGoodsService.reduceStock(goodsId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Throwable cause = e.getCause();
+            // 违反数据库唯一约束条件
+            if (cause instanceof SQLIntegrityConstraintViolationException) {
+                log.warn("{}订单写入异步操作问题，可忽略", orderId);
+            } else {
+                e.printStackTrace();
+            }
         }
     }
 }

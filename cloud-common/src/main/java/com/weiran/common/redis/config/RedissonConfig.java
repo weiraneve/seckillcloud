@@ -1,36 +1,28 @@
-package com.weiran.common.redis.config;
-
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-/**
- * RedissonClient 配置类
- */
-@Configuration
-public class RedissonConfig {
-
-    @Value("${spring.redis.host}")
-    private String host;
-
-    @Value("${spring.redis.port}")
-    private int port;
-
-    @Value("${spring.redis.password}")
-    private String password;
-
-    @Bean
-    public RedissonClient redissonClient() {
-        Config config = new Config();
-        // 开启单机，还有集群配置
-        config.useSingleServer()
-                .setAddress("redis://" + host + ":" + port)
-                .setPassword(password);
-        RedissonClient redisson = Redisson.create(config);
-
-        return redisson;
-    }
-}
+//package com.weiran.common.redis.config;
+//
+//import org.redisson.Redisson;
+//import org.redisson.api.RedissonClient;
+//import org.redisson.config.Config;
+//import org.redisson.config.SingleServerConfig;
+//import org.redisson.config.TransportMode;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//
+///**
+// * RedissonClient 配置类
+// */
+//@Configuration
+//public class RedissonConfig {
+//
+//    @Bean
+//    public RedissonClient redissonClient(){
+//        Config config = new Config();
+//        config.setTransportMode(TransportMode.NIO);
+//        SingleServerConfig singleServerConfig = config.useSingleServer();
+//        //可以用 redis:// 来启用SSL连接
+//        singleServerConfig.setAddress("redis://127.0.0.1:6379");
+//        singleServerConfig.setPassword("123456");
+//        RedissonClient redisson = Redisson.create(config);
+//        return redisson;
+//    }
+//}

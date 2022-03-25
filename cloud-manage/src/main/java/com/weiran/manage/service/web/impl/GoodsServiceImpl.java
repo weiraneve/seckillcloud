@@ -14,7 +14,6 @@ import com.weiran.manage.mapper.web.GoodsMapper;
 import com.weiran.manage.enums.ResponseEnum;
 import com.weiran.manage.mapper.web.SeckillMapper;
 import com.weiran.manage.service.web.GoodsService;
-import com.weiran.manage.service.web.SeckillService;
 import com.weiran.manage.utils.qiniu.ImageScalaKit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -33,7 +32,6 @@ public class GoodsServiceImpl implements GoodsService {
     private final ImageScalaKit imageScalaKit;
     private final GoodsMapper goodsMapper;
     private final RedisService redisService;
-    private final SeckillService seckillService;
     private final SeckillMapper seckillMapper;
 
     // 查询所有goods

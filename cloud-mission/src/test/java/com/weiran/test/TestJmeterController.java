@@ -1,13 +1,13 @@
 package com.weiran.test;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.obj.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
-import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.SM3Util;
 import com.weiran.mission.entity.Order;
@@ -16,10 +16,12 @@ import com.weiran.mission.entity.User;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.rabbitmq.SeckillMessage;
-import com.weiran.mission.rabbitmq.ackmodel.manual.ManualAckPublisher;
+import com.weiran.mission.rocketmq.MessageSender;
 import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -40,11 +43,11 @@ import java.util.UUID;
 public class TestJmeterController {
 
     final RedisService redisService;
+    final RedisTemplate<String, Object> redisTemplate;
     final GoodsService goodsService;
     final OrderManager orderManager;
     final SeckillGoodsManager seckillGoodsManager;
-    final ManualAckPublisher manualAckPublisher;
-    final RedisLua redisLua;
+    final MessageSender messageSender;
 
     // 内存标记，减少redis访问
     private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
@@ -63,6 +66,8 @@ public class TestJmeterController {
             redisService.set(SeckillGoodsKey.seckillCount, "" + seckillGoods.getGoodsId(), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
             if (seckillGoods.getStockCount() > 0) {
                 localOverMap.put(seckillGoods.getId(), true);
+            } else {
+                localOverMap.put(seckillGoods.getId(), false);
             }
         }
     }
@@ -111,33 +116,52 @@ public class TestJmeterController {
         if (!over) {
             return Result.error(CodeMsg.SECKILL_OVER);
         }
-        // 查询剩余数量
-        int stock = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
-        if (stock <= 0) {
-            localOverMap.put(goodsId, false);
-            return Result.error(CodeMsg.SECKILL_OVER);
-        }
-        // 判断是否已经秒杀到了, 防止重复秒杀
+        // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
+        Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
-                .eq(Order::getUserId, userId)
-                .eq(Order::getGoodsId, goodsId));
+                .eq(Order::getId, orderId));
         if (order != null) {
             return Result.error(CodeMsg.REPEATED_SECKILL);
         }
-        // 预减库存
-        redisService.decrease(SeckillGoodsKey.seckillCount, "" + goodsId);
+
+        // 判断是否已经秒杀到了, 防止重复秒杀
+//        Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
+//                .eq(Order::getUserId, userId)
+//                .eq(Order::getGoodsId, goodsId));
+//        if (order != null) {
+//            return Result.error(CodeMsg.REPEATED_SECKILL);
+//        }
+
+//        // 查询剩余数量
+//        int stock = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
+//        if (stock <= 0) {
+//            localOverMap.put(goodsId, false);
+//            return Result.error(CodeMsg.SECKILL_OVER);
+//        }
+////        // 预减库存
+//        redisService.decrease(SeckillGoodsKey.seckillCount, "" + goodsId);
+
+        // LUA脚本判断库存和预减库存
+        String stockScript = "local stock = tonumber(redis.call('get',KEYS[1]));" +
+                "if (stock <= 0) then" +
+                "    return -1;" +
+                "    end;" +
+                "if (stock > 0) then" +
+                "    return redis.call('incrby', KEYS[1], -1);" +
+                "    end;";
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(stockScript, Long.class);
+        Long count = redisTemplate.execute(redisScript, Collections.singletonList(RedisConstant.SECKILL_KEY + goodsId));
+        if (count == -1) {
+            return Result.error(CodeMsg.SECKILL_OVER);
+        }
 
         // 入队
         SeckillMessage seckillMessage = new SeckillMessage();
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由RabbitMQ来执行，做到削峰填谷
-        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
-
-//        // 不用MQ
-//        Goods goodsBo = goodsService.getGoodsBoByGoodsId(goodsId);
-//        // 减库存 下订单 写入订单
-//        seckillOrderService.insertByUserAndGoodsBo(userId, goodsBo);
+//        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
+        messageSender.asyncSend(seckillMessage); // 这里使用RocketMQ
 
         return Result.success(0); // 排队中
     }

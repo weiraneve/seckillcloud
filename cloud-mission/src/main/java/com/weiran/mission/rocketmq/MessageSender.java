@@ -41,14 +41,15 @@ public class MessageSender {
         rocketMQTemplate.asyncSend("seckill-topic:tag1", seckillMessage, new SendCallback() {
             @Override
             public void onSuccess(SendResult sendResult) {
-                log.info("回调sendResult:" + sendResult);
+//                log.info("回调sendResult:" + sendResult);
             }
 
             @Override
             public void onException(Throwable e) {
-                log.info(e.getMessage());
+                log.info("MQ发送失败" + e.getMessage());
             }
         });
+//        }, 20 * 1000); // 防止 invokeAsync call timeout信息提示超时
     }
 
     /**
