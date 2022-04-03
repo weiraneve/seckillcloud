@@ -1,8 +1,8 @@
 package com.weiran.manage.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weiran.manage.enums.ResponseEnum;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.enums.ResponseEnum;
+import com.weiran.common.obj.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -22,7 +22,7 @@ public class RestAuthenticationAccessDeniedHandler implements AccessDeniedHandle
         response.setCharacterEncoding("UTF-8");
         // 防止乱码
         response.setContentType("application/json;charset=UTF-8");
-        ResultVO httpResultVO = ResultVO.fail(ResponseEnum.FORBIDDEN);
+        Result httpResultVO = Result.error(ResponseEnum.FORBIDDEN);
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpResultVO));
     }
 }

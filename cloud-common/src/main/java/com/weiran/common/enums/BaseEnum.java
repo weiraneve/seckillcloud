@@ -1,4 +1,4 @@
-package com.weiran.manage.enums;
+package com.weiran.common.enums;
 
 
 public interface BaseEnum {

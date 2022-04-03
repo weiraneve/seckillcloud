@@ -1,7 +1,7 @@
 package com.weiran.manage.controller.admin;
 
 import com.weiran.manage.dto.admin.PermissionMenuDTO;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.service.admin.AdminUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +24,9 @@ public class MenuController {
      * 获取管理员权限菜单
      */
     @GetMapping
-    public ResultVO findByMenus(Principal principal) {
+    public Result findByMenus(Principal principal) {
         List<PermissionMenuDTO> menus = adminUserService.findByMenus(principal.getName());
-        return ResultVO.success(menus);
+        return Result.success(menus);
     }
 
 

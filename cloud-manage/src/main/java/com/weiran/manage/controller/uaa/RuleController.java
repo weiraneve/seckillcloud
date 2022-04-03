@@ -1,8 +1,8 @@
 package com.weiran.manage.controller.uaa;
 
 import com.weiran.manage.dto.uaa.RuleDTO;
-import com.weiran.manage.enums.ResponseEnum;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.enums.ResponseEnum;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.service.uaa.RuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,12 +24,12 @@ public class RuleController {
      * 查询rule
      */
     @GetMapping
-    public ResultVO ruleIndex() {
+    public Result ruleIndex() {
         List<RuleDTO> ruleDTO = ruleService.findRule();
         if (ruleDTO == null) {
-            return ResultVO.fail("查询rule失败");
+            return Result.error(ResponseEnum.RULE_FIND_FAIL);
         }
-        return ResultVO.success(ruleDTO);
+        return Result.success(ruleDTO);
     }
 
     /**
@@ -37,9 +37,9 @@ public class RuleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public ResultVO ruleUpdate(@RequestBody RuleDTO ruleDTO) {
+    public Result ruleUpdate(@RequestBody RuleDTO ruleDTO) {
         boolean updateSuccess = ruleService.update(ruleDTO);
-        return updateSuccess ? ResultVO.success() : ResultVO.fail(ResponseEnum.RULE_UPDATE_FAIL);
+        return updateSuccess ? Result.success() : Result.error(ResponseEnum.RULE_UPDATE_FAIL);
     }
 
 }

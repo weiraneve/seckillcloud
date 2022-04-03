@@ -1,10 +1,15 @@
 package com.weiran.common.obj;
 
+import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
  * 统一返回体
  */
+@Data
 public class Result<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -26,15 +31,23 @@ public class Result<T> implements Serializable {
 	}
 
 	public static <T> Result<T> success(T data) {
-		return new Result<T>(data);
+		return new Result<>(data);
 	}
 
-	public static <T> Result<T> success(CodeMsg codeMsg) {
-		return new Result<T>(codeMsg);
+	public static <T> Result<T> success() {
+		return new Result<>(CodeMsg.SUCCESS);
+	}
+
+	public static <T> Result<T> error(ResponseEnum responseEnum) {
+		return new Result<>(responseEnum.getCode(), responseEnum.getMsg());
 	}
 
 	public static <T> Result<T> error(CodeMsg codeMsg) {
-		return new Result<T>(codeMsg);
+		return new Result<>(codeMsg);
+	}
+
+	public static <T> Result<T> error(int code, String msg) {
+		return new Result<>(code, msg);
 	}
 
 	public Result() {}
@@ -57,27 +70,4 @@ public class Result<T> implements Serializable {
 		}
 	}
 
-	public int getCode() {
-		return code;
-	}
-
-	public void setCode(int code) {
-		this.code = code;
-	}
-
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
-	public T getData() {
-		return data;
-	}
-
-	public void setData(T data) {
-		this.data = data;
-	}
 }

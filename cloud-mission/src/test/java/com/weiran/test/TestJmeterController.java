@@ -3,7 +3,7 @@ package com.weiran.test;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
-import com.weiran.common.obj.CodeMsg;
+import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;

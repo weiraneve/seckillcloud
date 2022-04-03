@@ -8,7 +8,7 @@ import com.weiran.manage.mapper.admin.RolePermissionMapper;
 import com.weiran.manage.mapper.admin.UserRolePermissionMapper;
 import com.weiran.manage.dto.admin.PermissionDTO;
 import com.weiran.manage.request.admin.PermissionReq;
-import com.weiran.manage.enums.ResponseEnum;
+import com.weiran.common.enums.ResponseEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;

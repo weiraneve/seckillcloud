@@ -4,7 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.weiran.manage.dto.admin.AdminUserDTO;
 import com.weiran.manage.request.admin.AdminUserPermissionDTO;
 import com.weiran.manage.request.admin.AdminUserReq;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.service.admin.AdminUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,11 +25,11 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ACCOUNT_ADMIN_USER')")
     @GetMapping
-    public ResultVO findByAdminUsers(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public Result findByAdminUsers(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                      @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                      String search) {
         PageInfo<AdminUserDTO> adminUsers = adminUserService.findByAdminUsers(page, pageSize,search);
-        return ResultVO.success(adminUsers);
+        return Result.success(adminUsers);
     }
 
     /**
@@ -37,9 +37,9 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public ResultVO updateAdminUserInfo(@RequestBody AdminUserReq adminUserReq) {
+    public Result updateAdminUserInfo(@RequestBody AdminUserReq adminUserReq) {
         adminUserService.updateAdminUserInfo(adminUserReq);
-        return ResultVO.success();
+        return Result.success();
     }
 
     /**
@@ -47,9 +47,9 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PatchMapping
-    public ResultVO patchAdminUserPermission(@RequestBody AdminUserPermissionDTO adminUserPermissionDTO) {
+    public Result patchAdminUserPermission(@RequestBody AdminUserPermissionDTO adminUserPermissionDTO) {
         adminUserService.patchAdminUserPermission(adminUserPermissionDTO);
-        return ResultVO.success();
+        return Result.success();
     }
 
     /**
@@ -57,9 +57,9 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @DeleteMapping
-    public ResultVO deletes(@RequestParam String ids) {
+    public Result deletes(@RequestParam String ids) {
         adminUserService.deletes(ids);
-        return ResultVO.success();
+        return Result.success();
     }
 
     /**
@@ -67,9 +67,9 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
-    public ResultVO createAdminUser(@RequestBody AdminUserReq adminUserReq) {
+    public Result createAdminUser(@RequestBody AdminUserReq adminUserReq) {
         adminUserService.createAdminUser(adminUserReq);
-        return ResultVO.success();
+        return Result.success();
     }
 
     /**
@@ -77,9 +77,9 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PatchMapping("/{id}")
-    public ResultVO switchIsBan(@PathVariable Integer id) {
+    public Result switchIsBan(@PathVariable Integer id) {
         adminUserService.switchIsBan(id);
-        return ResultVO.success();
+        return Result.success();
     }
 
 

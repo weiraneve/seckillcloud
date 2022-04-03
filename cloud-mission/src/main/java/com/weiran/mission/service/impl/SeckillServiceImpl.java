@@ -1,11 +1,11 @@
 package com.weiran.mission.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
-import com.weiran.common.obj.CodeMsg;
+import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.*;
+import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.SM3Util;
 import com.weiran.mission.entity.Order;
@@ -17,13 +17,11 @@ import com.weiran.mission.rocketmq.MessageSender;
 import com.weiran.mission.service.SeckillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -37,6 +35,7 @@ public class SeckillServiceImpl implements SeckillService {
     final OrderManager orderManager;
     final MessageSender messageSender;
     final RedisTemplate<String, Object> redisTemplate;
+    final RedisLua redisLua;
 
     // 内存标记，减少redis访问
     private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
@@ -86,16 +85,7 @@ public class SeckillServiceImpl implements SeckillService {
             return Result.error(CodeMsg.REPEATED_SECKILL);
         }
         // LUA脚本判断库存和预减库存
-        String stockScript = "local stock = tonumber(redis.call('get',KEYS[1]));" +
-                "if (stock <= 0) then" +
-                "    return -1;" +
-                "    end;" +
-                "if (stock > 0) then" +
-                "    return redis.call('incrby', KEYS[1], -1);" +
-                "    end;";
-
-        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(stockScript, Long.class);
-        Long count = redisTemplate.execute(redisScript, Collections.singletonList(RedisConstant.SECKILL_KEY + goodsId));
+        Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
             return Result.error(CodeMsg.SECKILL_OVER);
         }

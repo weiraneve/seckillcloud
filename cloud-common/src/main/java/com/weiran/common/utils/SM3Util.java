@@ -11,7 +11,7 @@ public class SM3Util {
         return SmUtil.sm3(str);
     }
 
-    // 前端服务器登陆验证的加盐
+    // 前端服务器登录验证的加盐
     private static final String salt = "3a41dx1d";
 
     public static String inputPassToFormPass(String inputPass) {

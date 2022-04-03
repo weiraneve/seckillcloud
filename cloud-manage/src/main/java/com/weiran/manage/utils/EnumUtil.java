@@ -1,7 +1,7 @@
 package com.weiran.manage.utils;
 
 
-import com.weiran.manage.enums.BaseEnum;
+import com.weiran.common.enums.BaseEnum;
 
 
 public class EnumUtil {

@@ -2,8 +2,8 @@ package com.weiran.manage.controller.web;
 
 import com.github.pagehelper.PageInfo;
 import com.weiran.manage.dto.web.GoodsDTO;
-import com.weiran.manage.enums.ResponseEnum;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.enums.ResponseEnum;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.service.web.GoodsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,18 +23,18 @@ public class GoodsController {
      * 分页查询goods
      */
     @GetMapping
-    public ResultVO goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, String goodsName) {
+    public Result goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, String goodsName) {
         PageInfo<GoodsDTO> goods = goodsService.findGoods(page, pageSize, goodsName);
-        return ResultVO.success(goods);
+        return Result.success(goods);
     }
 
     /**
      * 新增goods
      */
     @PostMapping
-    public ResultVO goodsCreate(@RequestBody GoodsDTO goodsDTO) {
+    public Result goodsCreate(@RequestBody GoodsDTO goodsDTO) {
         boolean createSuccess = goodsService.create(goodsDTO);
-        return createSuccess ? ResultVO.success() : ResultVO.fail(ResponseEnum.Goods_CREATE_FAIL);
+        return createSuccess ? Result.success() : Result.error(ResponseEnum.Goods_CREATE_FAIL);
     }
 
     /**
@@ -42,9 +42,9 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public ResultVO goodsUpdate(@RequestBody GoodsDTO goodsDTO) {
+    public Result goodsUpdate(@RequestBody GoodsDTO goodsDTO) {
         boolean updateSuccess = goodsService.update(goodsDTO);
-        return updateSuccess ? ResultVO.success() : ResultVO.fail(ResponseEnum.Goods_CREATE_FAIL);
+        return updateSuccess ? Result.success() : Result.error(ResponseEnum.Goods_CREATE_FAIL);
     }
 
     /**
@@ -52,9 +52,9 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/{id}/edit")
-    public ResultVO goodsEdit(@PathVariable("id") Long id) {
+    public Result goodsEdit(@PathVariable("id") Long id) {
         GoodsDTO goodsDTO = goodsService.selectById(id);
-        return ResultVO.success(goodsDTO);
+        return Result.success(goodsDTO);
     }
 
     /**
@@ -62,9 +62,9 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/updateUsing/{id}")
-    public ResultVO goodsUsing(@PathVariable("id") Long id) {
+    public Result goodsUsing(@PathVariable("id") Long id) {
         goodsService.updateUsingById(id);
-        return ResultVO.success();
+        return Result.success();
     }
 
     /**
@@ -72,9 +72,9 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_DELETE_USER','ROLE_SUPER_ADMIN')")
     @DeleteMapping("/{id}")
-    public ResultVO goodsDelete(@PathVariable("id") Long id) {
+    public Result goodsDelete(@PathVariable("id") Long id) {
         goodsService.delete(id);
-        return ResultVO.success();
+        return Result.success();
     }
 
     /**
@@ -82,9 +82,9 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_DELETE_USER','ROLE_SUPER_ADMIN')")
     @DeleteMapping("/deletes")
-    public ResultVO goodsDeletes(@RequestParam String ids) {
+    public Result goodsDeletes(@RequestParam String ids) {
         goodsService.deletes(ids);
-        return ResultVO.success();
+        return Result.success();
     }
 
 }

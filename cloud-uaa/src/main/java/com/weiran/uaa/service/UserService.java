@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserService {
 
     /**
-     * 登陆
+     * 登录
      * @return
      */
     Result doLogin(LoginParam loginParam);

@@ -2,9 +2,9 @@ package com.weiran.manage.controller.admin;
 
 import com.github.pagehelper.PageInfo;
 import com.weiran.manage.dto.admin.RoleDTO;
-import com.weiran.manage.enums.ResponseEnum;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.manage.request.admin.RoleReq;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.service.admin.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,9 +27,9 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ROLE_ADMIN_USER')")
     @GetMapping("/findAll")
-    public ResultVO findAll() {
+    public Result findAll() {
         List<RoleDTO> roles = roleService.findAll();
-        return ResultVO.success(roles);
+        return Result.success(roles);
     }
 
     /**
@@ -37,11 +37,11 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ROLE_ADMIN_USER')")
     @GetMapping
-    public ResultVO findByRoles(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public Result findByRoles(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                 @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                 String search) {
         PageInfo<RoleDTO> roles = roleService.findByRoles(page, pageSize, search);
-        return ResultVO.success(roles);
+        return Result.success(roles);
     }
 
     /**
@@ -49,9 +49,9 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public ResultVO updateRole(@RequestBody RoleReq roleReq) {
+    public Result updateRole(@RequestBody RoleReq roleReq) {
         boolean updateSuccess = roleService.updateRole(roleReq);
-        return updateSuccess ? ResultVO.success() : ResultVO.fail(ResponseEnum.PERMISSION_UPDATE_ERROR);
+        return updateSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_UPDATE_ERROR);
     }
 
 
@@ -60,9 +60,9 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @DeleteMapping
-    public ResultVO deletes(@RequestParam String ids) {
+    public Result deletes(@RequestParam String ids) {
         roleService.deletes(ids);
-        return ResultVO.success();
+        return Result.success();
     }
 
     /**
@@ -70,9 +70,9 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
-    public ResultVO createRole(@RequestBody RoleReq roleReq) {
+    public Result createRole(@RequestBody RoleReq roleReq) {
         boolean createSuccess = roleService.createRole(roleReq);
-        return createSuccess ? ResultVO.success() : ResultVO.fail(ResponseEnum.PERMISSION_CREATE_ERROR);
+        return createSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_CREATE_ERROR);
     }
 
 }

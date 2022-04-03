@@ -1,7 +1,7 @@
 package com.weiran.manage.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.obj.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * 自定义的用户成功登陆处理
+ * 自定义的用户成功登录处理
  */
 @RequiredArgsConstructor
 public class JsonLoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -26,6 +26,6 @@ public class JsonLoginSuccessHandler implements AuthenticationSuccessHandler {
         response.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(new ObjectMapper().writeValueAsString(ResultVO.success(token)));
+        response.getWriter().write(new ObjectMapper().writeValueAsString(Result.success(token)));
     }
 }

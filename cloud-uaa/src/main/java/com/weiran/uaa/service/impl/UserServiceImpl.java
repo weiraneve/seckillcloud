@@ -4,7 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
-import com.weiran.common.obj.CodeMsg;
+import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     final SiftService siftService;
     final RedisLua redisLua;
 
-    // 登陆
+    // 登录
     @Override
     public Result doLogin(LoginParam loginParam) {
         Result<User> userResult = login(loginParam);
@@ -43,9 +43,9 @@ public class UserServiceImpl implements UserService {
             if (userResult.getCode() == CodeMsg.No_SIFT_PASS.getCode()) {
                 log.info("客户{}初筛未通过", userResult.getData().getId());
             } else if (userResult.getCode() == CodeMsg.PASSWORD_ERROR.getCode()) {
-                log.info("{} 号码登陆失败，密码错误" , loginParam.getMobile());
+                log.info("{} 号码登录失败，密码错误" , loginParam.getMobile());
             } else if (userResult.getCode() == CodeMsg.MOBILE_NOT_EXIST.getCode()) {
-                log.info("{} 号码登陆，无此手机号", loginParam.getMobile());
+                log.info("{} 号码登录，无此手机号", loginParam.getMobile());
             }
             return userResult;
         }
@@ -54,9 +54,9 @@ public class UserServiceImpl implements UserService {
         // 将用户手机号进行MD5和随机数加盐加密，作为Token给到前端服务器
         int salt = RandomUtil.randomInt(100000);
         String loginToken = SecureUtil.md5(user.getPhone() + salt);
-        log.info("用户" + userId + " 登陆成功");
+        log.info("用户" + userId + " 登录成功");
         redisService.set(UserKey.getById, loginToken, userId, RedisCacheTimeEnum.LOGIN_EXTIME.getValue());
-        // 更新用户的最后登陆时间
+        // 更新用户的最后登录时间
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
         simpleDateFormat.format(date);
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         long userId = redisService.get(UserKey.getById, loginToken, Long.class);
         redisService.delete(UserKey.getById, loginToken);
         log.info("用户" + userId + " 已经注销");
-        return Result.success(CodeMsg.SUCCESS);
+        return Result.success();
     }
 
     // 注册
@@ -122,13 +122,13 @@ public class UserServiceImpl implements UserService {
         boolean flag = userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
         if (flag) {
             log.info(user.getPhone() + "用户更换密码成功");
-            return Result.success(CodeMsg.SUCCESS);
+            return Result.success();
         } else {
             return Result.error(CodeMsg.UPDATE_PASSWORD_ERROR);
         }
     }
 
-    // 登陆方法，检查比对传入的登陆字段
+    // 登录方法，检查比对传入的登录字段
     private Result<User> login(LoginParam loginParam) {
         User user = userManager.getOne(Wrappers.<User>lambdaQuery()
                 .eq(User::getPhone, loginParam.getMobile())); // 根据手机号查询出User对象数据
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
         String dbPwd = user.getPassword(); // 数据库查询到的加盐后的密码
         // 密码置为空 防止泄漏
         user.setPassword("");
-        // 可以设计为邮箱登陆、手机登陆等
+        // 可以设计为邮箱登录、手机登录等
         // 数据库里存储的都是密码本身加加盐后的密文
         if (!dbPwd.equals(loginParam.getPassword())) {
             return Result.error(CodeMsg.PASSWORD_ERROR);

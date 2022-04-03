@@ -66,7 +66,7 @@ Redis缓存减少对于数据库的访问，数据库的访问压力是秒杀系
 - 数据库加唯一索引防止用户重复购买
 
 # 分布式Session
-把session的id写入cookies，并且把session的id和登陆用户对象的信息一起写入Redis。利用登陆拦截器来检查Redis中的User信息是否对应。这样在微服务分布式的环境下，实现了登陆验证。
+把session的id写入cookies，并且把session的id和登录用户对象的信息一起写入Redis。利用登录拦截器来检查Redis中的User信息是否对应。这样在微服务分布式的环境下，实现了登录验证。
 
 # 秒杀安全
 秒杀接口加盐动态化生成。接口防刷限流--拦截器加注解。
@@ -134,6 +134,7 @@ SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分�
 
 # 参考
 [如何设计一个秒杀系统总结](https://blog.csdn.net/yin767833376/article/details/103028616)
+[Java项目构建基础：统一结果，统一异常，统一日志](https://mp.weixin.qq.com/s/elWDB2uKoPxifsrPdCSmpQ)
 [秒杀系统设计](https://youzi530.github.io/2021/11/04/miao-sha-xi-tong-she-ji/)
 [秒杀系统更高级的参考](https://github.com/qiurunze123/miaosha)
 [为什么现在又流行服务端渲染html](https://www.zhihu.com/question/59578433/answer/1936572256)

@@ -13,8 +13,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 public @interface SeckillLimit {
 
-    // 网络上有些写法会有验证登陆，在接口上使用来验证是否需要登陆，
-    // 这里项目中统一用登陆拦截器验证登陆，所以取消来这里对应功能。
+    // 网络上有些写法会有验证登录，在接口上使用来验证是否需要登录，
+    // 这里项目中统一用登录拦截器验证登录，所以取消来这里对应功能。
 
     /**
      * 限制的有效期，写入Redis的过期时间。

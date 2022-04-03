@@ -15,19 +15,19 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 登陆控制器
+ * 登录控制器
  */
 @RestController
 @RequiredArgsConstructor
-@Api("登陆控制器")
+@Api("登录控制器")
 public class UserController {
 
     final UserService userService;
 
     @AccessLimit(timeout = 1, limit = 3)
     @PostMapping("user/doLogin")
-    @ApiOperation("登陆，信息写进redis")
-    @ApiImplicitParam(value = "登陆传递字段")
+    @ApiOperation("登录，信息写进redis")
+    @ApiImplicitParam(value = "登录传递字段")
     public Result doLogin(@RequestBody LoginParam loginParam) {
         return userService.doLogin(loginParam);
     }

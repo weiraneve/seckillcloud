@@ -1,7 +1,7 @@
 package com.weiran.uaa.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.weiran.common.obj.CodeMsg;
+import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.uaa.entity.Sift;
 import com.weiran.uaa.entity.Status;

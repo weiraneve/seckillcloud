@@ -43,7 +43,7 @@ public class CookieUtil {
     // e:A.hfbin.cn/test       cookie:domain=A.hfbin.cn;path="/test"
 
     /**
-     * 把登陆token写入response
+     * 把登录token写入response
      */
     public static void writeLoginToken(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(COOKIE_NAME, token);

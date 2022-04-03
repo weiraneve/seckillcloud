@@ -3,7 +3,7 @@ package com.weiran.manage.utils.qiniu;
 
 import com.weiran.manage.config.qiniu.QiNiuProperties;
 import com.weiran.manage.exception.CustomizeException;
-import com.weiran.manage.enums.ResponseEnum;
+import com.weiran.common.enums.ResponseEnum;
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.model.DefaultPutRet;
 import lombok.RequiredArgsConstructor;

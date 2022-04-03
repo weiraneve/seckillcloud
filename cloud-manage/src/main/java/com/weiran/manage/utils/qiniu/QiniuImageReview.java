@@ -4,7 +4,7 @@ import com.weiran.manage.config.qiniu.QiNiuProperties;
 import com.weiran.manage.exception.CustomizeException;
 import com.weiran.manage.response.CensorResp;
 import com.weiran.manage.response.DiscriminateResp;
-import com.weiran.manage.enums.ResponseEnum;
+import com.weiran.common.enums.ResponseEnum;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Client;

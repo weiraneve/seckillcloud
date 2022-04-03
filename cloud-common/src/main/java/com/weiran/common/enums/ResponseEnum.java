@@ -1,4 +1,4 @@
-package com.weiran.manage.enums;
+package com.weiran.common.enums;
 
 import lombok.Getter;
 
@@ -47,6 +47,7 @@ public enum ResponseEnum implements BaseEnum {
      */
     Goods_CREATE_FAIL(600, "goods创建失败"),
     RULE_UPDATE_FAIL(601, "rule更新失败"),
+    RULE_FIND_FAIL(602, "rule查询失败"),
 
     /**
      * 系统相关

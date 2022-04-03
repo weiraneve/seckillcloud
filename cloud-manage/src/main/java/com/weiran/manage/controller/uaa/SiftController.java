@@ -2,7 +2,7 @@ package com.weiran.manage.controller.uaa;
 
 import com.github.pagehelper.PageInfo;
 import com.weiran.manage.dto.uaa.SiftDTO;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.service.uaa.SiftService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +21,8 @@ public class SiftController {
      * 分页查询
      */
     @GetMapping
-    public ResultVO siftIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, Long userId) {
+    public Result siftIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, Long userId) {
         PageInfo<SiftDTO> sift = siftService.findSift(page, pageSize, userId);
-        return ResultVO.success(sift);
+        return Result.success(sift);
     }
 }

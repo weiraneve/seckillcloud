@@ -11,7 +11,7 @@ import com.weiran.manage.dto.web.GoodsDTO;
 import com.weiran.manage.dto.web.SeckillGoodsDTO;
 import com.weiran.manage.exception.CustomizeException;
 import com.weiran.manage.mapper.web.GoodsMapper;
-import com.weiran.manage.enums.ResponseEnum;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.manage.mapper.web.SeckillMapper;
 import com.weiran.manage.service.web.GoodsService;
 import com.weiran.manage.utils.qiniu.ImageScalaKit;

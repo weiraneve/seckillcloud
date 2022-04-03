@@ -52,7 +52,7 @@ public class SwaggerConfig {
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("【微服务秒杀系统-用户统一登陆与验证】接口文档")
+                .title("【微服务秒杀系统-用户统一登录与验证】接口文档")
                 .version("1.0.0")
                 .contact("weiran")
                 .termsOfServiceUrl("http://localhost:8205/uaa/login")

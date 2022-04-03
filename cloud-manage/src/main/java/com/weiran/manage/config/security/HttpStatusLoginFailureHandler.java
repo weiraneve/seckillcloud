@@ -1,8 +1,8 @@
 package com.weiran.manage.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weiran.manage.enums.ResponseEnum;
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.enums.ResponseEnum;
+import com.weiran.common.obj.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -27,17 +27,17 @@ public class HttpStatusLoginFailureHandler implements AuthenticationFailureHandl
         response.setCharacterEncoding("UTF-8");
         // 防request.getRemoteHost止乱码
         response.setContentType("application/json;charset=UTF-8");
-        ResultVO httpResultVO = ResultVO.fail(ResponseEnum.USER_NOT_FOUND);
+        Result httpResultVO = Result.error(ResponseEnum.USER_NOT_FOUND);
         if (exception instanceof BadCredentialsException) {
-            httpResultVO = ResultVO.fail(ResponseEnum.USER_PASSWORD_VALID);
+            httpResultVO = Result.error(ResponseEnum.USER_PASSWORD_VALID);
         } else if (exception instanceof NonceExpiredException) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            httpResultVO = ResultVO.fail(ResponseEnum.UNAUTHORIZED);
+            httpResultVO = Result.error(ResponseEnum.UNAUTHORIZED);
         } else if (exception instanceof InsufficientAuthenticationException) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            httpResultVO = ResultVO.fail(ResponseEnum.UNAUTHORIZED);
+            httpResultVO = Result.error(ResponseEnum.UNAUTHORIZED);
         }else if (exception instanceof DisabledException) {
-            httpResultVO = ResultVO.fail(ResponseEnum.USER_IS_BAN_FOUND);
+            httpResultVO = Result.error(ResponseEnum.USER_IS_BAN_FOUND);
         }
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpResultVO));

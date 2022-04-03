@@ -1,6 +1,6 @@
 package com.weiran.manage.exception;
 
-import com.weiran.manage.enums.ResponseEnum;
+import com.weiran.common.enums.ResponseEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

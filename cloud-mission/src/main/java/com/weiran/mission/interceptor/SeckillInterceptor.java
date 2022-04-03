@@ -1,7 +1,7 @@
 package com.weiran.mission.interceptor;
 
 import cn.hutool.json.JSONUtil;
-import com.weiran.common.obj.CodeMsg;
+import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.AccessKey;
 import com.weiran.common.redis.manager.RedisService;

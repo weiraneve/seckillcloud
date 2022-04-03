@@ -1,6 +1,7 @@
 package com.weiran.manage.enums;
 
 
+import com.weiran.common.enums.BaseEnum;
 
 public enum ImageDirEnum implements BaseEnum {
 

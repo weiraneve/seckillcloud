@@ -1,6 +1,6 @@
 package com.weiran.manage.controller.web;
 
-import com.weiran.manage.response.ResultVO;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.response.WelcomeVO;
 import com.weiran.manage.service.web.WelcomeService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,8 @@ public class WelcomeController {
      * 统计
      */
     @GetMapping
-    public ResultVO welcome() {
+    public Result welcome() {
         WelcomeVO welcomeVO = welcomeService.welcomeCount();
-        return ResultVO.success(welcomeVO);
+        return Result.success(welcomeVO);
     }
 }

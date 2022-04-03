@@ -1,5 +1,6 @@
 package com.weiran.common.redis.manager;
 
+import com.weiran.common.enums.RedisConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,14 +20,33 @@ public class RedisLua {
     final RedisTemplate<String, Object> redisTemplate;
 
     /**
+     * 判断库存和预减库存
+     */
+    public Long judgeStockAndDecrStock(Long goodsId) {
+        String stockScript = "local stock = tonumber(redis.call('get',KEYS[1]));" +
+                "if (stock <= 0) then" +
+                "    return -1;" +
+                "    end;" +
+                "if (stock > 0) then" +
+                "    return redis.call('incrby', KEYS[1], -1);" +
+                "    end;";
+
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(stockScript, Long.class);
+        Long count = redisTemplate.execute(redisScript, Collections.singletonList(RedisConstant.SECKILL_KEY + goodsId));
+        return count;
+
+    }
+
+    /**
      * 统计访问次数
      */
     public Long getVisitorCount(String lockKey) {
         try {
+            // LUA脚本中 tonumber函数可将调用结果转换为number形式
             String countScript =
-                    "local num=redis.call('get',KEYS[1]) return num";
+                    "local num=tonumber(redis.call('get',KEYS[1]));" +
+                            "return num;";
             DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(countScript, Long.class);
-            // TODO 这里的LUA脚本的调用，尝试始终没有到达预期，第一是限制时间内的访问，第二是取不到值。LUA本身可以用来高并发限流。
             return redisTemplate.execute(redisScript, Collections.singletonList(lockKey));
         } catch (Exception e) {
             log.error("统计访问次数失败！！！", e);

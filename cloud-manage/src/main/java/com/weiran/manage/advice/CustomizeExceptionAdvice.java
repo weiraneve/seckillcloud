@@ -1,7 +1,8 @@
 package com.weiran.manage.advice;
 
+import com.weiran.common.obj.Result;
 import com.weiran.manage.exception.CustomizeException;
-import com.weiran.manage.response.ResultVO;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,7 +14,7 @@ public class CustomizeExceptionAdvice {
 
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(CustomizeException.class)
-    public ResultVO nonceExpiredException(CustomizeException exception) {
-        return ResultVO.fail(exception.getResponseEnum());
+    public Result nonceExpiredException(CustomizeException exception) {
+        return Result.error(exception.getResponseEnum());
     }
 }

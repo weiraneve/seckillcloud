@@ -30,7 +30,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             response.setStatus(403);
             return false;
         }
-        // 如果userId不为空，则重置登陆token的有效时间，即调用expire命令，这里则取缔了过滤器的功能。
+        // 如果userId不为空，则重置登录token的有效时间，即调用expire命令，这里则取缔了过滤器的功能。
         redisService.expire(UserKey.getById , loginToken, RedisCacheTimeEnum.LOGIN_EXTIME.getValue());
         return true;
     }

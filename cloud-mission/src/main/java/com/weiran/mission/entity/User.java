@@ -28,7 +28,7 @@ public class User implements Serializable {
     @ApiModelProperty("用户名")
     private String userName;
 
-    @ApiModelProperty("登陆手机号")
+    @ApiModelProperty("登录手机号")
     private String phone;
 
     @ApiModelProperty("密码")
@@ -49,7 +49,7 @@ public class User implements Serializable {
     @JsonSerialize(using = LocalDateTimeSerializer.class)  //序列化
     private LocalDateTime updatedAt;
 
-    @ApiModelProperty("最后一次登陆时间")
+    @ApiModelProperty("最后一次登录时间")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)  //反序列化
     @JsonSerialize(using = LocalDateTimeSerializer.class)  //序列化
     private LocalDateTime lastLoginTime;

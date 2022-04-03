@@ -3,7 +3,7 @@ package com.weiran.common.enums;
 public class RedisConstant {
 
     /**
-     * Redis的LUA记录登陆的key：value
+     * Redis的LUA记录登录的key：value
      */
     public static String COUNT_LOGIN = "count:login";
 
