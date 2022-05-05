@@ -27,7 +27,7 @@ public class PermissionMenuController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','MENU_ADMIN_USER')")
     @GetMapping("/getMenus")
-    public Result getMenus() {
+    public Result<List<TreeRoleMenuDTO>> getMenus() {
         List<TreeRoleMenuDTO> treeRoleMenus = permissionMenuService.findRoleMenus();
         return Result.success(treeRoleMenus);
     }
@@ -37,7 +37,7 @@ public class PermissionMenuController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','MENU_ADMIN_USER')")
     @GetMapping
-    public Result findByRoleMenus(String search) {
+    public Result<List<PermissionMenuDTO>> findByRoleMenus(String search) {
         List<PermissionMenuDTO> roleMenus = permissionMenuService.findByRoleMenus(search);
         return Result.success(roleMenus);
     }
@@ -47,7 +47,7 @@ public class PermissionMenuController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public Result updateMenu(@RequestBody MenuReq menuReq) {
+    public Result<Object> updateMenu(@RequestBody MenuReq menuReq) {
         boolean updateSuccess = permissionMenuService.updateMenu(menuReq);
         return updateSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_UPDATE_ERROR);
     }
@@ -58,7 +58,7 @@ public class PermissionMenuController {
      */
     @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @DeleteMapping
-    public Result delete(@RequestParam String id) {
+    public Result<Object> delete(@RequestParam String id) {
         permissionMenuService.deleteById(id);
         return Result.success();
     }
@@ -68,7 +68,7 @@ public class PermissionMenuController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
-    public Result creatMenu(@RequestBody MenuReq menuReq) {
+    public Result<Object> creatMenu(@RequestBody MenuReq menuReq) {
         boolean createSuccess = permissionMenuService.creatMenu(menuReq);
         return createSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_CREATE_ERROR);
     }

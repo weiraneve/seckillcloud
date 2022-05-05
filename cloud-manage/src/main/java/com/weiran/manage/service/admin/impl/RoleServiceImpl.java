@@ -60,9 +60,6 @@ public class RoleServiceImpl implements RoleService {
         // 删除角色权限表，用户角色权限表，角色表
         String[] split = ids.split(",");
         List<String> roleIds = Arrays.asList(split);
-//        if (rolePermissionMapper.countByRoleIds(roleIds) > 0) {
-//            throw new CustomizeException(ResponseEnum.PERMISSION_DELETES_ERROR);
-//        }
         if (userRolePermissionMapper.countByRoleIds(roleIds) > 0) {
             throw new CustomizeException(ResponseEnum.PERMISSION_DELETES_ERROR);
         }

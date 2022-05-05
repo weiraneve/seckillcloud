@@ -1,17 +1,17 @@
 /*
- Navicat MySQL Data Transfer
+ Navicat Premium Data Transfer
 
  Source Server         : localhost_3306
  Source Server Type    : MySQL
- Source Server Version : 80021
+ Source Server Version : 80028
  Source Host           : localhost:3306
  Source Schema         : cloud-uaa
 
  Target Server Type    : MySQL
- Target Server Version : 80021
+ Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 25/03/2022 21:01:55
+ Date: 30/04/2022 10:45:40
 */
 
 SET NAMES utf8mb4;
@@ -37,7 +37,7 @@ CREATE TABLE `rule` (
 -- Records of rule
 -- ----------------------------
 BEGIN;
-INSERT INTO `rule` VALUES (1, 3, 2, 1000, 3, 18, '2022-03-02 18:27:32', '2022-03-17 10:31:10');
+INSERT INTO `rule` (`id`, `exceed_year`, `exceed_count`, `exceed_money`, `exceed_day`, `limit_age`, `created_at`, `updated_at`) VALUES (1, 3, 2, 1000, 3, 18, '2022-03-02 18:27:32', '2022-03-17 10:31:10');
 COMMIT;
 
 -- ----------------------------
@@ -51,15 +51,17 @@ CREATE TABLE `sift` (
   `identity_card_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '身份证号',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `sift_user_id` (`user_id`),
+  CONSTRAINT `sift_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='初筛表';
 
 -- ----------------------------
 -- Records of sift
 -- ----------------------------
 BEGIN;
-INSERT INTO `sift` VALUES (1, 1, 1, '510302200010300531', '2022-03-02 18:27:46', '2022-03-15 11:39:40');
-INSERT INTO `sift` VALUES (2, 2, 1, '510302199910310531', '2022-03-15 11:40:29', '2022-03-15 11:43:33');
+INSERT INTO `sift` (`id`, `user_id`, `sift_pass`, `identity_card_id`, `created_at`, `updated_at`) VALUES (1, 1, 1, '510302200010300531', '2022-03-02 18:27:46', '2022-03-15 11:39:40');
+INSERT INTO `sift` (`id`, `user_id`, `sift_pass`, `identity_card_id`, `created_at`, `updated_at`) VALUES (2, 2, 1, '510302199910310531', '2022-03-15 11:40:29', '2022-03-15 11:43:33');
 COMMIT;
 
 -- ----------------------------
@@ -76,14 +78,16 @@ CREATE TABLE `status` (
   `age` int DEFAULT NULL COMMENT '客户年龄(拒绝小于18岁)',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `status_user_id` (`user_id`),
+  CONSTRAINT `status_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='状态表';
 
 -- ----------------------------
 -- Records of status
 -- ----------------------------
 BEGIN;
-INSERT INTO `status` VALUES (1, 1, '510302200010300534', 0, '0', 0, 0, '2022-03-02 18:27:54', '2022-03-10 22:58:02');
+INSERT INTO `status` (`id`, `user_id`, `identity_card_id`, `exceed_record`, `work_status`, `dishonest`, `age`, `created_at`, `updated_at`) VALUES (1, 1, '510302200010300534', 0, '0', 0, 0, '2022-03-02 18:27:54', '2022-03-10 22:58:02');
 COMMIT;
 
 -- ----------------------------
@@ -106,8 +110,8 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES (1, '孙念', '18077200000', '9508534c15e39a3f5a586aec9be941f6c249e646e06857ea0c3b0c33545dc679', '510302200010300531', '2022-02-26 16:22:19', '2022-03-25 20:59:09', '2022-03-25 20:59:31');
-INSERT INTO `user` VALUES (2, 'sun', '18077200001', '9508534c15e39a3f5a586aec9be941f6c249e646e06857ea0c3b0c33545dc679', '510302199910310531', '2022-03-15 11:40:17', '2022-03-25 20:51:07', '2022-03-21 02:36:03');
+INSERT INTO `user` (`id`, `user_name`, `phone`, `password`, `identity_card_id`, `created_at`, `updated_at`, `last_login_time`) VALUES (1, '孙念', '18077200000', '9508534c15e39a3f5a586aec9be941f6c249e646e06857ea0c3b0c33545dc679', '510302200010300531', '2022-02-26 16:22:19', '2022-03-25 20:59:09', '2022-03-25 20:59:31');
+INSERT INTO `user` (`id`, `user_name`, `phone`, `password`, `identity_card_id`, `created_at`, `updated_at`, `last_login_time`) VALUES (2, 'sun', '18077200001', '9508534c15e39a3f5a586aec9be941f6c249e646e06857ea0c3b0c33545dc679', '510302199910310531', '2022-03-15 11:40:17', '2022-03-25 20:51:07', '2022-03-21 02:36:03');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

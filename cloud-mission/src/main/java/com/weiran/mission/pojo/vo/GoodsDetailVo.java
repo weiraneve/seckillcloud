@@ -1,13 +1,16 @@
 package com.weiran.mission.pojo.vo;
 
 import com.weiran.mission.entity.Goods;
-import com.weiran.mission.entity.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.*;
 
 @Data
+@Builder
 @ApiModel("商品细节页面对象")
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class GoodsDetailVo extends BaseVo {
 
     @ApiModelProperty(value = "剩余时间")

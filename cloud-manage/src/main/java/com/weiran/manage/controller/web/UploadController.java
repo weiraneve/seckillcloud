@@ -19,7 +19,7 @@ public class UploadController {
      * 上传图片
      */
     @PostMapping
-    public Result upload(@RequestParam("file") MultipartFile file, @RequestParam("type") Integer type) {
+    public Result<Object> upload(@RequestParam("file") MultipartFile file, @RequestParam("type") Integer type) {
         ImageKit image = imageService.upload(file, type);
         return Result.success(image);
     }
@@ -28,7 +28,7 @@ public class UploadController {
      * 删除图片
      */
     @DeleteMapping
-    public Result delete(@RequestParam("key") String key) {
+    public Result<Object> delete(@RequestParam("key") String key) {
         imageService.delete(key);
         return Result.success();
     }
@@ -37,7 +37,7 @@ public class UploadController {
      * 批量删除图片
      */
     @DeleteMapping("/deletes")
-    public Result deletes(@RequestParam("keys") String[] keys) {
+    public Result<Object> deletes(@RequestParam("keys") String[] keys) {
         imageService.deletes(keys);
         return Result.success();
     }

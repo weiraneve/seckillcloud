@@ -50,7 +50,7 @@ public class TestJmeterController {
     final MessageSender messageSender;
 
     // 内存标记，减少redis访问
-    private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
+    private final HashMap<Long, Boolean> localOverMap = new HashMap<>();
 
     /**
      * 系统初始化，把秒杀商品库存剩余加载到Redis缓存中。库存预热。
@@ -85,9 +85,8 @@ public class TestJmeterController {
         Long userId = user.getId();
         String userName = "user" + id;
         user.setUserName(userName);
-        String token = userName;
-        redisService.set(UserKey.getById, token, userId, 120);
-        String path = getSeckillPath(token, 1);
+        redisService.set(UserKey.getById, userName, userId, 120);
+        String path = getSeckillPath(userName, 1);
         if (path == null) {
             throw new RuntimeException("秒杀URL生成失败");
         }
@@ -99,8 +98,7 @@ public class TestJmeterController {
         if (userId == null) {
             return null;
         }
-        String path = createSeckillPath(userId, goodsId);
-        return path;
+        return createSeckillPath(userId, goodsId);
     }
 
     // 进行秒杀
@@ -159,7 +157,7 @@ public class TestJmeterController {
         SeckillMessage seckillMessage = new SeckillMessage();
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
-        // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由RabbitMQ来执行，做到削峰填谷
+        // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
 //        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
         messageSender.asyncSend(seckillMessage); // 这里使用RocketMQ
 

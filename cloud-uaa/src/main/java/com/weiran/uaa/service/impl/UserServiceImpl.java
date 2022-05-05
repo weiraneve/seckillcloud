@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     // 登录
     @Override
-    public Result doLogin(LoginParam loginParam) {
+    public Result<String> doLogin(LoginParam loginParam) {
         Result<User> userResult = login(loginParam);
         if (!userResult.isSuccess()) {
             if (userResult.getCode() == CodeMsg.No_SIFT_PASS.getCode()) {
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
             } else if (userResult.getCode() == CodeMsg.MOBILE_NOT_EXIST.getCode()) {
                 log.info("{} 号码登录，无此手机号", loginParam.getMobile());
             }
-            return userResult;
+            return Result.error(userResult.getMsg());
         }
         User user = userResult.getData();
         long userId  = user.getId();
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     // 注销
     @Override
-    public Result doLogout(HttpServletRequest request) {
+    public Result<CodeMsg> doLogout(HttpServletRequest request) {
         String authInfo = request.getHeader("Authorization");
         String loginToken = authInfo.split("Bearer ")[1]; // 只要Bearer 之后的部分
         long userId = redisService.get(UserKey.getById, loginToken, Long.class);
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
     // 注册
     @Override
-    public Result doRegister(RegisterParam registerParam) {
+    public Result<CodeMsg> doRegister(RegisterParam registerParam) {
         String registerMobile = registerParam.getRegisterMobile();
         String registerUsername = registerParam.getRegisterUsername();
         String registerIdentity = registerParam.getRegisterIdentity();
@@ -102,15 +102,15 @@ public class UserServiceImpl implements UserService {
                 log.info(registerMobile + "用户注册成功");
             } else {
                 log.info(registerMobile + "用户注册失败");
-                return new Result(CodeMsg.SERVER_ERROR);
+                return new Result<>(CodeMsg.SERVER_ERROR);
             }
-            return new Result(CodeMsg.SUCCESS);
+            return new Result<>(CodeMsg.SUCCESS);
         }
     }
 
     // 更换密码
     @Override
-    public Result updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
+    public Result<CodeMsg> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
         String authInfo = request.getHeader("Authorization");
         String loginToken = authInfo.split("Bearer ")[1]; // 只要Bearer 之后的部分
         long userId = redisService.get(UserKey.getById, loginToken, Long.class);

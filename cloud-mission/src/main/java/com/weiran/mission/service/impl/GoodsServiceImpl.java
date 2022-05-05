@@ -86,11 +86,11 @@ public class GoodsServiceImpl implements GoodsService {
         } else { // 秒杀进行中
             remainSeconds = 0;
         }
-        GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
-        goodsDetailVo.setGoods(goods);
-        goodsDetailVo.setStockCount(stockCount);
-        goodsDetailVo.setRemainSeconds(remainSeconds);
-        return Result.success(goodsDetailVo);
+        return Result.success(GoodsDetailVo.builder()
+                .goods(goods)
+                .stockCount(stockCount)
+                .remainSeconds(remainSeconds)
+                .build());
     }
 
 }

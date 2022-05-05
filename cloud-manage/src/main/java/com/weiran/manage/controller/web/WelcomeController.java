@@ -20,7 +20,7 @@ public class WelcomeController {
      * 统计
      */
     @GetMapping
-    public Result welcome() {
+    public Result<WelcomeVO> welcome() {
         WelcomeVO welcomeVO = welcomeService.welcomeCount();
         return Result.success(welcomeVO);
     }

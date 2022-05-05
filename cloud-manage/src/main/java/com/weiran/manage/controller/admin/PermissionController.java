@@ -27,7 +27,7 @@ public class PermissionController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','PERMISSION_ADMIN_USER')")
     @GetMapping
-    public Result findByPermissions(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public Result<PageInfo<PermissionDTO>> findByPermissions(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                       @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                       String search) {
         PageInfo<PermissionDTO> permissions = permissionService.findByPermissions(page, pageSize,search);
@@ -39,7 +39,7 @@ public class PermissionController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public Result update(@RequestBody PermissionReq permissionReq) {
+    public Result<Object> update(@RequestBody PermissionReq permissionReq) {
         boolean updateSuccess = permissionService.update(permissionReq);
         return updateSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_UPDATE_ERROR);
     }
@@ -49,7 +49,7 @@ public class PermissionController {
      */
     @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @DeleteMapping
-    public Result deletes(@RequestParam String ids) {
+    public Result<Object> deletes(@RequestParam String ids) {
         permissionService.deletes(ids);
         return Result.success();
     }
@@ -59,7 +59,7 @@ public class PermissionController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
-    public Result createPermission(@RequestBody PermissionReq permissionReq) {
+    public Result<Object> createPermission(@RequestBody PermissionReq permissionReq) {
         boolean createSuccess = permissionService.createPermission(permissionReq);
         return createSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_CREATE_ERROR);
     }
@@ -69,7 +69,7 @@ public class PermissionController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','PERMISSION_ADMIN_USER')")
     @GetMapping("/findAll")
-    public Result findAll() {
+    public Result<List<PermissionDTO>> findAll() {
         List<PermissionDTO> permissionDTOS = permissionService.findAll();
         return Result.success(permissionDTOS);
     }

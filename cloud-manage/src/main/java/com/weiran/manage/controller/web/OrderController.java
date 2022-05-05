@@ -22,7 +22,7 @@ public class OrderController {
      * 分页查询订单
      */
     @GetMapping
-    public Result findByOrders(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public Result<PageInfo<OrderDTO>> findByOrders(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                  @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                  Long id) {
         PageInfo<OrderDTO> order = orderService.findByOrders(page, pageSize, id);

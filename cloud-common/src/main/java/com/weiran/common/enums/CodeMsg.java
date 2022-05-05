@@ -10,9 +10,10 @@ public class CodeMsg {
 	
 	private int code;
 	private String msg;
-	
-	// 通用的错误码
+
+
 	public static CodeMsg SUCCESS = new CodeMsg(200, "success");
+	public static CodeMsg ERROR = new CodeMsg(100, "error");
 
 	// 服务器模块 5001XX
 	public static CodeMsg SERVER_ERROR = new CodeMsg(500100, "服务端异常");

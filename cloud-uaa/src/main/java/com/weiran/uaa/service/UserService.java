@@ -1,5 +1,6 @@
 package com.weiran.uaa.service;
 
+import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.obj.Result;
 import com.weiran.uaa.param.LoginParam;
 import com.weiran.uaa.param.RegisterParam;
@@ -11,23 +12,22 @@ public interface UserService {
 
     /**
      * 登录
-     * @return
      */
-    Result doLogin(LoginParam loginParam);
+    Result<String> doLogin(LoginParam loginParam);
 
     /**
      * 注销
      */
-    Result doLogout(HttpServletRequest request);
+    Result<CodeMsg> doLogout(HttpServletRequest request);
 
     /**
      * 注册
      */
-    Result doRegister(RegisterParam registerParam);
+    Result<CodeMsg> doRegister(RegisterParam registerParam);
 
     /**
      * 更换密码
      */
-    Result updatePass(UpdatePassParam updatePassParam, HttpServletRequest request);
+    Result<CodeMsg> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request);
 
 }

@@ -62,8 +62,7 @@ Redis缓存减少对于数据库的访问，数据库的访问压力是秒杀系
 - 秒杀时，先redis完成预减，把秒杀消息通过MQ传到消费者，由消费者完成事务。这里可以削峰限流，满足高可用的系统。
 
 # 解决超卖
-- 引入队列，对数据库的操作进入队列排队，异步下单，完全串行化处理。
-- 数据库加唯一索引防止用户重复购买
+- Redis+LUA脚本，使Redis的命令具有原子性，比如库存预减和查询库存是否大于0等。
 
 # 分布式Session
 把session的id写入cookies，并且把session的id和登录用户对象的信息一起写入Redis。利用登录拦截器来检查Redis中的User信息是否对应。这样在微服务分布式的环境下，实现了登录验证。
@@ -157,3 +156,6 @@ SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分�
 [SpringBoot Docker容器化部署](https://blog.csdn.net/DBC_121/article/details/105135260)
 [秒杀方案参考](https://segmentfault.com/a/1190000040743440)
 [聊聊电商系统中常见的9大坑](https://mp.weixin.qq.com/s/BgVr0jEBJwQI5UW_ele08A)
+[Spring Cloud Gateway 限流实战](https://mp.weixin.qq.com/s/ATVph_iN6gUyjuJyox-0gg)
+[常用消息队列 Kafka、RabbitMQ、RocketMQ、ActiveMQ 综合对比](https://mp.weixin.qq.com/s/AgBOplDsVc2CL57WWv9eaw)
+[Nginx从安装到高可用，一篇搞定！](https://mp.weixin.qq.com/s/d51GW-xSzXGAD06qAXU2Hg)

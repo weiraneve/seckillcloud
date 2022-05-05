@@ -25,7 +25,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ACCOUNT_ADMIN_USER')")
     @GetMapping
-    public Result findByAdminUsers(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public Result<PageInfo<AdminUserDTO>> findByAdminUsers(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                      @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                      String search) {
         PageInfo<AdminUserDTO> adminUsers = adminUserService.findByAdminUsers(page, pageSize,search);
@@ -37,7 +37,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public Result updateAdminUserInfo(@RequestBody AdminUserReq adminUserReq) {
+    public Result<Object> updateAdminUserInfo(@RequestBody AdminUserReq adminUserReq) {
         adminUserService.updateAdminUserInfo(adminUserReq);
         return Result.success();
     }
@@ -47,7 +47,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PatchMapping
-    public Result patchAdminUserPermission(@RequestBody AdminUserPermissionDTO adminUserPermissionDTO) {
+    public Result<Object> patchAdminUserPermission(@RequestBody AdminUserPermissionDTO adminUserPermissionDTO) {
         adminUserService.patchAdminUserPermission(adminUserPermissionDTO);
         return Result.success();
     }
@@ -57,7 +57,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @DeleteMapping
-    public Result deletes(@RequestParam String ids) {
+    public Result<Object> deletes(@RequestParam String ids) {
         adminUserService.deletes(ids);
         return Result.success();
     }
@@ -67,7 +67,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
-    public Result createAdminUser(@RequestBody AdminUserReq adminUserReq) {
+    public Result<Object> createAdminUser(@RequestBody AdminUserReq adminUserReq) {
         adminUserService.createAdminUser(adminUserReq);
         return Result.success();
     }
@@ -77,7 +77,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PatchMapping("/{id}")
-    public Result switchIsBan(@PathVariable Integer id) {
+    public Result<Object> switchIsBan(@PathVariable Integer id) {
         adminUserService.switchIsBan(id);
         return Result.success();
     }

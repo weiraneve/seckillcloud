@@ -10,7 +10,6 @@ public interface OrderService {
 
     /**
      * 返回客户的所有订单数据
-     * @param request
      */
     Result<List<OrderDetailVo>> getOrderList(HttpServletRequest request);
 

@@ -24,12 +24,12 @@ public class RuleController {
      * 查询rule
      */
     @GetMapping
-    public Result ruleIndex() {
-        List<RuleDTO> ruleDTO = ruleService.findRule();
-        if (ruleDTO == null) {
+    public Result<List<RuleDTO>> ruleIndex() {
+        List<RuleDTO> ruleDTOList = ruleService.findRule();
+        if (ruleDTOList == null) {
             return Result.error(ResponseEnum.RULE_FIND_FAIL);
         }
-        return Result.success(ruleDTO);
+        return Result.success(ruleDTOList);
     }
 
     /**
@@ -37,7 +37,7 @@ public class RuleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public Result ruleUpdate(@RequestBody RuleDTO ruleDTO) {
+    public Result<Object> ruleUpdate(@RequestBody RuleDTO ruleDTO) {
         boolean updateSuccess = ruleService.update(ruleDTO);
         return updateSuccess ? Result.success() : Result.error(ResponseEnum.RULE_UPDATE_FAIL);
     }

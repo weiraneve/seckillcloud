@@ -27,7 +27,7 @@ public class SessionController {
      * 获取用户信息
      */
     @GetMapping
-    public Result index(Principal principal) {
+    public Result<AdminUserDTO> index(Principal principal) {
         AdminUserDTO adminUserDTO = adminUserService.findByUsername(principal.getName()).get();
         return Result.success(adminUserDTO);
     }
@@ -36,7 +36,7 @@ public class SessionController {
      * 查询用户是否存在
      */
     @GetMapping("/findByUsername")
-    public Result findByUsername(@RequestParam String username) {
+    public Result<Object> findByUsername(@RequestParam String username) {
         Optional<AdminUserDTO> userDTO =  adminUserService.findByUsername(username);
         if (!userDTO.isPresent()) {
             throw new CustomizeException(ResponseEnum.USER_NOT_FOUND);
@@ -48,7 +48,7 @@ public class SessionController {
      * 更新用户信息
      */
     @PatchMapping("/update")
-    public Result update(@RequestBody AdminUserInfoReq adminUserInfoReq, Principal principal) {
+    public Result<AdminUserDTO> update(@RequestBody AdminUserInfoReq adminUserInfoReq, Principal principal) {
         AdminUserDTO adminUserDTO = adminUserService.update(adminUserInfoReq,principal.getName());
         return Result.success(adminUserDTO);
     }
@@ -57,7 +57,7 @@ public class SessionController {
      * 修改密码
      */
     @PatchMapping("/updatePass")
-    public Result updatePass(@RequestBody AdminUserPassReq adminUserPassReq) {
+    public Result<String> updatePass(@RequestBody AdminUserPassReq adminUserPassReq) {
         String token = adminUserService.updatePass(adminUserPassReq);
         return Result.success(token);
     }

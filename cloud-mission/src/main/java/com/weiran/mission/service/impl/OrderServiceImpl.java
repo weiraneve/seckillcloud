@@ -35,16 +35,14 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetailVo> orderDetailVoList = new ArrayList<>();
         List<Order> orderList = orderManager.list(Wrappers.<Order>lambdaQuery().eq(Order::getUserId, userId));
         for (Order order : orderList) {
-            OrderDetailVo orderDetailVo = new OrderDetailVo();
             Goods goods = goodsManager.getById(order.getGoodsId());
-            orderDetailVo.setOrderId(order.getId());
-            orderDetailVo.setGoodsId(order.getGoodsId());
-            orderDetailVo.setGoodsName(goods.getGoodsName());
-            orderDetailVo.setCreatedAt(order.getCreatedAt());
-
-            orderDetailVoList.add(orderDetailVo);
+            orderDetailVoList.add(OrderDetailVo.builder()
+                    .orderId(order.getId())
+                    .goodsId(order.getGoodsId())
+                    .goodsName(goods.getGoodsName())
+                    .createdAt(order.getCreatedAt())
+                    .build());
         }
-
-        return new Result<>(orderDetailVoList);
+        return Result.success(orderDetailVoList);
     }
 }

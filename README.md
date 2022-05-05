@@ -1,5 +1,5 @@
 # 前言
-0.0.8 进行了部分代码的优化
+0.0.9 进行了部分代码的优化
 - [客户端前端服务器](https://github.com/weiran1999/seckill-front)
 - [后台前端服务器](https://github.com/weiran1999/admin-manager)
 

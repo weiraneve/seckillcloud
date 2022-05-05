@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,13 +21,17 @@ public class AuthInterceptor implements HandlerInterceptor {
     final RedisService redisService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String authInfo = request.getHeader("Authorization"); // 认证信息储存在前端服务器里，每次请求后端服务器接口则会在请求头header中带上
+    public boolean preHandle(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull Object handler) {
+        String authInfo = request.getHeader("Authorization");  // 认证信息储存在前端服务器里，每次请求后端服务器接口则会在请求头header中带上
+        if (!authInfo.startsWith("Bearer")) {
+            // 认证失败，response返回403-状态码，让前端服务器重新登录
+            response.setStatus(403);
+            return false;
+        }
         String loginToken = authInfo.split("Bearer ")[1]; // 只要Bearer 之后的部分
         Long userId;
         userId = redisService.get(UserKey.getById, loginToken, Long.class);
         if (userId == null) {
-            // 认证失败，response返回403-状态码，让前端服务器重新登录
             response.setStatus(403);
             return false;
         }

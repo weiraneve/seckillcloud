@@ -23,7 +23,7 @@ public class GoodsController {
      * 分页查询goods
      */
     @GetMapping
-    public Result goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, String goodsName) {
+    public Result<PageInfo<GoodsDTO>> goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, String goodsName) {
         PageInfo<GoodsDTO> goods = goodsService.findGoods(page, pageSize, goodsName);
         return Result.success(goods);
     }
@@ -32,7 +32,7 @@ public class GoodsController {
      * 新增goods
      */
     @PostMapping
-    public Result goodsCreate(@RequestBody GoodsDTO goodsDTO) {
+    public Result<Object> goodsCreate(@RequestBody GoodsDTO goodsDTO) {
         boolean createSuccess = goodsService.create(goodsDTO);
         return createSuccess ? Result.success() : Result.error(ResponseEnum.Goods_CREATE_FAIL);
     }
@@ -42,7 +42,7 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public Result goodsUpdate(@RequestBody GoodsDTO goodsDTO) {
+    public Result<Object> goodsUpdate(@RequestBody GoodsDTO goodsDTO) {
         boolean updateSuccess = goodsService.update(goodsDTO);
         return updateSuccess ? Result.success() : Result.error(ResponseEnum.Goods_CREATE_FAIL);
     }
@@ -52,7 +52,7 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/{id}/edit")
-    public Result goodsEdit(@PathVariable("id") Long id) {
+    public Result<GoodsDTO> goodsEdit(@PathVariable("id") Long id) {
         GoodsDTO goodsDTO = goodsService.selectById(id);
         return Result.success(goodsDTO);
     }
@@ -62,7 +62,7 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/updateUsing/{id}")
-    public Result goodsUsing(@PathVariable("id") Long id) {
+    public Result<Object> goodsUsing(@PathVariable("id") Long id) {
         goodsService.updateUsingById(id);
         return Result.success();
     }
@@ -72,7 +72,7 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_DELETE_USER','ROLE_SUPER_ADMIN')")
     @DeleteMapping("/{id}")
-    public Result goodsDelete(@PathVariable("id") Long id) {
+    public Result<Object> goodsDelete(@PathVariable("id") Long id) {
         goodsService.delete(id);
         return Result.success();
     }
@@ -82,7 +82,7 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_DELETE_USER','ROLE_SUPER_ADMIN')")
     @DeleteMapping("/deletes")
-    public Result goodsDeletes(@RequestParam String ids) {
+    public Result<Object> goodsDeletes(@RequestParam String ids) {
         goodsService.deletes(ids);
         return Result.success();
     }

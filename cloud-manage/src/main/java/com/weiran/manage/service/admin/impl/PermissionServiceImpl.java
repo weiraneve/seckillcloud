@@ -57,7 +57,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public void deletes(String ids) {
         String[] split = ids.split(",");
-        List permissionIds = Arrays.asList(split);
+        List<String> permissionIds = Arrays.asList(split);
         // 删除关联菜单
         Integer roleMenu = permissionMenuMapper.countByPermissionIds(permissionIds);
         if (roleMenu > 0) {

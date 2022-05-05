@@ -17,14 +17,13 @@ import java.util.List;
 @RequestMapping("/menu")
 public class MenuController {
 
-
     private final AdminUserService adminUserService;
 
     /**
      * 获取管理员权限菜单
      */
     @GetMapping
-    public Result findByMenus(Principal principal) {
+    public Result<List<PermissionMenuDTO>> findByMenus(Principal principal) {
         List<PermissionMenuDTO> menus = adminUserService.findByMenus(principal.getName());
         return Result.success(menus);
     }

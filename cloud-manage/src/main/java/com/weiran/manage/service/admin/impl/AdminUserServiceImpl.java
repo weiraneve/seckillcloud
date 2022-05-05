@@ -46,7 +46,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public AdminUserDTO update(AdminUserInfoReq adminUserInfoReq, String username) {
         adminUserMapper.update(adminUserInfoReq,username);
-        return adminUserMapper.findByUsername(username).get();
+        return adminUserMapper.findByUsername(username).orElse(null);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void deletes(String ids) {
         String[] split = ids.split(",");
-        List userIds = Arrays.asList(split);
+        List<String> userIds = Arrays.asList(split);
         userRolePermissionMapper.deletesByUserIds(userIds);
         adminUserMapper.deletesByIds(userIds);
     }

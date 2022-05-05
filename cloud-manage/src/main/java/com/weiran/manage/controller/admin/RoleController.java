@@ -27,7 +27,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ROLE_ADMIN_USER')")
     @GetMapping("/findAll")
-    public Result findAll() {
+    public Result<List<RoleDTO>> findAll() {
         List<RoleDTO> roles = roleService.findAll();
         return Result.success(roles);
     }
@@ -37,7 +37,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ROLE_ADMIN_USER')")
     @GetMapping
-    public Result findByRoles(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public Result<PageInfo<RoleDTO>> findByRoles(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                 @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                 String search) {
         PageInfo<RoleDTO> roles = roleService.findByRoles(page, pageSize, search);
@@ -49,7 +49,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public Result updateRole(@RequestBody RoleReq roleReq) {
+    public Result<Object> updateRole(@RequestBody RoleReq roleReq) {
         boolean updateSuccess = roleService.updateRole(roleReq);
         return updateSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_UPDATE_ERROR);
     }
@@ -60,7 +60,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @DeleteMapping
-    public Result deletes(@RequestParam String ids) {
+    public Result<Object> deletes(@RequestParam String ids) {
         roleService.deletes(ids);
         return Result.success();
     }
@@ -70,7 +70,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
-    public Result createRole(@RequestBody RoleReq roleReq) {
+    public Result<Object> createRole(@RequestBody RoleReq roleReq) {
         boolean createSuccess = roleService.createRole(roleReq);
         return createSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_CREATE_ERROR);
     }
