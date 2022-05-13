@@ -65,7 +65,7 @@ CREATE TABLE `order_info` (
 -- Records of order_info
 -- ----------------------------
 BEGIN;
-INSERT INTO `order_info` (`id`, `user_id`, `goods_id`, `created_at`, `updated_at`) VALUES (1, 1, 1, '2022-04-30 11:09:54', '2022-04-30 11:09:54');
+INSERT INTO `order_info` (`id`, `user_id`, `goods_id`, `created_at`, `updated_at`) VALUES (1000001, 1, 1, '2022-04-30 11:09:54', '2022-04-30 11:09:54');
 COMMIT;
 
 -- ----------------------------

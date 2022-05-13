@@ -1,4 +1,4 @@
-package com.weiran.manage.enums;
+package com.weiran.common.enums;
 
 
 import com.weiran.common.enums.BaseEnum;

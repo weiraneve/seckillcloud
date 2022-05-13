@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.exception.LoginException;
+import com.weiran.common.exception.RegisterException;
+import com.weiran.common.exception.UpdatePassException;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
@@ -40,14 +43,7 @@ public class UserServiceImpl implements UserService {
     public Result<String> doLogin(LoginParam loginParam) {
         Result<User> userResult = login(loginParam);
         if (!userResult.isSuccess()) {
-            if (userResult.getCode() == CodeMsg.No_SIFT_PASS.getCode()) {
-                log.info("客户{}初筛未通过", userResult.getData().getId());
-            } else if (userResult.getCode() == CodeMsg.PASSWORD_ERROR.getCode()) {
-                log.info("{} 号码登录失败，密码错误" , loginParam.getMobile());
-            } else if (userResult.getCode() == CodeMsg.MOBILE_NOT_EXIST.getCode()) {
-                log.info("{} 号码登录，无此手机号", loginParam.getMobile());
-            }
-            return Result.error(userResult.getMsg());
+            throw new LoginException(userResult, loginParam.getMobile());
         }
         User user = userResult.getData();
         long userId  = user.getId();
@@ -86,26 +82,26 @@ public class UserServiceImpl implements UserService {
         String registerPassword = registerParam.getRegisterPassword();
         // 电话、用户名、身份证都不等于的模型为空，或逻辑，全部为false才返回false; 范例lambdaQuery().or(i -> i.eq(User::getUserName, registerUsername))
         if (userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerMobile)) != null) {
-            return Result.error(CodeMsg.REPEATED_REGISTER_MOBILE); // 手机号已经被注册
+            throw new RegisterException(CodeMsg.REPEATED_REGISTER_MOBILE); // 手机号已经被注册
         } else if (userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getUserName, registerUsername)) != null) {
-            return Result.error(CodeMsg.REPEATED_REGISTER_USERNAME); // 用户名已经被注册
+            throw new RegisterException(CodeMsg.REPEATED_REGISTER_USERNAME); // 用户名已经被注册
         } else if (userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getIdentityCardId, registerIdentity)) != null) {
-            return Result.error(CodeMsg.REPEATED_REGISTER_IDENTITY); // 身份证已经被注册
+            throw new RegisterException(CodeMsg.REPEATED_REGISTER_IDENTITY); // 身份证已经被注册
         } else {
             User user = new User();
             user.setPhone(registerMobile);
             user.setUserName(registerUsername);
             user.setPassword(registerPassword);
             user.setIdentityCardId(registerIdentity);
-            boolean flag = userManager.save(user);
-            if (flag) {
+            try {
+                userManager.save(user);
                 log.info(registerMobile + "用户注册成功");
-            } else {
+            } catch (Exception e) {
                 log.info(registerMobile + "用户注册失败");
-                return new Result<>(CodeMsg.SERVER_ERROR);
+                throw new RegisterException(CodeMsg.SERVER_ERROR);
             }
-            return new Result<>(CodeMsg.SUCCESS);
         }
+        return new Result<>(CodeMsg.SUCCESS);
     }
 
     // 更换密码
@@ -116,16 +112,17 @@ public class UserServiceImpl implements UserService {
         long userId = redisService.get(UserKey.getById, loginToken, Long.class);
         User user = userManager.getById(userId);
         if (!user.getPassword().equals(updatePassParam.getOldPassword())) {
-            return Result.error(CodeMsg.OLD_PASSWORD_ERROR);
+            throw new UpdatePassException(CodeMsg.OLD_PASSWORD_ERROR);
         }
         user.setPassword(updatePassParam.getNewPassword());
-        boolean flag = userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
-        if (flag) {
-            log.info(user.getPhone() + "用户更换密码成功");
-            return Result.success();
-        } else {
-            return Result.error(CodeMsg.UPDATE_PASSWORD_ERROR);
+        try {
+            userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
+        } catch (Exception e) {
+            log.info(user.getPhone() + "用户更换密码失败");
+            throw new UpdatePassException((CodeMsg.UPDATE_PASSWORD_ERROR));
         }
+        log.info(user.getPhone() + "用户更换密码成功");
+        return Result.success();
     }
 
     // 登录方法，检查比对传入的登录字段

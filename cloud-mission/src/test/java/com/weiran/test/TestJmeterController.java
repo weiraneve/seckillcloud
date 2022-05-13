@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.exception.SeckillException;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
@@ -107,19 +108,19 @@ public class TestJmeterController {
         // 验证path
         boolean check = checkPath(userId, goodsId, path);
         if (!check) {
-            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+            throw new SeckillException(CodeMsg.REQUEST_ILLEGAL);
         }
         // 若为非，则为商品已经售完
         boolean over = localOverMap.get(goodsId);
         if (!over) {
-            return Result.error(CodeMsg.SECKILL_OVER);
+            throw new SeckillException(CodeMsg.SECKILL_OVER);
         }
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
         if (order != null) {
-            return Result.error(CodeMsg.REPEATED_SECKILL);
+            throw new SeckillException(CodeMsg.REPEATED_SECKILL);
         }
 
         // 判断是否已经秒杀到了, 防止重复秒杀
@@ -127,14 +128,14 @@ public class TestJmeterController {
 //                .eq(Order::getUserId, userId)
 //                .eq(Order::getGoodsId, goodsId));
 //        if (order != null) {
-//            return Result.error(CodeMsg.REPEATED_SECKILL);
+//            throw new SeckillException(CodeMsg.REPEATED_SECKILL);
 //        }
 
 //        // 查询剩余数量
 //        int stock = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
 //        if (stock <= 0) {
 //            localOverMap.put(goodsId, false);
-//            return Result.error(CodeMsg.SECKILL_OVER);
+//            throw new SeckillException(CodeMsg.SECKILL_OVER);
 //        }
 ////        // 预减库存
 //        redisService.decrease(SeckillGoodsKey.seckillCount, "" + goodsId);
@@ -150,7 +151,7 @@ public class TestJmeterController {
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(stockScript, Long.class);
         Long count = redisTemplate.execute(redisScript, Collections.singletonList(RedisConstant.SECKILL_KEY + goodsId));
         if (count == -1) {
-            return Result.error(CodeMsg.SECKILL_OVER);
+            throw new SeckillException(CodeMsg.SECKILL_OVER);
         }
 
         // 入队

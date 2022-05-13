@@ -1,7 +1,7 @@
 package com.weiran.manage.service.web.impl;
 
-import com.weiran.manage.exception.CustomizeException;
-import com.weiran.manage.enums.ImageDirEnum;
+import com.weiran.common.exception.CustomizeException;
+import com.weiran.common.enums.ImageDirEnum;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.manage.service.web.ImageService;
 import com.weiran.manage.utils.EnumUtil;

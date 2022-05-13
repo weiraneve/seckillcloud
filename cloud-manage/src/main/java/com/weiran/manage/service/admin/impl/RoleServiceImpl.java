@@ -1,6 +1,6 @@
 package com.weiran.manage.service.admin.impl;
 
-import com.weiran.manage.exception.CustomizeException;
+import com.weiran.common.exception.CustomizeException;
 import com.weiran.manage.mapper.admin.RolePermissionMapper;
 import com.weiran.manage.mapper.admin.UserRolePermissionMapper;
 import com.weiran.manage.dto.admin.RoleDTO;

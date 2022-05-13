@@ -1,4 +1,4 @@
-package com.weiran.manage.exception;
+package com.weiran.common.exception;
 
 import com.weiran.common.enums.ResponseEnum;
 import lombok.Data;

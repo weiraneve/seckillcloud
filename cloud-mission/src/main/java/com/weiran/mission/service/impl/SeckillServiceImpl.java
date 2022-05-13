@@ -3,13 +3,16 @@ package com.weiran.mission.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.exception.SeckillException;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.*;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.SM3Util;
+import com.weiran.mission.entity.Goods;
 import com.weiran.mission.entity.Order;
 import com.weiran.mission.entity.SeckillGoods;
+import com.weiran.mission.entity.User;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.rabbitmq.SeckillMessage;
@@ -71,24 +74,25 @@ public class SeckillServiceImpl implements SeckillService {
         // 验证path
         boolean check = checkPath(userId, goodsId, path);
         if (!check) {
-            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+            throw new SeckillException(CodeMsg.REQUEST_ILLEGAL);
         }
         // 若为非，则为商品已经售完
         boolean over = localOverMap.get(goodsId);
         if (!over) {
-            return Result.error(CodeMsg.SECKILL_OVER);
+            throw new SeckillException(CodeMsg.SECKILL_OVER);
         }
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
-                .eq(Order::getId, orderId));
+                .eq(Order::getGoodsId, goodsId)
+                .eq(Order::getUserId, userId));
         if (order != null) {
-            return Result.error(CodeMsg.REPEATED_SECKILL);
+            throw new SeckillException(CodeMsg.REPEATED_SECKILL);
         }
         // LUA脚本判断库存和预减库存
         Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
-            return Result.error(CodeMsg.SECKILL_OVER);
+            throw new SeckillException(CodeMsg.SECKILL_OVER);
         }
         // 入队
         SeckillMessage seckillMessage = new SeckillMessage();
@@ -106,9 +110,6 @@ public class SeckillServiceImpl implements SeckillService {
         String authInfo = request.getHeader("Authorization");
         String loginToken = authInfo.split("Bearer ")[1];
         Long userId = redisService.get(UserKey.getById, loginToken, Long.class);
-        if (userId == null) {
-            return Result.error(CodeMsg.USER_NO_LOGIN);
-        }
         long result; // orderId：成功，0：排队中，1：秒杀失败
         // 查寻订单
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
@@ -133,9 +134,6 @@ public class SeckillServiceImpl implements SeckillService {
         String authInfo = request.getHeader("Authorization");
         String loginToken = authInfo.split("Bearer ")[1];
         Long userId = redisService.get(UserKey.getById, loginToken, Long.class);
-        if (userId == null) {
-            return Result.error(CodeMsg.USER_NO_LOGIN);
-        }
         String path = createSeckillPath(userId, goodsId);
         return Result.success(path);
     }

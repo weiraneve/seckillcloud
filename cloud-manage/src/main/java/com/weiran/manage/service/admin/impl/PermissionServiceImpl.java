@@ -1,7 +1,7 @@
 package com.weiran.manage.service.admin.impl;
 
 import com.weiran.manage.service.admin.PermissionService;
-import com.weiran.manage.exception.CustomizeException;
+import com.weiran.common.exception.CustomizeException;
 import com.weiran.manage.mapper.admin.PermissionMapper;
 import com.weiran.manage.mapper.admin.PermissionMenuMapper;
 import com.weiran.manage.mapper.admin.RolePermissionMapper;

@@ -1,7 +1,7 @@
 package com.weiran.manage.utils.qiniu;
 
 import com.weiran.manage.config.qiniu.QiNiuProperties;
-import com.weiran.manage.exception.CustomizeException;
+import com.weiran.common.exception.CustomizeException;
 import com.weiran.manage.response.CensorResp;
 import com.weiran.manage.response.DiscriminateResp;
 import com.weiran.common.enums.ResponseEnum;

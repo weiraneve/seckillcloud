@@ -9,7 +9,7 @@ import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.manage.dto.web.GoodsDTO;
 import com.weiran.manage.dto.web.SeckillGoodsDTO;
-import com.weiran.manage.exception.CustomizeException;
+import com.weiran.common.exception.CustomizeException;
 import com.weiran.manage.mapper.web.GoodsMapper;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.manage.mapper.web.SeckillMapper;
