@@ -8,7 +8,7 @@ public class JasyptHelper {
     public static void main(String[] args) {
 
         // 加密
-        String plainText = "odT16TymgI4Sq3y7Ure1nMZRCWY6ZW8n31FtSeBm";
+        String plainText = "";
         encryption(plainText);
 
         // 解密

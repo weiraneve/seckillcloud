@@ -52,10 +52,8 @@ security:
       expire-length: 604800000
 
 qiniu:
-  # Access私钥
-  accessKey: ENC(3yvK6uv/C/83akxjvhdsKje2PY+tPSWMIr9awy/A/G3I1f4SaiMUk4khCV524Sa/vwx2AYrC3og=)
-  # Secret私钥
-  secretKey: ENC(FrkBmkUKj/F/xGWEM7gZlKaP3cqiNV2I1aFGtr86I7mqMXUnWRNP5dibkvih4kcNgTd6OQHZtEk=)
+  accessKey: ENC(XEL2TdE7S3eBkI4lukdgHuP03m3FKV/NaCpUezk6z6KCR6UOo7UGmS8VXI2YlI/cDCXyuGbuqFw=)
+  secretKey: ENC(RySyvFuZ+SfUDAVA0VSUX4fexjmQ1t/D45oADbkAkRMQdy0kQX+cF9uyRsh/BUzJciemr1GK610=)
   # 对象存储空间名
   bucket: weiran1999
   # 域名
