@@ -4,6 +4,7 @@ import cn.hutool.core.util.BooleanUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.enums.RedisCacheTimeEnum;
+import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.GoodsKey;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
@@ -50,18 +51,21 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 新增商品
     @Override
-    public boolean create(GoodsDTO goodsDTO) {
-        int row = goodsMapper.add(goodsDTO);
-        // 表增加后，在缓存中增加
-        if (row > 0) {
-            SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
-            seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
-            seckillGoodsDTO.setGoodsId(goodsDTO.getId());
-            seckillMapper.add(seckillGoodsDTO);
-            redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-            redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+    public Result<Object> create(GoodsDTO goodsDTO) {
+        try {
+            goodsMapper.add(goodsDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResponseEnum.Goods_CREATE_FAIL);
         }
-        return row > 0;
+        // 表增加后，在缓存中增加
+        SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
+        seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
+        seckillGoodsDTO.setGoodsId(goodsDTO.getId());
+        seckillMapper.add(seckillGoodsDTO);
+        redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        return Result.success();
     }
 
     // 删除指定商品
@@ -113,8 +117,14 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 更新商品
     @Override
-    public boolean update(GoodsDTO goodsDTO) {
-        int row = goodsMapper.update(goodsDTO);
+    public Result<Object> update(GoodsDTO goodsDTO) {
+        int row;
+        try {
+            row = goodsMapper.update(goodsDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResponseEnum.Goods_CREATE_FAIL);
+        }
         if (row > 0) {
             // 更改对应缓存
             redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
@@ -125,8 +135,10 @@ public class GoodsServiceImpl implements GoodsService {
             seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
             // 更改秒杀库
             seckillMapper.update(seckillGoodsDTO);
+            return Result.success();
+        } else {
+            return Result.error(ResponseEnum.Goods_CREATE_FAIL);
         }
-        return row > 0;
     }
 
     // 选择单个商品

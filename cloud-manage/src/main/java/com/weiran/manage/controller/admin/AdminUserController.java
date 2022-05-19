@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * 管理员相关
  */
@@ -26,8 +28,7 @@ public class AdminUserController {
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ACCOUNT_ADMIN_USER')")
     @GetMapping
     public Result<PageInfo<AdminUserDTO>> findByAdminUsers(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                     @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
-                                     String search) {
+                                     @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, @RequestParam(required = false)  String search) {
         PageInfo<AdminUserDTO> adminUsers = adminUserService.findByAdminUsers(page, pageSize,search);
         return Result.success(adminUsers);
     }
@@ -37,7 +38,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public Result<Object> updateAdminUserInfo(@RequestBody AdminUserReq adminUserReq) {
+    public Result<Object> updateAdminUserInfo(@RequestBody @Valid AdminUserReq adminUserReq) {
         adminUserService.updateAdminUserInfo(adminUserReq);
         return Result.success();
     }
@@ -47,7 +48,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PatchMapping
-    public Result<Object> patchAdminUserPermission(@RequestBody AdminUserPermissionDTO adminUserPermissionDTO) {
+    public Result<Object> patchAdminUserPermission(@RequestBody @Valid AdminUserPermissionDTO adminUserPermissionDTO) {
         adminUserService.patchAdminUserPermission(adminUserPermissionDTO);
         return Result.success();
     }
@@ -67,7 +68,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
-    public Result<Object> createAdminUser(@RequestBody AdminUserReq adminUserReq) {
+    public Result<Object> createAdminUser(@RequestBody @Valid AdminUserReq adminUserReq) {
         adminUserService.createAdminUser(adminUserReq);
         return Result.success();
     }

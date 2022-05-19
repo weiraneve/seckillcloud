@@ -21,7 +21,7 @@ public class SeckillController {
      * 分页查询
      */
     @GetMapping
-    public Result<PageInfo<SeckillGoodsDTO>> seckillIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, Long goodsId) {
+    public Result<PageInfo<SeckillGoodsDTO>> seckillIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, @RequestParam(required = false) Long goodsId) {
         PageInfo<SeckillGoodsDTO> seckill = seckillService.findSeckill(page, pageSize, goodsId);
         return Result.success(seckill);
     }

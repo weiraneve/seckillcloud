@@ -1,6 +1,7 @@
 package com.weiran.manage.service.web;
 
 import com.github.pagehelper.PageInfo;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.dto.web.GoodsDTO;
 
 public interface GoodsService {
@@ -18,12 +19,12 @@ public interface GoodsService {
     /**
      * 新增goods
      */
-    boolean create(GoodsDTO goodsDTO);
+    Result<Object> create(GoodsDTO goodsDTO);
 
     /**
      * 修改goods
      */
-    boolean update(GoodsDTO goodsDTO);
+    Result<Object> update(GoodsDTO goodsDTO);
 
     /**
      * 选择单个goods

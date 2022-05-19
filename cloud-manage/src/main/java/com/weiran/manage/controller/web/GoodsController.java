@@ -2,12 +2,13 @@ package com.weiran.manage.controller.web;
 
 import com.github.pagehelper.PageInfo;
 import com.weiran.manage.dto.web.GoodsDTO;
-import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.manage.service.web.GoodsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * 商品列表
@@ -23,7 +24,8 @@ public class GoodsController {
      * 分页查询goods
      */
     @GetMapping
-    public Result<PageInfo<GoodsDTO>> goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, String goodsName) {
+    public Result<PageInfo<GoodsDTO>> goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
+                                                 @RequestParam(required = false) String goodsName) {
         PageInfo<GoodsDTO> goods = goodsService.findGoods(page, pageSize, goodsName);
         return Result.success(goods);
     }
@@ -32,9 +34,8 @@ public class GoodsController {
      * 新增goods
      */
     @PostMapping
-    public Result<Object> goodsCreate(@RequestBody GoodsDTO goodsDTO) {
-        boolean createSuccess = goodsService.create(goodsDTO);
-        return createSuccess ? Result.success() : Result.error(ResponseEnum.Goods_CREATE_FAIL);
+    public Result<Object> goodsCreate(@RequestBody @Valid GoodsDTO goodsDTO) {
+        return goodsService.create(goodsDTO);
     }
 
     /**
@@ -42,9 +43,8 @@ public class GoodsController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
-    public Result<Object> goodsUpdate(@RequestBody GoodsDTO goodsDTO) {
-        boolean updateSuccess = goodsService.update(goodsDTO);
-        return updateSuccess ? Result.success() : Result.error(ResponseEnum.Goods_CREATE_FAIL);
+    public Result<Object> goodsUpdate(@RequestBody @Valid GoodsDTO goodsDTO) {
+        return goodsService.update(goodsDTO);
     }
 
     /**

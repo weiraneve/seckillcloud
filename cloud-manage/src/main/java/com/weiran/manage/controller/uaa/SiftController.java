@@ -21,7 +21,7 @@ public class SiftController {
      * 分页查询
      */
     @GetMapping
-    public Result<PageInfo<SiftDTO>> siftIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, Long userId) {
+    public Result<PageInfo<SiftDTO>> siftIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, @RequestParam(required = false) Long userId) {
         PageInfo<SiftDTO> sift = siftService.findSift(page, pageSize, userId);
         return Result.success(sift);
     }

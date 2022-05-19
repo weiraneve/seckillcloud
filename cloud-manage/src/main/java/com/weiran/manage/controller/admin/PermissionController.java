@@ -29,7 +29,7 @@ public class PermissionController {
     @GetMapping
     public Result<PageInfo<PermissionDTO>> findByPermissions(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                       @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
-                                      String search) {
+                                                             @RequestParam(required = false) String search) {
         PageInfo<PermissionDTO> permissions = permissionService.findByPermissions(page, pageSize,search);
         return Result.success(permissions);
     }
