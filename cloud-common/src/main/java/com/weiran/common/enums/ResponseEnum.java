@@ -46,8 +46,6 @@ public enum ResponseEnum implements BaseEnum {
      * 模型相关
      */
     Goods_CREATE_FAIL(600, "goods创建失败"),
-    RULE_UPDATE_FAIL(601, "rule更新失败"),
-    RULE_FIND_FAIL(602, "rule查询失败"),
 
     /**
      * 系统相关

@@ -17,7 +17,6 @@ import com.weiran.uaa.manager.UserManager;
 import com.weiran.uaa.param.LoginParam;
 import com.weiran.uaa.param.RegisterParam;
 import com.weiran.uaa.param.UpdatePassParam;
-import com.weiran.uaa.service.SiftService;
 import com.weiran.uaa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +34,6 @@ public class UserServiceImpl implements UserService {
 
     final UserManager userManager;
     final RedisService redisService;
-    final SiftService siftService;
     final RedisLua redisLua;
 
     // 登录
@@ -140,11 +138,7 @@ public class UserServiceImpl implements UserService {
         if (!dbPwd.equals(loginParam.getPassword())) {
             return Result.error(CodeMsg.PASSWORD_ERROR);
         }
-        if (siftService.findByStatus(user).isSuccess()) {
-            return Result.success(user);
-        } else {
-            return siftService.findByStatus(user);
-        }
+        return Result.success(user);
     }
 
     // 利用LUA脚本统计访问次数，功能只是测试，没有统计到每个账号访问网站的次数。

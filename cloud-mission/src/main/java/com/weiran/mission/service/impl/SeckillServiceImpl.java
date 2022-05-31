@@ -9,10 +9,8 @@ import com.weiran.common.redis.key.*;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.SM3Util;
-import com.weiran.mission.entity.Goods;
 import com.weiran.mission.entity.Order;
 import com.weiran.mission.entity.SeckillGoods;
-import com.weiran.mission.entity.User;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.rabbitmq.SeckillMessage;
@@ -84,8 +82,7 @@ public class SeckillServiceImpl implements SeckillService {
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
-                .eq(Order::getGoodsId, goodsId)
-                .eq(Order::getUserId, userId));
+                .eq(Order::getId, orderId));
         if (order != null) {
             throw new SeckillException(CodeMsg.REPEATED_SECKILL);
         }

@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 30/04/2022 10:45:53
+ Date: 30/05/2022 21:28:13
 */
 
 SET NAMES utf8mb4;
@@ -62,19 +62,17 @@ INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (1, 'IND
 INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (2, 'GOODS_ADMIN_USER', '商品列表');
 INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (3, 'SECKILL_ADMIN_USER', '秒杀库存');
 INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (4, 'ORDER_ADMIN_USER', '订单管理');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (5, 'SIFT_ROLE', '筛选规则');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (6, 'SIFT_ADMIN_USER', '筛选用户');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (7, 'SETTING_ADMIN_USER', '系统设置');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (8, 'MENU_ADMIN_USER', '菜单设置');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (9, 'ROLE_ADMIN_USER', '角色管理');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (10, 'ACCOUNT_ADMIN_USER', '账号管理');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (11, 'PERMISSION_ADMIN_USER', '权限设置');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (12, 'SETTING_UPDATE', '系统设置修改操作');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (13, 'SETTING_ADD', '系统设置添加操作');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (14, 'SRTTING_DELETE', '系统设置删除操作');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (15, 'SETTING_SELECT', '系统设置查询操作');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (16, 'SETTING_NORMAL_DELETE_USER', '正常模块删除权限');
-INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (17, 'SETTING_NORMAL_UPDATE_USER', '正常模块修改权限');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (5, 'SETTING_ADMIN_USER', '系统设置');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (6, 'MENU_ADMIN_USER', '菜单设置');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (7, 'ROLE_ADMIN_USER', '角色管理');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (8, 'ACCOUNT_ADMIN_USER', '账号管理');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (9, 'PERMISSION_ADMIN_USER', '权限设置');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (10, 'SETTING_UPDATE', '系统设置修改操作');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (11, 'SETTING_ADD', '系统设置添加操作');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (12, 'SRTTING_DELETE', '系统设置删除操作');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (13, 'SETTING_SELECT', '系统设置查询操作');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (14, 'SETTING_NORMAL_DELETE_USER', '正常模块删除权限');
+INSERT INTO `permission` (`id`, `permission`, `permission_name`) VALUES (15, 'SETTING_NORMAL_UPDATE_USER', '正常模块修改权限');
 COMMIT;
 
 -- ----------------------------
@@ -101,13 +99,11 @@ INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_i
 INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (2, 1, 2, 2, NULL, 'Goods', '商品列表', 'shopping');
 INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (3, 1, 3, 3, NULL, 'Seckill', '秒杀库存', 'apple');
 INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (4, 1, 4, 4, NULL, 'Order', '订单管理', 'amazon');
-INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (5, 1, 5, 5, NULL, 'Rule', '筛选规则', 'check-circle');
-INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (6, 1, 6, 6, NULL, 'Sift', '筛选用户', 'user');
-INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (7, 1, 7, 7, NULL, 'Setting', '系统设置', 'setting');
-INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (8, 2, 8, 8, '7', 'Menu', '菜单设置', 'menu');
-INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (9, 2, 9, 9, '7', 'Role', '角色管理', 'robot');
-INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (10, 2, 10, 10, '7', 'Account', '账号管理', 'contacts');
-INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (11, 2, 11, 11, '7', 'Permission', '权限设置', 'paper-clip');
+INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (5, 1, 5, 5, NULL, 'Setting', '系统设置', 'setting');
+INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (6, 2, 6, 6, '5', 'Menu', '菜单设置', 'menu');
+INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (7, 2, 7, 7, '5', 'Role', '角色管理', 'robot');
+INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (8, 2, 8, 8, '5', 'Account', '账号管理', 'contacts');
+INSERT INTO `permission_menu` (`id`, `level`, `sort`, `permission_id`, `parent_id`, `key`, `name`, `icon`) VALUES (9, 2, 9, 9, '5', 'Permission', '权限设置', 'paper-clip');
 COMMIT;
 
 -- ----------------------------
@@ -159,14 +155,12 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (12, 1, 
 INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (13, 1, '13');
 INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (14, 1, '14');
 INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (15, 1, '15');
-INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (16, 1, '16');
-INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (17, 1, '17');
-INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (18, 2, '1');
-INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (19, 2, '2');
-INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (20, 2, '3');
-INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (21, 2, '4');
-INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (22, 2, '5');
-INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (23, 2, '6');
+INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (16, 2, '1');
+INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (17, 2, '2');
+INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (18, 2, '3');
+INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (19, 2, '4');
+INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (20, 2, '5');
+INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES (21, 2, '6');
 COMMIT;
 
 -- ----------------------------
@@ -200,14 +194,10 @@ INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`)
 INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (13, 1, 1, 13);
 INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (14, 1, 1, 14);
 INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (15, 1, 1, 15);
-INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (16, 1, 1, 16);
-INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (17, 1, 1, 17);
-INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (18, 2, 1, 1);
-INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (19, 2, 1, 2);
-INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (20, 2, 1, 3);
-INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (21, 2, 1, 4);
-INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (22, 2, 1, 5);
-INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (23, 2, 1, 6);
+INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (16, 2, 1, 1);
+INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (17, 2, 1, 2);
+INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (18, 2, 1, 3);
+INSERT INTO `user_role_permission` (`id`, `user_id`, `role_id`, `permission_id`) VALUES (19, 2, 1, 4);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
