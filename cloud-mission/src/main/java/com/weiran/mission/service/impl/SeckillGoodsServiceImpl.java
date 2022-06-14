@@ -22,10 +22,14 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     public int reduceStock(long goodsId) {
         SeckillGoods seckillGoods = seckillGoodsManager.getOne(Wrappers.<SeckillGoods>lambdaQuery().eq(SeckillGoods::getGoodsId, goodsId));
         // 多线程并发写的时候，有并发问题，这里只读redis的库存，然后写入库中，避免并发问题。
-        int preStockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
-        seckillGoods.setStockCount(preStockCount);
+        reduceStockCount(goodsId, seckillGoods);
         boolean flag = seckillGoodsManager.update(seckillGoods, Wrappers.<SeckillGoods>lambdaUpdate().eq(SeckillGoods::getGoodsId, goodsId));
         return (flag) ? 1 : 0;
+    }
+
+    private void reduceStockCount(long goodsId, SeckillGoods seckillGoods) {
+        int preStockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
+        seckillGoods.setStockCount(preStockCount);
     }
 
 }

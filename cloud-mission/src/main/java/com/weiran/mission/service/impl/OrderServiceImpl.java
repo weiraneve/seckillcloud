@@ -29,9 +29,11 @@ public class OrderServiceImpl implements OrderService {
     // 返回客户的所有订单数据
     @Override
     public Result<List<OrderDetailVo>> getOrderList(HttpServletRequest request) {
-        String authInfo = request.getHeader("Authorization");
-        String loginToken = authInfo.split("Bearer ")[1];
-        long userId = redisService.get(UserKey.getById, loginToken, Long.class);
+        long userId = getUserId(request);
+        return getListResult(userId);
+    }
+
+    private Result<List<OrderDetailVo>> getListResult(long userId) {
         List<OrderDetailVo> orderDetailVoList = new ArrayList<>();
         List<Order> orderList = orderManager.list(Wrappers.<Order>lambdaQuery().eq(Order::getUserId, userId));
         for (Order order : orderList) {
@@ -44,5 +46,11 @@ public class OrderServiceImpl implements OrderService {
                     .build());
         }
         return Result.success(orderDetailVoList);
+    }
+
+    private long getUserId(HttpServletRequest request) {
+        String authInfo = request.getHeader("Authorization");
+        String loginToken = authInfo.split("Bearer ")[1];
+        return redisService.get(UserKey.getById, loginToken, Long.class);
     }
 }

@@ -43,10 +43,17 @@ public class GoodsServiceImpl implements GoodsService {
     // 显示商品列表
     @Override
     public Result<List<GoodsDetailVo>> getGoodsList() {
+        List<GoodsDetailVo> goodsDetailVoList = getGoodsDetailVos();
+        Result<List<GoodsDetailVo>> result = new Result<>();
+        result.setData(goodsDetailVoList);
+        return result;
+    }
+
+    private List<GoodsDetailVo> getGoodsDetailVos() {
         List<GoodsDetailVo> goodsDetailVoList = new ArrayList<>();
         // 这里想要遍历缓存中所有商品，但没有更好的办法
         for (long goodsId = 1L; goodsId < 50L; goodsId++) {
-            // 是否存在
+            // 在redis缓存中是否存在
             if (!redisService.exists(GoodsKey.goodsKey, "" + goodsId)) {
                 continue;
             }
@@ -56,12 +63,11 @@ public class GoodsServiceImpl implements GoodsService {
                 continue;
             }
             GoodsDetailVo goodsDetailVo = result.getData();
+            // 商品信息中是否可用字段
             if (goodsDetailVo.getGoods().getIsUsing())
             goodsDetailVoList.add(goodsDetailVo);
         }
-        Result<List<GoodsDetailVo>> result = new Result<>();
-        result.setData(goodsDetailVoList);
-        return result;
+        return goodsDetailVoList;
     }
 
     // 显示商品细节。剩余时间等于0，正在秒杀中；剩余时间大于0，还没有开始秒杀；小于0，已经结束秒杀。
@@ -74,6 +80,11 @@ public class GoodsServiceImpl implements GoodsService {
             return null;
         }
         // 用goodsId取出存在Redis中的秒杀商品中的库存值
+        return getGoodsDetailVoResult(goodsId, goods);
+    }
+
+    private Result<GoodsDetailVo> getGoodsDetailVoResult(long goodsId, Goods goods) {
+        // 从redis获取库存
         int stockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
         long startAt = Timestamp.valueOf(goods.getStartTime()).getTime(); // 秒杀开始时间
         long endAt = Timestamp.valueOf(goods.getEndTime()).getTime(); // 秒杀结束时间

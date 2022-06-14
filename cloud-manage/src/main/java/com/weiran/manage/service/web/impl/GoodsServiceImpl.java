@@ -58,14 +58,22 @@ public class GoodsServiceImpl implements GoodsService {
             e.printStackTrace();
             return Result.error(ResponseEnum.Goods_CREATE_FAIL);
         }
+        addGoodsToDatabase(goodsDTO);
         // 表增加后，在缓存中增加
+        addGoodsToCache(goodsDTO);
+        return Result.success();
+    }
+
+    private void addGoodsToCache(GoodsDTO goodsDTO) {
+        redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+    }
+
+    private void addGoodsToDatabase(GoodsDTO goodsDTO) {
         SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
         seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
         seckillGoodsDTO.setGoodsId(goodsDTO.getId());
         seckillMapper.add(seckillGoodsDTO);
-        redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        return Result.success();
     }
 
     // 删除指定商品
@@ -127,18 +135,20 @@ public class GoodsServiceImpl implements GoodsService {
         }
         if (row > 0) {
             // 更改对应缓存
-            redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-            // 更改秒杀对应缓存
-            redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-            SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
-            seckillGoodsDTO.setGoodsId(goodsDTO.getId());
-            seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
+            addGoodsToCache(goodsDTO);
             // 更改秒杀库
-            seckillMapper.update(seckillGoodsDTO);
+            updateGoodsTOSeckillDatabase(goodsDTO);
             return Result.success();
         } else {
             return Result.error(ResponseEnum.Goods_CREATE_FAIL);
         }
+    }
+
+    private void updateGoodsTOSeckillDatabase(GoodsDTO goodsDTO) {
+        SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
+        seckillGoodsDTO.setGoodsId(goodsDTO.getId());
+        seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
+        seckillMapper.update(seckillGoodsDTO);
     }
 
     // 选择单个商品

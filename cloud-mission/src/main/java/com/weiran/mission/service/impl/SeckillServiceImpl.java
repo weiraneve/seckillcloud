@@ -66,19 +66,11 @@ public class SeckillServiceImpl implements SeckillService {
     @Override
     @Transactional
     public Result<Integer> doSeckill(long goodsId, String path, HttpServletRequest request) {
-        String authInfo = request.getHeader("Authorization");
-        String loginToken = authInfo.split("Bearer ")[1];
-        long userId = redisService.get(UserKey.getById, loginToken, Long.class);
+        long userId = getUserId(request);
         // 验证path
-        boolean check = checkPath(userId, goodsId, path);
-        if (!check) {
-            throw new SeckillException(CodeMsg.REQUEST_ILLEGAL);
-        }
+        checkPath(goodsId, path, userId);
         // 若为非，则为商品已经售完
-        boolean over = localOverMap.get(goodsId);
-        if (!over) {
-            throw new SeckillException(CodeMsg.SECKILL_OVER);
-        }
+        isCountOver(goodsId);
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
@@ -87,26 +79,52 @@ public class SeckillServiceImpl implements SeckillService {
             throw new SeckillException(CodeMsg.REPEATED_SECKILL);
         }
         // LUA脚本判断库存和预减库存
-        Long count = redisLua.judgeStockAndDecrStock(goodsId);
-        if (count == -1) {
+        luaCheckAndReduceStock(goodsId);
+        // 入队
+        doMQ(goodsId, userId);
+        return Result.success(0); // 排队中
+    }
+
+    private void isCountOver(long goodsId) {
+        boolean over = localOverMap.get(goodsId);
+        if (!over) {
             throw new SeckillException(CodeMsg.SECKILL_OVER);
         }
-        // 入队
+    }
+
+    private void doMQ(long goodsId, long userId) {
         SeckillMessage seckillMessage = new SeckillMessage();
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
 //        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的RabbitMQ多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
         messageSender.asyncSend(seckillMessage); // 这里使用RocketMQ
-        return Result.success(0); // 排队中
+    }
+
+    private void luaCheckAndReduceStock(long goodsId) {
+        Long count = redisLua.judgeStockAndDecrStock(goodsId);
+        if (count == -1) {
+            throw new SeckillException(CodeMsg.SECKILL_OVER);
+        }
+    }
+
+    private void checkPath(long goodsId, String path, long userId) {
+        boolean check = checkPath(userId, goodsId, path);
+        if (!check) {
+            throw new SeckillException(CodeMsg.REQUEST_ILLEGAL);
+        }
+    }
+
+    private long getUserId(HttpServletRequest request) {
+        String authInfo = request.getHeader("Authorization");
+        String loginToken = authInfo.split("Bearer ")[1];
+        return redisService.get(UserKey.getById, loginToken, Long.class);
     }
 
     // 客户端轮询查询是否下单成功
     @Override
     public Result<Long> seckillResult(long goodsId, HttpServletRequest request) {
-        String authInfo = request.getHeader("Authorization");
-        String loginToken = authInfo.split("Bearer ")[1];
-        Long userId = redisService.get(UserKey.getById, loginToken, Long.class);
+        long userId = getUserId(request);
         long result; // orderId：成功，0：排队中，1：秒杀失败
         // 查寻订单
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
@@ -128,9 +146,7 @@ public class SeckillServiceImpl implements SeckillService {
     // 返回一个唯一的path的id
     @Override
     public Result<String> getSeckillPath(HttpServletRequest request, long goodsId) {
-        String authInfo = request.getHeader("Authorization");
-        String loginToken = authInfo.split("Bearer ")[1];
-        Long userId = redisService.get(UserKey.getById, loginToken, Long.class);
+        long userId = getUserId(request);
         String path = createSeckillPath(userId, goodsId);
         return Result.success(path);
     }
