@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiran.manage.mapper.AdminUserMapper">
+    <resultMap id="user" type="com.weiran.manage.dto.AdminUserDTO">
+        <result property="id" column="id"/>
+        <result property="phone" column="phone"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="isBan" column="is_ban"/>
+        <result property="password" column="password"/>
+        <result property="avatar" column="avatar"/>
+        <result property="role" column="role"/>
+
+        <collection property="permissions" column="{adminUserId = id}" ofType="com.weiran.manage.dto.PermissionDTO" javaType="ArrayList"
+                    select="com.weiran.manage.mapper.PermissionMapper.findByAdminUserId"/>
+
+        <collection property="roles" column="{roles = role}" ofType="com.weiran.manage.dto.RoleDTO" javaType="ArrayList"
+                    select="com.weiran.manage.mapper.RoleMapper.findRolesByRoles"/>
+    </resultMap>
+
+    <select id="findById" resultMap="user">
+        select *
+        from admin_users
+        where id  = #{userId}
+    </select>
+
+    <select id="findByUsername" resultMap="user">
+        select *
+        from admin_users
+        where username = #{username}
+    </select>
+
+    <update id="update">
+        update
+          admin_users
+        set
+            phone = #{adminUser.phone},
+            `name` = #{adminUser.name},
+            avatar = #{adminUser.avatar}
+        where
+          username = #{username}
+    </update>
+
+    <update id="updatePass">
+       update
+          admin_users
+        set
+            password = #{password}
+        where
+          username = #{username}
+    </update>
+
+    <select id="findByAdminUsers" resultMap="user">
+        select *
+        from admin_users
+    </select>
+
+    <select id="findByAdminUsersLike" resultMap="user">
+        select *
+        from admin_users
+        where
+          username LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+          or phone LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+          or `name` LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+          or role LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+    </select>
+
+    <update id="switchIsBan">
+        update admin_users set
+        is_ban = !is_ban
+        where id = #{id}
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into admin_users
+        (phone,username,`name`,is_ban,password,role)
+        values
+        (#{adminUser.phone},#{adminUser.username},#{adminUser.name},
+          !#{adminUser.isBan},#{adminUser.password},#{adminUser.role})
+    </insert>
+
+    <update id="updateAdminUserInfo">
+        update admin_users set
+        phone = #{adminUser.phone},
+        username = #{adminUser.username},
+        `name` = #{adminUser.name},
+        is_ban = !#{adminUser.isBan},
+        password = #{adminUser.password},
+        role = #{adminUser.role}
+        where id = #{adminUser.id}
+    </update>
+
+    <delete id="deletesByIds">
+        delete
+        from admin_users
+        where id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+</mapper>

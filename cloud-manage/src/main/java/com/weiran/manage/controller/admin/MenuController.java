@@ -1,8 +1,8 @@
 package com.weiran.manage.controller.admin;
 
-import com.weiran.manage.dto.admin.PermissionMenuDTO;
 import com.weiran.common.obj.Result;
-import com.weiran.manage.service.admin.AdminUserService;
+import com.weiran.manage.dto.PermissionMenuDTO;
+import com.weiran.manage.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

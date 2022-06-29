@@ -32,12 +32,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SeckillServiceImpl implements SeckillService {
 
-    final RedisService redisService;
-    final SeckillGoodsManager seckillGoodsManager;
-    final OrderManager orderManager;
-    final MessageSender messageSender;
+    private final RedisService redisService;
+    private final SeckillGoodsManager seckillGoodsManager;
+    private final OrderManager orderManager;
+    private final MessageSender messageSender;
+    private final RedisLua redisLua;
     final RedisTemplate<String, Object> redisTemplate;
-    final RedisLua redisLua;
 
     // 内存标记，减少redis访问，并且为线程安全的集合
     private final Map<Long, Boolean> localOverMap = new ConcurrentHashMap<>();

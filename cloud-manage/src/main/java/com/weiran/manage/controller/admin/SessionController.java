@@ -1,14 +1,19 @@
 package com.weiran.manage.controller.admin;
 
-import com.weiran.manage.dto.admin.AdminUserDTO;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.exception.CustomizeException;
-import com.weiran.manage.request.admin.AdminUserInfoReq;
-import com.weiran.manage.request.admin.AdminUserPassReq;
 import com.weiran.common.obj.Result;
-import com.weiran.manage.service.admin.AdminUserService;
+import com.weiran.manage.dto.AdminUserDTO;
+import com.weiran.manage.request.AdminUserInfoReq;
+import com.weiran.manage.request.AdminUserPassReq;
+import com.weiran.manage.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.Optional;

@@ -1,14 +1,21 @@
 package com.weiran.manage.controller.admin;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.dto.admin.PermissionDTO;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.manage.request.admin.PermissionReq;
 import com.weiran.common.obj.Result;
-import com.weiran.manage.service.admin.PermissionService;
+import com.weiran.manage.dto.PermissionDTO;
+import com.weiran.manage.request.PermissionReq;
+import com.weiran.manage.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -28,7 +35,7 @@ public class PermissionController {
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','PERMISSION_ADMIN_USER')")
     @GetMapping
     public Result<PageInfo<PermissionDTO>> findByPermissions(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                      @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
+                                                             @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                                              @RequestParam(required = false) String search) {
         PageInfo<PermissionDTO> permissions = permissionService.findByPermissions(page, pageSize,search);
         return Result.success(permissions);

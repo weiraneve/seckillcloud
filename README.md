@@ -7,19 +7,19 @@
 - [后台系统前端服务器](https://github.com/weiran1999/admin-manager)
 
 # 简介
-项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign通信、持久层MybatisPlus框架、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RocketMQ等一系列技术栈(项目中也有RabbitMQ，只是被替换掉)，优化项目中的消息队列与缓存等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
+项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RocketMQ等一系列技术栈(项目中也有RabbitMQ，只是被替换掉)，优化项目中的消息队列与缓存等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
 
 ## 项目模块
 因为是用微服务架构构建的项目，很多地方需要一些微服务必须的组件。下面简单介绍一些项目模块。
 - cloud-gateway
 微服务网关模块，使用的是SpringCloud Gateway，这里的注册中心用的是Nacos。
-网关承担的角色有：请求接入，作为所有API接口服务请求的接入点，比如这里所有模块都可以用网关的端口 8205/ 加上配置文件里的路由，可以直接访问下游的模块；中介策略，实现安全、验证、路由、过滤、流控等策略；等等。
+网关承担的角色有：请求接入，作为所有API接口服务请求的接入点，比如这里所有模块都可以用网关的端口 8205/ 加上配置文件里的路由，可以直接访问下游的模块；中介策略，实现安全、验证、路由、过滤、流控等策略等。
 - cloud-monitor
 监控模块，使用SpringBoot Admin 技术栈，可以用来监控和管理我们所有微服务的 Spring Boot 项目。
 - cloud-common
 通用模块。负责一些通用的依赖管理和一些通用代码如Redis等的复用。
 - cloud-manage
-后台管理系统模块，完成商品信息的增删查改的灵活配置和订单。后端提供接口给React框架下的后台前端服务器，实现前后端分离。
+后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单。后端提供接口给React框架下的后台前端服务器，实现前后端分离。
 - cloud-uaa
 用户认证中心模块，统一登录，与客户注册功能。
 - cloud-mission
@@ -50,14 +50,14 @@ SpringAdmin监控一览。
 # 如何使用
 - 首先将SQL导入自己的数据库，用户名root、密码123456即可。Mysql的表名得是SQL文件名。
 - 启动Nacos，如果没有则先安装，安装后按网上文章博客启动。
-- 启动本地的Redis，密码要配置为123456即可。如果本地没有安装Redis，则先安装。
+- 启动本地的Redis，密码为空即可。如果本地没有安装Redis，则先安装。
 - 如果使用RocketMQ则启动本地的RocketMQ（如果使用RabbitMQ，则进行相似步骤），用户名和密码才去默认即可。如果本地没有安装RocketMQ，则先安装。如果使用RocketMQ，则可以先下载RocketMQ与可视化软件，然后分别启动。
 - 依次启动项目中的cloud-gateway、cloud-uaa、cloud-mission、cloud-manage模块，如果不用到后台管理系统可以不启动cloud-manage模块。
 - 其中参数都可以了解后自行在项目里更改。
 - cloud-monitor模块的SpringBoot Admin监控技术栈，使用只需要开启网关后访问http://localhost:8205/monitor 或者直接访问monitor端口。
 - 启动后台前端服务器和客户端前端服务器。客户端有账号18077200000，密码123 后台系统有超级管理员账号super_admin 密码123和普通管理员账号admin 密码123。客户端端口为3000，后台系统端口为3001。因为项目中使用了qiniu云对象储存配置上传空间，如若需要，需在配置文件中配置自己的域名以及信息（已经加密脱敏）。
 - 商品表和秒杀商品的信息，在项目启动之初，必须要保证库存一致。
-- cloud-manage的商品上传配置是使用qiniu相关的依赖，也需要qiniu云对象储存账号的一些信息，项目是使用了配置文件加密脱敏后qiniu云对象储存密钥信息。其中配置商品图片(只能上传jpg后缀图片文件)的功能有qiniu云对象储存以及对应依赖提供。
+- cloud-manage调用cloud-mission模块的商品上传配置是使用qiniu相关的依赖，也需要qiniu云对象储存账号的一些信息，项目是使用了配置文件加密脱敏后qiniu云对象储存密钥信息。其中配置商品图片(只能上传jpg后缀图片文件)的功能有qiniu云对象储存以及对应依赖提供。
 
 [一些自己收集的知识点和参考](./docs/THINK.md)
 
@@ -75,6 +75,7 @@ SpringAdmin监控一览。
 - cloud-uaa拥有对于某一IP频繁登录访问的限制，用注解加拦截器实现。
 - 对于高并发下的超卖问题，项目测试过synchronized锁、Redisson分布式锁，在能保证并发安全的情况下，性能都有不少地损失，所以采取了LUA脚本解决，使Redis的操作具有原子性，做到了避免超卖。
 - cloud-mission模块，对于订单防重和写入的逻辑，根据用户id和商品id做一定地计算后得出订单id，结合幂等机制写入库中。
+- cloud-mission使用Feign被cloud-manage模块调用接口，并且是MyBatisPlus与MyBatis共存使用。
 
 # 未来展望
 - 对于数据库的分库分表操作进行完成度更高地重构。

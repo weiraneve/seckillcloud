@@ -1,21 +1,29 @@
 package com.weiran.mission.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.mission.entity.SeckillGoods;
 import com.weiran.mission.manager.SeckillGoodsManager;
+import com.weiran.mission.mapper.SeckillGoodsMapper;
+import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.mission.service.SeckillGoodsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 public class SeckillGoodsServiceImpl implements SeckillGoodsService {
 
-    final SeckillGoodsManager seckillGoodsManager;
-    final RedisService redisService;
+    private final SeckillGoodsManager seckillGoodsManager;
+    private final RedisService redisService;
+    private final SeckillGoodsMapper seckillGoodsMapper;
 
     // 库存表库存减一
     @Override
@@ -30,6 +38,20 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     private void reduceStockCount(long goodsId, SeckillGoods seckillGoods) {
         int preStockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
         seckillGoods.setStockCount(preStockCount);
+    }
+
+    // 分页查询秒杀商品
+    @Override
+    public PageInfo<SeckillGoodsDTO> findSeckill(Integer page, Integer pageSize, Long goodsId) {
+        PageHelper.startPage(page, pageSize);
+        List<SeckillGoodsDTO> seckillGoodsDTOList;
+        if (StringUtils.isEmpty(goodsId)) {
+            seckillGoodsDTOList = seckillGoodsMapper.findSeckill();
+        } else {
+            // 如果有字段传入，则模糊查询
+            seckillGoodsDTOList = seckillGoodsMapper.findByGoodsIdLike(goodsId);
+        }
+        return new PageInfo<>(seckillGoodsDTOList);
     }
 
 }

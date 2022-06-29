@@ -7,21 +7,15 @@ spring:
   application:
     name: cloud-manage
   datasource:
-    admin:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/cloud-manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
-      username: root
-      password: 123456
-    web:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/cloud-mission?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
-      username: root
-      password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://localhost:3306/cloud-manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+    username: root
+    password: 123456
   redis:
     database: 0
     host: 127.0.0.1
     port: 6379
-    password: 123456
+    password:
     timeout: 5000 # 连接超时时间（毫秒）
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -46,14 +40,6 @@ security:
       secret-key: 6142b3c6f0e34477a899597cbd8ec45a2a5bd162415e617c0a32495215b8bc2ea01a3285149f94ae0f8a
       expire-length: 604800000
 
-qiniu:
-  accessKey: ENC(XEL2TdE7S3eBkI4lukdgHuP03m3FKV/NaCpUezk6z6KCR6UOo7UGmS8VXI2YlI/cDCXyuGbuqFw=)
-  secretKey: ENC(RySyvFuZ+SfUDAVA0VSUX4fexjmQ1t/D45oADbkAkRMQdy0kQX+cF9uyRsh/BUzJciemr1GK610=)
-  # 对象存储空间名
-  bucket: weiran1999
-  # 域名
-  domain: http://rel.weiran.ltd/
-
 management:
   endpoints:
     web:
@@ -64,12 +50,6 @@ management:
   endpoint:
     logfile:
       external-file: log/cloud-manage/manage.log
-
-# 配置文件加密
-jasypt:
-  encryptor:
-    # 密钥
-    password: 123
 
 logging:
   config: classpath:logback.xml

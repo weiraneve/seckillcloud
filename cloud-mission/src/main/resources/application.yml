@@ -10,7 +10,7 @@ spring:
     database: 0
     host: 127.0.0.1
     port: 6379
-    password: 123456
+    password:
     timeout: 30000 # 连接超时时间（毫秒）
   cloud:
     nacos:
@@ -55,6 +55,11 @@ spring:
     # 全局消息确认消费默认
 #    listener.simple.acknowledge-mode: auto
 
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: seckill-producer-rocketmq-group
+
 management:
   endpoints:
     web:
@@ -66,14 +71,22 @@ management:
     logfile:
       external-file: log/cloud-mission/mission.log
 
+qiniu:
+  accessKey: ENC(XEL2TdE7S3eBkI4lukdgHuP03m3FKV/NaCpUezk6z6KCR6UOo7UGmS8VXI2YlI/cDCXyuGbuqFw=)
+  secretKey: ENC(RySyvFuZ+SfUDAVA0VSUX4fexjmQ1t/D45oADbkAkRMQdy0kQX+cF9uyRsh/BUzJciemr1GK610=)
+  # 对象存储空间名
+  bucket: weiran1999
+  # 域名
+  domain: http://rel.weiran.ltd/
+
+# 配置文件加密
+jasypt:
+  encryptor:
+    # 密钥
+    password: 123
+
+mybatis-plus:
+  mapper-locations: classpath:mappers/**.xml
+
 logging:
   config: classpath:logback.xml
-
-rocketmq:
-  name-server: 127.0.0.1:9876
-  producer:
-    group: seckill-producer-rocketmq-group
-
-#mybatis-plus:
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志

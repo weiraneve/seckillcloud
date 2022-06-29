@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiran.manage.mapper.PermissionMenuMapper">
+    <resultMap id="roleMenu" type="com.weiran.manage.dto.PermissionMenuDTO">
+        <result property="id" column="id"/>
+        <result property="level" column="level"/>
+        <result property="sort" column="sort"/>
+        <result property="key" column="key"/>
+        <result property="name" column="name"/>
+        <result property="icon" column="icon"/>
+        <result property="permissionId" column="permission_id"/>
+        <result property="parentId" column="parent_id"/>
+        <association property="permission" column="{permissionId = permission_id}" javaType="com.weiran.manage.dto.PermissionDTO"
+                     select="com.weiran.manage.mapper.PermissionMapper.findById"/>
+    </resultMap>
+
+    <resultMap id="treeRoleMenu" type="com.weiran.manage.dto.TreeRoleMenuDTO">
+        <result property="value" column="value"/>
+        <result property="title" column="title"/>
+        <result property="key" column="key"/>
+        <result property="level" column="level"/>
+        <result property="parentId" column="parent_id"/>
+    </resultMap>
+
+    <insert id="creatMenu">
+        insert into permission_menu
+        (`level`,sort,`key`,`name`,icon,permission_id,parent_id)
+        values
+        (#{menu.level},#{menu.sort},#{menu.key},#{menu.name},#{menu.icon},#{menu.permissionId},#{menu.menuId})
+    </insert>
+    <select id="findRoleMenus" resultMap="treeRoleMenu">
+        select id as `value`,`name` as title,parent_id,`key`,`level` from permission_menu
+    </select>
+
+    <select id="findByRoleMenus" resultMap="roleMenu">
+        select * from permission_menu
+    </select>
+
+    <select id="findByRoleMenusLike" resultMap="roleMenu">
+        select * from permission_menu where
+        `level` LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+        or `key` LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+        or `name` LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+    </select>
+
+    <select id="countByPermissionIds" parameterType = "java.util.List" resultType="java.lang.Integer">
+        select count(*) from permission_menu
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM permission_menu WHERE id = #{id} or parent_id = #{id}
+    </delete>
+
+    <update id="updateMenu">
+        update permission_menu set
+        `level` = #{menu.level},
+        sort = #{menu.sort},
+        `key`= #{menu.key},
+        `name` = #{menu.name},
+        icon = #{menu.icon},
+        <if test="menu.menuId != menu.id">
+            parent_id = #{menu.menuId},
+        </if >
+        permission_id = #{menu.permissionId}
+        where id = #{menu.id}
+    </update>
+
+    <select id="findMenusByUsername" resultMap="roleMenu">
+        SELECT * FROM permission_menu WHERE
+        permission_id in
+        (SELECT permission_id FROM user_role_permission WHERE user_id = (SELECT id FROM admin_users WHERE username = #{username}))
+        order by sort
+    </select>
+</mapper>

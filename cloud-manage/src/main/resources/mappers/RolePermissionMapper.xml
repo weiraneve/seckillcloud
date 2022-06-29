@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiran.manage.mapper.RolePermissionMapper">
+    <resultMap id="rolePermission" type="com.weiran.manage.dto.RolePermissionDTO">
+        <result property="id" column="id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="permissionId" column="permission_id"/>
+
+        <association property="role" column="{roleId = role_id}" javaType="com.weiran.manage.dto.RoleDTO"
+                     select="com.weiran.manage.mapper.RoleMapper.findById"/>
+
+        <association property="permission" column="{permissionId = permission_id}" javaType="com.weiran.manage.dto.PermissionDTO"
+                     select="com.weiran.manage.mapper.PermissionMapper.findById"/>
+    </resultMap>
+
+
+    <select id="countByRoleIds" parameterType = "java.util.List" resultType="java.lang.Integer">
+        select count(*) from role_permission
+        where role_id in
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <select id="countByPermissionIds" parameterType = "java.util.List" resultType="java.lang.Integer">
+        select count(*) from role_permission
+        where permission_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="inserts">
+        insert into role_permission
+        (role_id,permission_id)
+        values
+        <foreach collection ="roleReq.permissionIds" item="permissionId" index= "index" separator =",">
+            (
+            #{roleReq.id},#{permissionId}
+            )
+        </foreach >
+    </insert>
+
+    <insert id="insertList">
+        insert into role_permission
+        (role_id,permission_id)
+        values
+        <foreach collection ="missionIds" item="missionId" index= "index" separator =",">
+            (
+            #{roleId},#{missionId}
+            )
+        </foreach >
+    </insert>
+
+    <delete id="deletesByRoleIds" parameterType = "java.util.List">
+        delete
+        from role_permission
+        where role_id in
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+
+    <delete id="deletesByPermissionIds" parameterType = "java.util.List">
+        delete
+        from role_permission
+        where permission_id in
+        <foreach collection="permissionIds" item="permissionId" open="(" separator="," close=")">
+            #{permissionId}
+        </foreach>
+        and role_id = #{roleId}
+    </delete>
+
+    <select id="findPermissionIdsByRoleId" resultType="java.lang.Integer">
+        select permission_id from role_permission where role_id = #{roleId}
+    </select>
+
+</mapper>

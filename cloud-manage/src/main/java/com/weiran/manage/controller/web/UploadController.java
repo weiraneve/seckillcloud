@@ -1,10 +1,14 @@
 package com.weiran.manage.controller.web;
 
 import com.weiran.common.obj.Result;
-import com.weiran.manage.service.web.ImageService;
-import com.weiran.manage.utils.qiniu.ImageKit;
+import com.weiran.manage.cloud.MissionClient;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -13,32 +17,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UploadController {
 
-    private final ImageService imageService;
+    private final MissionClient missionClient;
 
-    /**
-     * 上传图片
-     */
+    @ApiOperation("上传图片")
     @PostMapping
     public Result<Object> upload(@RequestParam("file") MultipartFile file, @RequestParam("type") Integer type) {
-        ImageKit image = imageService.upload(file, type);
-        return Result.success(image);
+        return missionClient.uploadPic(file, type);
     }
 
-    /**
-     * 删除图片
-     */
+    @ApiOperation("删除图片")
     @DeleteMapping
     public Result<Object> delete(@RequestParam("key") String key) {
-        imageService.delete(key);
-        return Result.success();
+        return missionClient.deletePic(key);
     }
 
-    /**
-     * 批量删除图片
-     */
+    @ApiOperation("批量删除图片")
     @DeleteMapping("/deletes")
     public Result<Object> deletes(@RequestParam("keys") String[] keys) {
-        imageService.deletes(keys);
-        return Result.success();
+        return missionClient.deletesPic(keys);
     }
 }

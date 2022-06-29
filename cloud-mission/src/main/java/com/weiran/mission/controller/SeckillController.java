@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("seckill")
 public class SeckillController  {
 
-    final SeckillService seckillService;
+    private final SeckillService seckillService;
 
     /**
      * 秒杀接口

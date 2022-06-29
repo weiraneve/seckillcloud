@@ -2,7 +2,7 @@ package com.weiran.manage.config.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.weiran.manage.mapper.admin.AdminUserMapper;
+import com.weiran.manage.mapper.AdminUserMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,7 +38,7 @@ public class JwtUserService implements UserDetailsService {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         Date now = new Date();
         Date expiresAt = new Date(now.getTime() + validityInMilliseconds);
-        //设置2小时后过期
+        // 设置2小时后过期
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(expiresAt)

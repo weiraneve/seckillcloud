@@ -1,14 +1,21 @@
 package com.weiran.manage.controller.admin;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.dto.admin.RoleDTO;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.manage.request.admin.RoleReq;
 import com.weiran.common.obj.Result;
-import com.weiran.manage.service.admin.RoleService;
+import com.weiran.manage.dto.RoleDTO;
+import com.weiran.manage.request.RoleReq;
+import com.weiran.manage.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 

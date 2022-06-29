@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiran.manage.mapper.RoleMapper">
+
+    <resultMap id="role" type="com.weiran.manage.dto.RoleDTO">
+        <result property="id" column="id"/>
+        <result property="role" column="role"/>
+        <result property="roleName" column="role_name"/>
+    </resultMap>
+
+    <resultMap id="roleDTO" type="com.weiran.manage.dto.RoleDTO">
+        <result property="id" column="id"/>
+        <result property="role" column="role"/>
+        <result property="roleName" column="role_name"/>
+        <collection property="permissions" column="{roleId = id}" ofType="com.weiran.manage.dto.PermissionDTO" javaType="ArrayList"
+                    select="com.weiran.manage.mapper.PermissionMapper.findByIdRoleId"/>
+    </resultMap>
+
+    <select id="findById" resultMap="role">
+        select * from role where id = #{roleId}
+    </select>
+
+    <select id="findByRoles" resultMap="roleDTO">
+        select * from role
+    </select>
+
+    <select id="findByRolesLike" resultMap="roleDTO">
+        select * from
+            role
+        where
+         role LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+         or role_name LIKE CONCAT( CONCAT( '%', #{search}, '%' ) )
+    </select>
+
+    <select id="findRolesByRoles" resultMap="role">
+        SELECT *
+        FROM role
+        WHERE FIND_IN_SET(role,#{roles})
+    </select>
+
+    <insert id="createRole" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into role
+        (role,role_name)
+        values
+        (#{role.role},#{role.roleName})
+    </insert>
+
+    <delete id="deletesByIds">
+        delete
+        from role
+        where id in
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+
+    <update id="updateRole">
+        update role set
+        role = #{role.role},
+        role_name = #{role.roleName}
+        where id = #{role.id}
+    </update>
+</mapper>

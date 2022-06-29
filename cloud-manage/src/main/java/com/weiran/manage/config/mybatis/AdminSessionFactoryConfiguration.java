@@ -19,11 +19,11 @@ import javax.sql.DataSource;
  * 持久层admin包配置
  */
 @Configuration
-@MapperScan(basePackages = "com.weiran.manage.mapper.admin", sqlSessionFactoryRef = "adminSqlSessionFactory")
+@MapperScan(basePackages = "com.weiran.manage.mapper", sqlSessionFactoryRef = "adminSqlSessionFactory")
 public class AdminSessionFactoryConfiguration {
 
     @Bean(name = "adminDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.admin")
+    @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource adminDataSource() {
         return DataSourceBuilder.create().build();
     }
@@ -42,8 +42,8 @@ public class AdminSessionFactoryConfiguration {
     public SqlSessionFactory activitySqlSessionFactory(@Qualifier("adminDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sfb = new SqlSessionFactoryBean();
         sfb.setDataSource(dataSource);
-        sfb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/admin/**.xml"));
-        sfb.setTypeAliasesPackage("com.weiran.manage.dto.admin");
+        sfb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/**.xml"));
+        sfb.setTypeAliasesPackage("com.weiran.manage.dto");
         sfb.setVfs(SpringBootVFS.class);
         SqlSessionFactory factory = sfb.getObject();
         assert factory != null;

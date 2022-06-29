@@ -136,9 +136,10 @@ SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分�
 - Swagger依赖版本可能会导致报错，doc.html页面功能需要另外加个依赖
 - 使用MP框架时，想要切换主键生成策略，那么在切换之前，最好对数据库表执行"TRUNCATE TABLE 'table name'" 操作，不然会有影响。
 - Druid 1.1.21以下的版本与MQ有冲突，高版本没有。1.1.22比较合适，更高版本的另外报错warn,连接失败。
-- Feign调用接口如果要传递参数，必须要用@RequestParam注解
 - Mysql Order是关键字，不能用来作为表名。
 - RabbitMQ(若使用RocketMQ则暂时没有多实例容器工厂的问题) 开启多实例容器工厂配置来代替单实例配置后，在消费者中需要手动进行确认消费。并且比起使用单实例模式，一些地方可能出现并发问题，比如更新秒杀库存表。这里使用即时读取Redis库存数字，写入缓存库存数字来试着解决。
+- Feign使用的同时，一些bug很多。比如文件上传，像项目中那样配置接口才可，在Feign接口使用@RequestPart，并将content-type修改。调用接口如果要传递参数，必须要用@RequestParam注解。以及FeignConfig中的配置也是值得商榷的地方。
+- 在MyBatisPlus与MyBatis共存之时，配置的XML文件中的Mapper层的函数不要与MP本身的方法冲突。以及要在模块中的application配置文件中申明XML地址。
 
 # 参考
 [如何设计一个秒杀系统总结](https://blog.csdn.net/yin767833376/article/details/103028616)

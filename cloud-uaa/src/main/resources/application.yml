@@ -10,7 +10,7 @@ spring:
     database: 0
     host: 127.0.0.1
     port: 6379
-    password: 123456
+    password:
     timeout: 5000 # 连接超时时间（毫秒）
   cloud:
     nacos:

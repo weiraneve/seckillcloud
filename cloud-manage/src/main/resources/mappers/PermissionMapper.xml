@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiran.manage.mapper.PermissionMapper">
+    <resultMap id="permission" type="com.weiran.manage.dto.PermissionDTO">
+        <result property="id" column="id"/>
+        <result property="permission" column="permission"/>
+        <result property="permissionName" column="permission_name"/>
+    </resultMap>
+
+    <select id="findByIdRoleId" resultMap="permission">
+        SELECT * FROM permission WHERE id IN (SELECT permission_id FROM role_permission where role_id = #{roleId})
+    </select>
+
+    <select id="findByAdminUserId" resultMap="permission">
+         select permission.id,permission.permission,permission.permission_name
+        from admin_users
+                 left join user_role_permission on admin_users.id = user_role_permission.user_id
+                 left join permission on user_role_permission.permission_id = permission.id
+        where admin_users.id  = #{adminUserId}
+    </select>
+
+    <select id="findById" resultMap="permission">
+        select * from permission where id = #{permissionId}
+    </select>
+
+    <select id="findByPermissions" resultMap="permission">
+        select * from permission
+    </select>
+
+    <select id="findPermissionsLikeBySearch" resultMap="permission">
+        select * from permission
+        where
+          permission like CONCAT( '%', #{search}, '%' )
+        or
+          permission_name like CONCAT( '%', #{search}, '%' )
+    </select>
+
+    <select id="findByPermission" resultMap="permission">
+         select * from permission where permission = #{permission}
+    </select>
+
+    <insert id="insert">
+        insert into permission
+        (permission,permission_name)
+        values
+        (#{permission.permission},#{permission.permissionName})
+    </insert>
+
+    <delete id="deletes" parameterType = "java.util.List">
+        delete
+        from permission
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="findByPermissionAndId" resultMap="permission">
+      select * from permission where permission != #{permission.permission}
+      and id = #{permission.id}
+    </select>
+
+    <update id="update">
+        update permission set
+        permission = #{permission.permission},
+        permission_name = #{permission.permissionName}
+        where id = #{permission.id}
+    </update>
+
+    <select id="findAll" resultMap="permission">
+        SELECT * FROM permission
+    </select>
+</mapper>

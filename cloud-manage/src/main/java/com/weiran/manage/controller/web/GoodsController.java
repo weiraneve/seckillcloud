@@ -1,12 +1,21 @@
 package com.weiran.manage.controller.web;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.dto.web.GoodsDTO;
 import com.weiran.common.obj.Result;
-import com.weiran.manage.service.web.GoodsService;
+import com.weiran.common.pojo.dto.GoodsDTO;
+import com.weiran.manage.cloud.MissionClient;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -18,73 +27,55 @@ import javax.validation.Valid;
 @RequestMapping("/goods")
 public class GoodsController {
 
-    private final GoodsService goodsService;
+    private final MissionClient missionClient;
 
-    /**
-     * 分页查询goods
-     */
+    @ApiOperation("分页查询goods")
     @GetMapping
     public Result<PageInfo<GoodsDTO>> goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                                  @RequestParam(required = false) String goodsName) {
-        PageInfo<GoodsDTO> goods = goodsService.findGoods(page, pageSize, goodsName);
-        return Result.success(goods);
+        return missionClient.goodsIndex(page, pageSize, goodsName);
     }
 
-    /**
-     * 新增goods
-     */
+    @ApiOperation("新增goods")
+    @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PostMapping
     public Result<Object> goodsCreate(@RequestBody @Valid GoodsDTO goodsDTO) {
-        return goodsService.create(goodsDTO);
+        return missionClient.goodsCreate(goodsDTO);
     }
 
-    /**
-     * 修改goods
-     */
+    @ApiOperation("修改goods")
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
     public Result<Object> goodsUpdate(@RequestBody @Valid GoodsDTO goodsDTO) {
-        return goodsService.update(goodsDTO);
+        return missionClient.goodsUpdate(goodsDTO);
     }
 
-    /**
-     * 选择单个goods
-     */
+    @ApiOperation("选择单个goods")
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/{id}/edit")
     public Result<GoodsDTO> goodsEdit(@PathVariable("id") Long id) {
-        GoodsDTO goodsDTO = goodsService.selectById(id);
-        return Result.success(goodsDTO);
+        return missionClient.goodsEdit(id);
     }
 
-    /**
-     * 修改是否可用
-     */
+    @ApiOperation("修改是否可用")
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/updateUsing/{id}")
     public Result<Object> goodsUsing(@PathVariable("id") Long id) {
-        goodsService.updateUsingById(id);
-        return Result.success();
+        return missionClient.goodsUsing(id);
     }
 
-    /**
-     * 单个删除
-     */
+    @ApiOperation("单个删除goods")
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_DELETE_USER','ROLE_SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public Result<Object> goodsDelete(@PathVariable("id") Long id) {
-        goodsService.delete(id);
-        return Result.success();
+        return missionClient.goodsDelete(id);
     }
 
-    /**
-     * 批量删除
-     */
+    @ApiOperation("批量删除")
     @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_DELETE_USER','ROLE_SUPER_ADMIN')")
     @DeleteMapping("/deletes")
     public Result<Object> goodsDeletes(@RequestParam String ids) {
-        goodsService.deletes(ids);
-        return Result.success();
+        return missionClient.goodsDeletes(ids);
     }
 
 }

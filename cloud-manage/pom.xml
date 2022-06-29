@@ -17,12 +17,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!-- 数据库加密配置-->
-        <dependency>
-            <groupId>com.github.ulisesbocchio</groupId>
-            <artifactId>jasypt-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
-        </dependency>
         <!--mysql-->
         <dependency>
             <groupId>mysql</groupId>
@@ -48,12 +42,6 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
             <version>2.2.0</version>
-        </dependency>
-        <!--七牛云-->
-        <dependency>
-            <groupId>com.qiniu</groupId>
-            <artifactId>qiniu-java-sdk</artifactId>
-            <version>7.7.0</version>
         </dependency>
         <!--Spring Security-->
         <dependency>
@@ -84,10 +72,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.79</version>
         </dependency>
-        <!--json-->
+        <!--Druid数据库连接池-->
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.2.4</version>
         </dependency>
     </dependencies>
 

@@ -1,14 +1,23 @@
 package com.weiran.manage.controller.admin;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.dto.admin.AdminUserDTO;
-import com.weiran.manage.request.admin.AdminUserPermissionDTO;
-import com.weiran.manage.request.admin.AdminUserReq;
 import com.weiran.common.obj.Result;
-import com.weiran.manage.service.admin.AdminUserService;
+import com.weiran.manage.dto.AdminUserDTO;
+import com.weiran.manage.request.AdminUserPermissionDTO;
+import com.weiran.manage.request.AdminUserReq;
+import com.weiran.manage.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -28,7 +37,7 @@ public class AdminUserController {
     @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ACCOUNT_ADMIN_USER')")
     @GetMapping
     public Result<PageInfo<AdminUserDTO>> findByAdminUsers(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                     @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, @RequestParam(required = false)  String search) {
+                                                           @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, @RequestParam(required = false)  String search) {
         PageInfo<AdminUserDTO> adminUsers = adminUserService.findByAdminUsers(page, pageSize,search);
         return Result.success(adminUsers);
     }

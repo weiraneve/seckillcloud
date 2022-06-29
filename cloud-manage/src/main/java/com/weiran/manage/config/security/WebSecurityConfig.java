@@ -1,7 +1,7 @@
 package com.weiran.manage.config.security;
 
 import com.weiran.manage.filter.OptionsRequestFilter;
-import com.weiran.manage.mapper.admin.AdminUserMapper;
+import com.weiran.manage.mapper.AdminUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
