@@ -1,7 +1,7 @@
 package com.weiran.mission.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.weiran.mission.entity.Goods;
+import com.weiran.mission.pojo.entity.Goods;
 import com.weiran.common.pojo.dto.GoodsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

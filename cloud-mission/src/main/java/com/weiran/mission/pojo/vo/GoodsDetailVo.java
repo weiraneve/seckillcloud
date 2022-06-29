@@ -1,6 +1,6 @@
-package com.weiran.mission.vo;
+package com.weiran.mission.pojo.vo;
 
-import com.weiran.mission.entity.Goods;
+import com.weiran.mission.pojo.entity.Goods;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

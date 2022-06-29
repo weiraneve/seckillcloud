@@ -1,7 +1,7 @@
 //package com.weiran.mission.rabbitmq.ackmodel.manual;
 //
 //import cn.hutool.json.JSONUtil;
-//import com.weiran.mission.entity.Order;
+//import com.weiran.mission.pojo.entity.Order;
 //import com.weiran.mission.manager.OrderManager;
 //import com.weiran.mission.rabbitmq.SeckillMessage;
 //import com.weiran.mission.rabbitmq.RabbitMqConstants;

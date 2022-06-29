@@ -1,4 +1,4 @@
-package com.weiran.mission.vo;
+package com.weiran.mission.pojo.vo;
 
 
 import io.swagger.annotations.ApiModel;

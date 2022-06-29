@@ -5,7 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.mission.entity.SeckillGoods;
+import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.mapper.SeckillGoodsMapper;
 import com.weiran.common.pojo.dto.SeckillGoodsDTO;

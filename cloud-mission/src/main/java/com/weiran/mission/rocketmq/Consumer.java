@@ -3,7 +3,7 @@ package com.weiran.mission.rocketmq;
 import cn.hutool.json.JSONUtil;
 import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.exception.SeckillException;
-import com.weiran.mission.entity.Order;
+import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.rabbitmq.SeckillMessage;
 import com.weiran.mission.service.SeckillGoodsService;
@@ -56,7 +56,7 @@ public class Consumer implements RocketMQListener<SeckillMessage> {
             Throwable cause = e.getCause();
             // 违反数据库唯一约束条件
             if (cause instanceof SQLIntegrityConstraintViolationException) {
-                log.warn("{}订单写入异步操作问题，可忽略", orderId);
+                log.warn("{}订单写入异步操作问题", orderId);
             } else {
                 e.printStackTrace();
             }

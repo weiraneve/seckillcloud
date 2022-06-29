@@ -3,7 +3,7 @@ package com.weiran.mission.service;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.obj.Result;
 import com.weiran.common.pojo.dto.GoodsDTO;
-import com.weiran.mission.vo.GoodsDetailVo;
+import com.weiran.mission.pojo.vo.GoodsDetailVo;
 
 import java.util.List;
 

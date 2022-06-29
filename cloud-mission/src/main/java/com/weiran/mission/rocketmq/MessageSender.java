@@ -25,8 +25,8 @@ public class MessageSender {
      * 参数2:  消息体 可以为一个对象
      * 参数3： 超时时间 毫秒
      */
-    public void syncSend(SeckillMessage seckillMessage) {
-        SendResult result = rocketMQTemplate.syncSend("seckill-topic:tag1", seckillMessage, 1000);
+    public void syncSend(SeckillMessage seckillMessage, String topic) {
+        SendResult result = rocketMQTemplate.syncSend(topic + ":tag1", seckillMessage, 1000);
         log.info("" + result);
     }
 
@@ -37,8 +37,8 @@ public class MessageSender {
      * 参数2:  消息体 可以为一个对象
      * 参数3： 回调对象
      */
-    public void asyncSend(SeckillMessage seckillMessage) {
-        rocketMQTemplate.asyncSend("seckill-topic:tag1", seckillMessage, new SendCallback() {
+    public void asyncSend(SeckillMessage seckillMessage, String topic) {
+        rocketMQTemplate.asyncSend(topic + ":tag1", seckillMessage, new SendCallback() {
             @Override
             public void onSuccess(SendResult sendResult) {
 //                log.info("回调sendResult:" + sendResult);
@@ -59,8 +59,8 @@ public class MessageSender {
      * 参数1： topic:tag
      * 参数2:  消息体 可以为一个对象
      */
-    public void sendOneWay(SeckillMessage seckillMessage) {
-        rocketMQTemplate.sendOneWay("seckill-topic:tag1", seckillMessage);
+    public void sendOneWay(SeckillMessage seckillMessage, String topic) {
+        rocketMQTemplate.sendOneWay(topic + ":tag1", seckillMessage);
     }
 
     /**
@@ -68,8 +68,8 @@ public class MessageSender {
      * 参数1： topic:tag
      * 参数2:  消息体 可以为一个对象
      */
-    public void sendOneWayOrderly(SeckillMessage seckillMessage) {
-        rocketMQTemplate.sendOneWayOrderly("seckill-topic:tag1", seckillMessage, "8888");
+    public void sendOneWayOrderly(SeckillMessage seckillMessage, String topic) {
+        rocketMQTemplate.sendOneWayOrderly(topic + ":tag1", seckillMessage, "8888");
     }
 
 }

@@ -1,4 +1,4 @@
-package com.weiran.mission.entity;
+package com.weiran.mission.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
@@ -10,26 +10,21 @@ import java.time.LocalDateTime;
 
 
 @Data
-@TableName("order_info")
-@ApiModel(description = "订单表")
-public class Order implements Serializable {
+@ApiModel(description = "库存表")
+public class SeckillGoods implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty("主键")
-    private Long id;
-
-    @ApiModelProperty("用户id")
-    private Long userId;
-
+    @TableId(value = "goods_id", type = IdType.AUTO)
     @ApiModelProperty("商品id")
     private Long goodsId;
+
+    @ApiModelProperty("剩余库存")
+    private int stockCount;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createdAt;
 
     @ApiModelProperty("更新时间")
     private LocalDateTime updatedAt;
-
 }

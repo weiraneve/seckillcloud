@@ -7,14 +7,14 @@ import com.weiran.common.obj.Result;
 
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.mission.entity.Goods;
-import com.weiran.mission.entity.Order;
+import com.weiran.mission.pojo.entity.Goods;
+import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.manager.GoodsManager;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.mapper.OrderMapper;
 import com.weiran.common.pojo.dto.OrderDTO;
 import com.weiran.mission.service.OrderService;
-import com.weiran.mission.vo.OrderDetailVo;
+import com.weiran.mission.pojo.vo.OrderDetailVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

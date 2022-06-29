@@ -1,7 +1,7 @@
 package com.weiran.mission.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.weiran.mission.entity.Order;
+import com.weiran.mission.pojo.entity.Order;
 import com.weiran.common.pojo.dto.OrderDTO;
 import org.apache.ibatis.annotations.Mapper;
 

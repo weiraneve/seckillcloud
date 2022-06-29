@@ -1,4 +1,4 @@
-package com.weiran.mission.entity;
+package com.weiran.mission.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

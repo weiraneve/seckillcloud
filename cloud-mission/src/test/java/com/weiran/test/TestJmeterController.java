@@ -11,9 +11,9 @@ import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.SM3Util;
-import com.weiran.mission.entity.Order;
-import com.weiran.mission.entity.SeckillGoods;
-import com.weiran.mission.entity.User;
+import com.weiran.mission.pojo.entity.Order;
+import com.weiran.mission.pojo.entity.SeckillGoods;
+import com.weiran.mission.pojo.entity.User;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.rabbitmq.SeckillMessage;
@@ -43,6 +43,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TestJmeterController {
 
+    public static final String SECKILL_TOPIC = "seckill-topic";
     final RedisService redisService;
     final RedisTemplate<String, Object> redisTemplate;
     final GoodsService goodsService;
@@ -66,9 +67,9 @@ public class TestJmeterController {
             // 用商品Id作为key，加载秒杀商品的剩余数量
             redisService.set(SeckillGoodsKey.seckillCount, "" + seckillGoods.getGoodsId(), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
             if (seckillGoods.getStockCount() > 0) {
-                localOverMap.put(seckillGoods.getId(), true);
+                localOverMap.put(seckillGoods.getGoodsId(), true);
             } else {
-                localOverMap.put(seckillGoods.getId(), false);
+                localOverMap.put(seckillGoods.getGoodsId(), false);
             }
         }
     }
@@ -160,7 +161,7 @@ public class TestJmeterController {
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
 //        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
-        messageSender.asyncSend(seckillMessage); // 这里使用RocketMQ
+        messageSender.asyncSend(seckillMessage, SECKILL_TOPIC); // 这里使用RocketMQ
 
         return Result.success(0); // 排队中
     }

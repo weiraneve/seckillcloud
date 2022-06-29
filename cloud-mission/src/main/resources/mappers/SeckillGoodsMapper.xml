@@ -5,7 +5,6 @@
 <mapper namespace="com.weiran.mission.mapper.SeckillGoodsMapper">
 
     <resultMap id="seckillResultMap" type="com.weiran.common.pojo.dto.SeckillGoodsDTO">
-        <result column="id" property="id"/>
         <result column="goods_id" property="goodsId"/>
         <result column="stock_count" property="stockCount"/>
     </resultMap>

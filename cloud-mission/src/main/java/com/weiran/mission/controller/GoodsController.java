@@ -2,7 +2,7 @@ package com.weiran.mission.controller;
 
 import com.weiran.common.obj.Result;
 import com.weiran.mission.service.GoodsService;
-import com.weiran.mission.vo.GoodsDetailVo;
+import com.weiran.mission.pojo.vo.GoodsDetailVo;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

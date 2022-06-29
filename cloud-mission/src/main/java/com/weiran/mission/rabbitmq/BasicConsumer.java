@@ -2,7 +2,7 @@
 //
 //import cn.hutool.json.JSONUtil;
 //
-//import com.weiran.mission.entity.Order;
+//import com.weiran.mission.pojo.entity.Order;
 //import com.weiran.mission.manager.OrderManager;
 //import com.weiran.mission.service.SeckillGoodsService;
 //import lombok.RequiredArgsConstructor;
