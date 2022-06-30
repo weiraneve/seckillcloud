@@ -162,6 +162,7 @@ SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分�
 [SpringBoot admin配置](https://blog.csdn.net/fenglllle/article/details/109342775)
 [Springboot admin 配合邮件警告](https://www.cnblogs.com/duanxz/p/9559385.html)
 [RocketMQ 知识点和使用](https://juejin.cn/post/6941913162870423588)
+[RocketMQ官方文档博客](https://www.itmuch.com/books/rocketmq/)
 [Hutool 国密使用文档](https://www.bookstack.cn/read/hutool-5.6.0-zh/9fd3df43ca890fc4.md)
 [SpringBoot Docker容器化部署](https://blog.csdn.net/DBC_121/article/details/105135260)
 [秒杀方案参考](https://segmentfault.com/a/1190000040743440)
