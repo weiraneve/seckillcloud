@@ -32,8 +32,7 @@ public class RedisLua {
                 "    end;";
 
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(stockScript, Long.class);
-        Long count = redisTemplate.execute(redisScript, Collections.singletonList(RedisConstant.SECKILL_KEY + goodsId));
-        return count;
+        return redisTemplate.execute(redisScript, Collections.singletonList(RedisConstant.SECKILL_KEY + goodsId));
 
     }
 
