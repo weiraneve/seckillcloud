@@ -1,6 +1,6 @@
 //package com.weiran.mission.rabbitmq.ackmodel.manual;
 //
-//import com.weiran.mission.rabbitmq.SeckillMessage;
+//import com.weiran.common.obj.SeckillMessage;
 //import com.weiran.mission.rabbitmq.RabbitMqConstants;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;

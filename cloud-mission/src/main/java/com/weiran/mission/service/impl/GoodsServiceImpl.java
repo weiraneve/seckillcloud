@@ -17,6 +17,7 @@ import com.weiran.mission.mapper.SeckillGoodsMapper;
 import com.weiran.common.pojo.dto.GoodsDTO;
 import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.mission.service.GoodsService;
+import com.weiran.mission.utils.POJOConverter;
 import com.weiran.mission.utils.qiniu.ImageScalaKit;
 import com.weiran.mission.pojo.vo.GoodsDetailVo;
 import lombok.RequiredArgsConstructor;
@@ -155,9 +156,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     private void addGoodsToDatabase(GoodsDTO goodsDTO) {
-        SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
-        seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
-        seckillGoodsDTO.setGoodsId(goodsDTO.getId());
+        SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
         seckillGoodsMapper.addSeckillGoods(seckillGoodsDTO);
     }
 
@@ -230,9 +229,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     private void updateGoodsTOSeckillDatabase(GoodsDTO goodsDTO) {
-        SeckillGoodsDTO seckillGoodsDTO = new SeckillGoodsDTO();
-        seckillGoodsDTO.setGoodsId(goodsDTO.getId());
-        seckillGoodsDTO.setStockCount(goodsDTO.getGoodsStock());
+        SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
         seckillGoodsMapper.updateSeckillGoods(seckillGoodsDTO);
     }
 

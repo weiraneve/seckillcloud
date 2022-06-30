@@ -1,4 +1,4 @@
-package com.weiran.mission.rabbitmq;
+package com.weiran.common.obj;
 
 
 import lombok.Data;

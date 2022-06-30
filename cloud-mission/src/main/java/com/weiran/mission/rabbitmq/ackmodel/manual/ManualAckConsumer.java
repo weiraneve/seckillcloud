@@ -3,7 +3,7 @@
 //import cn.hutool.json.JSONUtil;
 //import com.weiran.mission.pojo.entity.Order;
 //import com.weiran.mission.manager.OrderManager;
-//import com.weiran.mission.rabbitmq.SeckillMessage;
+//import com.weiran.common.obj.SeckillMessage;
 //import com.weiran.mission.rabbitmq.RabbitMqConstants;
 //import com.rabbitmq.client.Channel;
 //import com.weiran.mission.service.SeckillGoodsService;

@@ -1,6 +1,7 @@
 //package com.weiran.mission.rabbitmq;
 //
 //import cn.hutool.json.JSONUtil;
+//import com.weiran.common.obj.SeckillMessage;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.amqp.rabbit.core.RabbitTemplate;

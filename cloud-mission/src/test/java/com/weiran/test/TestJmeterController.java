@@ -1,7 +1,6 @@
 package com.weiran.test;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.weiran.common.enums.RedisConstant;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.exception.SeckillException;
@@ -9,6 +8,7 @@ import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
+import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.SM3Util;
 import com.weiran.mission.pojo.entity.Order;
@@ -16,13 +16,12 @@ import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.pojo.entity.User;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
-import com.weiran.mission.rabbitmq.SeckillMessage;
+import com.weiran.common.obj.SeckillMessage;
 import com.weiran.mission.rocketmq.MessageSender;
 import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -43,14 +41,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TestJmeterController {
 
-    public static final String SECKILL_TOPIC = "seckill-topic";
+    public static final String SECKILL_TOPIC_TAG = "seckill-topic:tag1";
     final RedisService redisService;
     final RedisTemplate<String, Object> redisTemplate;
     final GoodsService goodsService;
     final OrderManager orderManager;
     final SeckillGoodsManager seckillGoodsManager;
     final MessageSender messageSender;
-
+    private final RedisLua redisLua;
     // 内存标记，减少redis访问
     private final HashMap<Long, Boolean> localOverMap = new HashMap<>();
 
@@ -124,34 +122,9 @@ public class TestJmeterController {
             throw new SeckillException(CodeMsg.REPEATED_SECKILL);
         }
 
-        // 判断是否已经秒杀到了, 防止重复秒杀
-//        Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
-//                .eq(Order::getUserId, userId)
-//                .eq(Order::getGoodsId, goodsId));
-//        if (order != null) {
-//            throw new SeckillException(CodeMsg.REPEATED_SECKILL);
-//        }
-
-//        // 查询剩余数量
-//        int stock = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
-//        if (stock <= 0) {
-//            localOverMap.put(goodsId, false);
-//            throw new SeckillException(CodeMsg.SECKILL_OVER);
-//        }
-////        // 预减库存
-//        redisService.decrease(SeckillGoodsKey.seckillCount, "" + goodsId);
-
-        // LUA脚本判断库存和预减库存
-        String stockScript = "local stock = tonumber(redis.call('get',KEYS[1]));" +
-                "if (stock <= 0) then" +
-                "    return -1;" +
-                "    end;" +
-                "if (stock > 0) then" +
-                "    return redis.call('incrby', KEYS[1], -1);" +
-                "    end;";
-        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(stockScript, Long.class);
-        Long count = redisTemplate.execute(redisScript, Collections.singletonList(RedisConstant.SECKILL_KEY + goodsId));
+        Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
+            localOverMap.put(goodsId, false);
             throw new SeckillException(CodeMsg.SECKILL_OVER);
         }
 
@@ -161,7 +134,7 @@ public class TestJmeterController {
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
 //        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
-        messageSender.asyncSend(seckillMessage, SECKILL_TOPIC); // 这里使用RocketMQ
+        messageSender.asyncSend(seckillMessage, SECKILL_TOPIC_TAG); // 这里使用RocketMQ
 
         return Result.success(0); // 排队中
     }

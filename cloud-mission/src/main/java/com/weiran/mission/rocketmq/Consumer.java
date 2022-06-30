@@ -5,7 +5,7 @@ import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.exception.SeckillException;
 import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.manager.OrderManager;
-import com.weiran.mission.rabbitmq.SeckillMessage;
+import com.weiran.common.obj.SeckillMessage;
 import com.weiran.mission.service.SeckillGoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
