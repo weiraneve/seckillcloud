@@ -153,6 +153,7 @@ SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分�
 [Jmeter常用的组件](https://cloud.tencent.com/developer/article/1638723?from=article.detail.1636441)
 [Java RabbitMQ快速入门教程](https://www.tizi365.com/topic/22.html)
 [RabbitMq 入门介绍](https://blog.csdn.net/Fiuty_Da/article/details/114252362?spm=1001.2014.3001.5502)
+[一篇文章把RabbitMQ、RocketMQ、Kafka三元归一介绍](https://mp.weixin.qq.com/s/EDJygTIry7HSS0dQOYSHhw)
 [高可用架构-消息队列](https://doocs.gitee.io/advanced-java/#/./docs/high-concurrency/how-to-ensure-high-availability-of-message-queues)
 [MyBatis-Plus 高级功能 —— 多数据源配置](https://blog.csdn.net/weixin_38111957/article/details/114100901)
 [Spring Cloud Gateway 自定义过滤器实现降级](https://cloud.tencent.com/developer/article/1650037)
