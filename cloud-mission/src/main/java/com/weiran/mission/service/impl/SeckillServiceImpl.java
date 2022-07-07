@@ -123,11 +123,11 @@ public class SeckillServiceImpl implements SeckillService {
         return redisService.get(UserKey.getById, loginToken, Long.class);
     }
 
-    // 客户端轮询查询是否下单成功
+    // 客户端-前端服务器轮询查询是否下单成功
     @Override
     public Result<Long> seckillResult(long goodsId, HttpServletRequest request) {
         long userId = getUserId(request);
-        long result; // orderId：成功，0：排队中，1：秒杀失败
+        long result; // orderId：成功; 0：排队中; -1：秒杀失败(秒杀时间已结束)
         // 查寻订单
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getUserId, userId)
@@ -137,7 +137,7 @@ public class SeckillServiceImpl implements SeckillService {
         } else {
             boolean isOver = getGoodsOver(goodsId);
             if (isOver) {
-                result = -1; // 秒杀失败
+                result = -1; // 秒杀失败(秒杀时间已结束)
             } else {
                 result = 0; // 排队中
             }
