@@ -29,23 +29,23 @@
 
 用户统一认证模块是给客户端秒杀模块提供认证功能，后台系统自己拥有独立的认证系统。项目整体的软件架构图如下。
 
-<img src="./docs/images/software_architecture_chart.png" alt="软件架构图" width="2755" />
+<img src="./docs/images/software_architecture_chart.png" alt="软件架构图" width="80%" />
 
 查看商品列表、查看商品详情和生成唯一的秒杀地址都有Redis参与，而订单写入则有消息队列参与。秒杀业务的流程图如下。
 
-<img src="./docs/images/seckill_flow_chart.png" alt="秒杀业务的流程图" width="1880" />
+<img src="./docs/images/seckill_flow_chart.png" alt="秒杀业务的流程图" width="60%" />
 
 使用Jmeter压力测试工具，Jmeter界面图如下
 
-<img src="./docs/images/Jmeter_interface_chart.png" alt="Jmeter界面图" width="1968" />
+<img src="./docs/images/Jmeter_interface_chart.png" alt="Jmeter界面图" width="100%" />
 
 使用Jmeter对于测试接口进行压力测试，我对于压力测试的考虑有不恰当的地方，写出的测试接口并不能真正模拟流量并发的环境，Jmeter压力测试图如下。
 
-<img src="./docs/images/pressure_test_chart.png" alt="Jmeter压力测试图" width="1634" />
+<img src="./docs/images/pressure_test_chart.png" alt="Jmeter压力测试图" width="100%" />
 
 SpringAdmin监控一览。
 
-<img src="./docs/images/monitor_interface.png" alt="SpringAdmin监控一览" width="2856" />
+<img src="./docs/images/monitor_interface.png" alt="SpringAdmin监控一览" width="100%" />
 
 # 如何使用
 - 首先将SQL导入自己的数据库，用户名root、密码123456即可。Mysql的表名得是SQL文件名。因为使用了分库分表，所以五张表对应五个数据库。
@@ -78,7 +78,6 @@ SpringAdmin监控一览。
 - cloud-mission使用Feign被cloud-manage模块调用接口，并且是MyBatisPlus与MyBatis共存使用。
 
 # 未来展望
-- 对于数据库的分库分表操作进行完成度更高地重构。
 - Nginx对于Redis的分布式的一些配置未来也可以用上，Nginx均衡负载，集群分布式等，增加高可用的程度。
 - 数据库的容灾，可以在云数据库厂商直接配置。主从结构，定时备份。也可以用容器构建。集群部署，主从分离，定时备份。
 - 本身项目中秒杀模块也有注解加拦截器负责限流。关于限流、熔断等功能，还可以由网关来承载，这可能是未来改进的一个方向，项目中是以自定义注解加拦截器来限流。
