@@ -20,32 +20,48 @@ spring:
     admin:
       client:
         url: http://localhost:8890 # Spring Boot Admin 监控服务器端地址
+  autoconfigure:
+    # 排除 Druid 自动配置
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   datasource:
+    # 指定使用 Druid 数据源
     type: com.alibaba.druid.pool.DruidDataSource
+    dynamic:
+      datasource:
+        goods:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/cloud-mission-goods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          username: root
+          password: 123456
+        order:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/cloud-mission-order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          username: root
+          password: 123456
+        seckill:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/cloud-mission-seckillGoods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          username: root
+          password: 123456
+      primary: order # 设置默认的数据源或者数据源组,默认值即为master
+      strict: true # 严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
     druid:
-      driverClassName: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/cloud-mission?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
-      username: root
-      password: 123456
-      initial-size: 5 # 初始化连接大小
-      max-active: 20 # 最大连接池数量
-      min-idle: 5 # 最小连接池数量
-      max-wait: 60000 # 获取连接时最大等待时间，单位毫秒
-      pool-prepared-statements: false # 是否开启PSCache，PSCache对支持游标的数据库性能提升巨大，oracle建议开启，mysql下建议关闭
-      max-pool-prepared-statement-per-connection-size: 20 # 开启poolPreparedStatements后生效
-      time-between-eviction-runs-millis: 60000 # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-      min-evictable-idle-time-millis: 300000 # 配置一个连接在池中最小生存的时间，单位是毫秒
-      max-evictable-idle-time-millis: 60000
-      validation-query: SELECT 1 FROM DUAL # 测试连接
-      # validation-query-timeout: 5000
-      test-on-borrow: false # 获取连接时执行检测，建议关闭，影响性能
-      test-on-return: false # 归还连接时执行检测，建议关闭，影响性能
-      test-while-idle: true # 申请连接的时候检测，建议配置为true，不影响性能，并且保证安全性
-      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 # 通过connectProperties属性来打开mergeSql功能;慢SQL记录
-      filters: stat,wall # 配置扩展插件，常用的插件有=>stat:监控统计  log4j:日志  wall:防御sql注入
-      stat-view-servlet:
-        enabled: true
-        url-pattern: /druid/* # druid监控页面，账号和密码都在配置类代码中配置
+      # 初始连接数
+      initialSize: 5
+      # 最小连接池数量
+      minIdle: 10
+      # 最大连接池数量
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+      # 配置检测连接是否有效
+      validationQuery: SELECT 1 FROM DUAL
 
 #  rabbitmq:
 #    host: localhost

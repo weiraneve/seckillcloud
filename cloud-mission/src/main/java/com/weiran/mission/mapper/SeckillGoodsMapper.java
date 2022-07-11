@@ -1,5 +1,6 @@
 package com.weiran.mission.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.common.pojo.dto.SeckillGoodsDTO;
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
+@DS("seckill")
 public interface SeckillGoodsMapper extends BaseMapper<SeckillGoods> {
 
     /**

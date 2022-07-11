@@ -7,7 +7,7 @@
 - [后台系统前端服务器](https://github.com/weiran1999/admin-manager)
 
 # 简介
-项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RocketMQ等一系列技术栈(项目中也有RabbitMQ，只是被替换掉)，优化项目中的消息队列与缓存等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
+项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RocketMQ等一系列技术栈(项目中也有RabbitMQ，只是被替换掉)，优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
 
 ## 项目模块
 因为是用微服务架构构建的项目，很多地方需要一些微服务必须的组件。下面简单介绍一些项目模块。
@@ -29,26 +29,26 @@
 
 用户统一认证模块是给客户端秒杀模块提供认证功能，后台系统自己拥有独立的认证系统。项目整体的软件架构图如下。
 
-<img src="./docs/images/software_architecture_chart.png" alt="软件架构图" width="80%" />
+<img src="./docs/images/software_architecture_chart.png" alt="软件架构图" width="2755" />
 
 查看商品列表、查看商品详情和生成唯一的秒杀地址都有Redis参与，而订单写入则有消息队列参与。秒杀业务的流程图如下。
 
-<img src="./docs/images/seckill_flow_chart.png" alt="秒杀业务的流程图" width="60%" />
+<img src="./docs/images/seckill_flow_chart.png" alt="秒杀业务的流程图" width="1880" />
 
 使用Jmeter压力测试工具，Jmeter界面图如下
 
-<img src="./docs/images/Jmeter_interface_chart.png" alt="Jmeter界面图" width="100%" />
+<img src="./docs/images/Jmeter_interface_chart.png" alt="Jmeter界面图" width="1968" />
 
 使用Jmeter对于测试接口进行压力测试，我对于压力测试的考虑有不恰当的地方，写出的测试接口并不能真正模拟流量并发的环境，Jmeter压力测试图如下。
 
-<img src="./docs/images/pressure_test_chart.png" alt="Jmeter压力测试图" width="100%" />
+<img src="./docs/images/pressure_test_chart.png" alt="Jmeter压力测试图" width="1634" />
 
 SpringAdmin监控一览。
 
-<img src="./docs/images/monitor_interface.png" alt="SpringAdmin监控一览" width="100%" />
+<img src="./docs/images/monitor_interface.png" alt="SpringAdmin监控一览" width="2856" />
 
 # 如何使用
-- 首先将SQL导入自己的数据库，用户名root、密码123456即可。Mysql的表名得是SQL文件名。
+- 首先将SQL导入自己的数据库，用户名root、密码123456即可。Mysql的表名得是SQL文件名。因为使用了分库分表，所以五张表对应五个数据库。
 - 启动Nacos，如果没有则先安装，安装后按网上文章博客启动。
 - 启动本地的Redis，密码为空即可。如果本地没有安装Redis，则先安装。
 - 如果使用RocketMQ则启动本地的RocketMQ（如果使用RabbitMQ，则进行相似步骤），用户名和密码才去默认即可。如果本地没有安装RocketMQ，则先安装。如果使用RocketMQ，则可以先下载RocketMQ与可视化软件，然后分别启动。

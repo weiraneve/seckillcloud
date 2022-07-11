@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 80028
  Source Host           : localhost:3306
- Source Schema         : cloud-mission
+ Source Schema         : cloud-mission-goods
 
  Target Server Type    : MySQL
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 29/06/2022 18:06:05
+ Date: 10/07/2022 14:43:06
 */
 
 SET NAMES utf8mb4;
@@ -44,51 +44,6 @@ INSERT INTO `goods` (`id`, `goods_name`, `goods_img`, `is_using`, `goods_title`,
 INSERT INTO `goods` (`id`, `goods_name`, `goods_img`, `is_using`, `goods_title`, `goods_price`, `goods_stock`, `start_time`, `end_time`, `created_at`, `updated_at`) VALUES (2, '商品2', 'http://rel.weiran.ltd/goods/11b1512bf69d405b8cef35ee70dfba1f.jpg', b'1', '商品2业务', 30, 100, '2022-01-08 00:00:00', '2022-01-09 00:00:00', '2022-03-02 18:21:14', '2022-03-21 15:57:37');
 INSERT INTO `goods` (`id`, `goods_name`, `goods_img`, `is_using`, `goods_title`, `goods_price`, `goods_stock`, `start_time`, `end_time`, `created_at`, `updated_at`) VALUES (3, '商品3', 'http://rel.weiran.ltd/goods/02213bd5574b4648b44764d51a75fb87.jpg', b'1', '商品3业务', 30, 100, '2022-03-08 00:00:00', '2022-03-09 00:00:00', '2022-03-02 18:21:14', '2022-03-21 15:57:41');
 INSERT INTO `goods` (`id`, `goods_name`, `goods_img`, `is_using`, `goods_title`, `goods_price`, `goods_stock`, `start_time`, `end_time`, `created_at`, `updated_at`) VALUES (4, '商品4', 'http://rel.weiran.ltd/goods/030f9b57692a46b8a0bbca557aca2653.jpg', b'1', '商品4业务', 30, 100, '2022-02-28 00:00:00', '2022-03-28 00:00:00', '2022-03-02 18:21:14', '2022-03-21 15:57:46');
-COMMIT;
-
--- ----------------------------
--- Table structure for order_info
--- ----------------------------
-DROP TABLE IF EXISTS `order_info`;
-CREATE TABLE `order_info` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id` bigint DEFAULT NULL COMMENT '用户id',
-  `goods_id` bigint DEFAULT NULL COMMENT '商品id',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `order_goods_id` (`goods_id`),
-  CONSTRAINT `order_goods_id` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1000002 DEFAULT CHARSET=utf8mb3 COMMENT='订单表';
-
--- ----------------------------
--- Records of order_info
--- ----------------------------
-BEGIN;
-INSERT INTO `order_info` (`id`, `user_id`, `goods_id`, `created_at`, `updated_at`) VALUES (1000001, 1, 1, '2022-06-29 17:57:42', '2022-06-29 17:57:42');
-COMMIT;
-
--- ----------------------------
--- Table structure for seckill_goods
--- ----------------------------
-DROP TABLE IF EXISTS `seckill_goods`;
-CREATE TABLE `seckill_goods` (
-  `goods_id` bigint NOT NULL COMMENT '商品id',
-  `stock_count` int NOT NULL DEFAULT '0' COMMENT '剩余库存',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`goods_id`) USING BTREE,
-  CONSTRAINT `seckill_goods_id` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='库存表';
-
--- ----------------------------
--- Records of seckill_goods
--- ----------------------------
-BEGIN;
-INSERT INTO `seckill_goods` (`goods_id`, `stock_count`, `created_at`, `updated_at`) VALUES (1, 199, '2022-03-02 18:21:36', '2022-06-29 18:02:57');
-INSERT INTO `seckill_goods` (`goods_id`, `stock_count`, `created_at`, `updated_at`) VALUES (2, 100, '2022-03-02 18:21:36', '2022-03-25 21:01:11');
-INSERT INTO `seckill_goods` (`goods_id`, `stock_count`, `created_at`, `updated_at`) VALUES (3, 100, '2022-03-02 18:21:36', '2022-03-25 21:01:14');
-INSERT INTO `seckill_goods` (`goods_id`, `stock_count`, `created_at`, `updated_at`) VALUES (4, 100, '2022-03-02 18:21:36', '2022-03-25 21:01:16');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

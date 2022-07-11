@@ -131,6 +131,11 @@ Spring Boot Admin 可以监控 Spring Boot 单机或集群项目，它提供详�
 ## 国密算法
 SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分组密码算法，SM2为非对称加密，即有公钥加密，私钥解密。对称加密为统一公钥加密。
 
+## 订单号生成
+- 生成原则：
+1.全局的唯一性 2.自增长 3.长度的要求 4.具有一定的可读性 5.保密,不可推测性 6.效率性
+- 常见的ID生成策略。 1. 数据库自增长序列或字段 2. UUID 3. UUID的变种*【UUID to Int64;NHibernate在其主键生成方式中提供了Comb算法（combined guid/timestamp）】 4. Redis生成ID 5. Twitter的snowflake算法 6. 利用zookeeper的znode生成唯一ID 7. MongoDB的ObjectId
+
 # 解决的疑难杂症
 - 当使用网关时，静态资源可以放网关下，如果是分别放下游服务静态资源包中，需要在代码中的js、css和img的路径加上/static/，和gateway配置中路径加上 /static/
 - Swagger依赖版本可能会导致报错，doc.html页面功能需要另外加个依赖
@@ -140,6 +145,7 @@ SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分�
 - RabbitMQ(若使用RocketMQ则暂时没有多实例容器工厂的问题) 开启多实例容器工厂配置来代替单实例配置后，在消费者中需要手动进行确认消费。并且比起使用单实例模式，一些地方可能出现并发问题，比如更新秒杀库存表。这里使用即时读取Redis库存数字，写入缓存库存数字来试着解决。
 - Feign使用的同时，一些bug很多。比如文件上传，像项目中那样配置接口才可，在Feign接口使用@RequestPart，并将content-type修改。调用接口如果要传递参数，必须要用@RequestParam注解。以及FeignConfig中的配置也是值得商榷的地方。
 - 在MyBatisPlus与MyBatis共存之时，配置的XML文件中的Mapper层的函数不要与MP本身的方法冲突。以及要在模块中的application配置文件中申明XML地址。
+- 使用dynamic-datasource这个依赖来分库分表时，主库不设计为order会出问题。然后也集成了druid连接池。
 
 # 参考
 [如何设计一个秒杀系统总结](https://blog.csdn.net/yin767833376/article/details/103028616)
