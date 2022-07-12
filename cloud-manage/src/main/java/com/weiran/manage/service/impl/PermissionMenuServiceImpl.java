@@ -45,7 +45,7 @@ public class PermissionMenuServiceImpl implements PermissionMenuService {
 
     @Override
     public void deleteById(String id) {
-        //并且删除子菜单
+        // 并且删除子菜单
         permissionMenuMapper.deleteById(id);
     }
 

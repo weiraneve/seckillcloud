@@ -27,7 +27,7 @@ public interface AdminUserService {
     /**
      * 修改用户密码
      */
-    String updatePass(AdminUserPassReq adminUserDTO);
+    String updatePass(AdminUserPassReq adminUserReq);
 
 
     /**
@@ -63,7 +63,7 @@ public interface AdminUserService {
     /**
      * 修改管理员权限
      */
-    void patchAdminUserPermission(AdminUserPermissionDTO adminUserPermissionDTO);
+    void patchAdminUserPermission(AdminUserPermissionReq adminUserPermissionReq);
 
 
     /**

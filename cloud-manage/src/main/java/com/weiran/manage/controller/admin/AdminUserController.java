@@ -3,7 +3,7 @@ package com.weiran.manage.controller.admin;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.obj.Result;
 import com.weiran.manage.dto.AdminUserDTO;
-import com.weiran.manage.request.AdminUserPermissionDTO;
+import com.weiran.manage.request.AdminUserPermissionReq;
 import com.weiran.manage.request.AdminUserReq;
 import com.weiran.manage.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +57,8 @@ public class AdminUserController {
      */
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PatchMapping
-    public Result<Object> patchAdminUserPermission(@RequestBody @Valid AdminUserPermissionDTO adminUserPermissionDTO) {
-        adminUserService.patchAdminUserPermission(adminUserPermissionDTO);
+    public Result<Object> patchAdminUserPermission(@RequestBody @Valid AdminUserPermissionReq adminUserPermissionReq) {
+        adminUserService.patchAdminUserPermission(adminUserPermissionReq);
         return Result.success();
     }
 

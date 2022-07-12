@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 
 @Data
-public class AdminUserPermissionDTO {
+public class AdminUserPermissionReq {
 
     @NotBlank(message = "id是必须的")
     private Integer id;

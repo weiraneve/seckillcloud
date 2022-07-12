@@ -29,17 +29,11 @@ import java.util.stream.Collectors;
 public class AdminUserServiceImpl implements AdminUserService {
 
     private final JwtUserService jwtUserService;
-
     private final AdminUserMapper adminUserMapper;
-
     private final RolePermissionMapper rolePermissionMapper;
-
     private final UserRolePermissionMapper userRolePermissionMapper;
-
     private final RoleMapper roleMapper;
-
     private final PermissionMenuMapper permissionMenuMapper;
-
 
     @Override
     public Optional<AdminUserDTO> findByUsername(String username) {
@@ -53,19 +47,23 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public String updatePass(AdminUserPassReq adminUserDTO) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String password = passwordEncoder.encode(adminUserDTO.getPassword());
-        adminUserMapper.updatePass(adminUserDTO.getUsername(),password);
+    public String updatePass(AdminUserPassReq adminUserReq) {
+        String password = encodePass(adminUserReq.getPassword());
+        adminUserMapper.updatePass(adminUserReq.getUsername(), password);
         AdminUserDTO user = new AdminUserDTO();
-        user.setUsername(adminUserDTO.getUsername());
-        user.setPassword(adminUserDTO.getPassword());
+        user.setUsername(adminUserReq.getUsername());
+        user.setPassword(adminUserReq.getPassword());
         return jwtUserService.saveUserLoginInfo(user);
+    }
+
+    private String encodePass(String password) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(password);
     }
 
     @Override
     public PageInfo<AdminUserDTO> findByAdminUsers(Integer page, Integer pageSize, String search) {
-        PageHelper.startPage(page,pageSize);
+        PageHelper.startPage(page, pageSize);
         List<AdminUserDTO> adminUsers;
         if (StringUtils.isEmpty(search)) {
             adminUsers = adminUserMapper.findByAdminUsers();
@@ -83,8 +81,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void createAdminUser(AdminUserReq adminUserReq) {
         // 创建管理员·加密密码
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String password = passwordEncoder.encode(adminUserReq.getPassword());
+        String password = encodePass(adminUserReq.getPassword());
         adminUserReq.setPassword(password);
         RoleDTO roleDTO = roleMapper.findById(adminUserReq.getRoleId());
         adminUserReq.setRole(roleDTO.getRole());
@@ -106,35 +103,34 @@ public class AdminUserServiceImpl implements AdminUserService {
     public void updateAdminUserInfo(AdminUserReq adminUserReq) {
         RoleDTO roleDTO = roleMapper.findById(adminUserReq.getRoleId());
         adminUserReq.setRole(roleDTO.getRole());
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String password = passwordEncoder.encode(adminUserReq.getPassword());
+        String password = encodePass(adminUserReq.getPassword());
         adminUserReq.setPassword(password);
         adminUserMapper.updateAdminUserInfo(adminUserReq);
         // 删除已有权限
         AdminUserDTO userDTO = adminUserMapper.findById(adminUserReq.getId());
         if (!userDTO.getRole().equals(roleDTO.getRole())) {
-            userRolePermissionMapper.deletesByUserIdAndRoleId(adminUserReq.getId(),userDTO.getRoles().get(0).getId());
+            userRolePermissionMapper.deletesByUserIdAndRoleId(adminUserReq.getId(), userDTO.getRoles().get(0).getId());
             List<Integer> rolePermissionIds = rolePermissionMapper.findPermissionIdsByRoleId(adminUserReq.getRoleId());
             // 创建权限关系
-            userRolePermissionMapper.inserts(adminUserReq.getId(),adminUserReq.getRoleId(),rolePermissionIds);
+            userRolePermissionMapper.inserts(adminUserReq.getId(),adminUserReq.getRoleId(), rolePermissionIds);
         }
     }
 
     @Override
-    public void patchAdminUserPermission(AdminUserPermissionDTO adminUserPermissionDTO) {
-        List<Integer> permissionIds = userRolePermissionMapper.findByUserId(adminUserPermissionDTO.getId());
-        List<Integer> integers = Arrays.asList((Integer[]) ConvertUtils.convert(adminUserPermissionDTO.getPermissionIds(), Integer.class));
+    public void patchAdminUserPermission(AdminUserPermissionReq adminUserPermissionReq) {
+        List<Integer> permissionIds = userRolePermissionMapper.findByUserId(adminUserPermissionReq.getId());
+        List<Integer> integers = Arrays.asList((Integer[]) ConvertUtils.convert(adminUserPermissionReq.getPermissionIds(), Integer.class));
         // 相同权限不变
         List<Integer> saveList = integers.stream().filter(permissionIds::contains).collect(Collectors.toList());
         List<Integer> missionIds = new ArrayList<>(integers);
         missionIds.removeAll(saveList);
         // 多余权限新增
         if (missionIds.size() != 0) {
-            userRolePermissionMapper.inserts(adminUserPermissionDTO.getId(),0,missionIds);
+            userRolePermissionMapper.inserts(adminUserPermissionReq.getId(),0, missionIds);
         }
         permissionIds.removeAll(saveList);
         if (permissionIds.size() != 0) {
-            userRolePermissionMapper.deletesByPermissionIds(permissionIds,adminUserPermissionDTO.getId());
+            userRolePermissionMapper.deletesByPermissionIds(permissionIds, adminUserPermissionReq.getId());
         }
     }
 

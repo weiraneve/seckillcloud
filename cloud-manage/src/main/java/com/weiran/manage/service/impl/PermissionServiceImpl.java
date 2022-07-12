@@ -25,16 +25,13 @@ import java.util.Optional;
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionMapper permissionMapper;
-
     private final PermissionMenuMapper permissionMenuMapper;
-
     private final RolePermissionMapper rolePermissionMapper;
-
     private final UserRolePermissionMapper userRolePermissionMapper;
 
     @Override
     public PageInfo<PermissionDTO> findByPermissions(Integer page, Integer pageSize, String search) {
-        PageHelper.startPage(page,pageSize);
+        PageHelper.startPage(page, pageSize);
         List<PermissionDTO> permissions;
         if (StringUtils.isEmpty(search)) {
             permissions = permissionMapper.findByPermissions();

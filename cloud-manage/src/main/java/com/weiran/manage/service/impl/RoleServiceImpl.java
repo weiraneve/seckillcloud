@@ -27,14 +27,12 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
-
     private final RolePermissionMapper rolePermissionMapper;
-
     private final UserRolePermissionMapper userRolePermissionMapper;
 
     @Override
     public PageInfo<RoleDTO> findByRoles(Integer page, Integer pageSize, String search) {
-        PageHelper.startPage(page,pageSize);
+        PageHelper.startPage(page, pageSize);
         List<RoleDTO> roles;
         if (StringUtils.isEmpty(search)) {
             roles = roleMapper.findByRoles();
@@ -80,7 +78,7 @@ public class RoleServiceImpl implements RoleService {
         missionIds.removeAll(saveList);
         // 多余权限新增
         if (missionIds.size() != 0) {
-            Integer rows = rolePermissionMapper.insertList(missionIds,roleReq.getId());
+            Integer rows = rolePermissionMapper.insertList(missionIds, roleReq.getId());
             if (rows <= 0) {
                 throw new CustomizeException(ResponseEnum.PERMISSION_UPDATE_ERROR);
             }
