@@ -7,7 +7,7 @@
 - [后台系统前端服务器](https://github.com/weiran1999/admin-manager)
 
 # 简介
-项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RocketMQ等一系列技术栈(项目中也有RabbitMQ，只是被替换掉)，优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
+项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RocketMQ等一系列技术栈，优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
 
 ## 项目模块
 因为是用微服务架构构建的项目，很多地方需要一些微服务必须的组件。下面简单介绍一些项目模块。
@@ -51,7 +51,7 @@ SpringAdmin监控一览。
 - 首先将SQL导入自己的数据库，用户名root、密码123456即可。Mysql的表名得是SQL文件名。因为使用了分库分表，所以五张表对应五个数据库。
 - 启动Nacos，如果没有则先安装，安装后按网上文章博客启动。
 - 启动本地的Redis，密码为空即可。如果本地没有安装Redis，则先安装。
-- 如果使用RocketMQ则启动本地的RocketMQ（如果使用RabbitMQ，则进行相似步骤），用户名和密码才去默认即可。如果本地没有安装RocketMQ，则先安装。如果使用RocketMQ，则可以先下载RocketMQ与可视化软件，然后分别启动。
+- 启动本地的RocketMQ(没有则安装，网上搜索如何安装RocketMQ与可视化软件)，用户名和密码默认即可。
 - 依次启动项目中的cloud-gateway、cloud-uaa、cloud-mission、cloud-manage模块，如果不用到后台管理系统可以不启动cloud-manage模块。
 - 其中参数都可以了解后自行在项目里更改。
 - cloud-monitor模块的SpringBoot Admin监控技术栈，使用只需要开启网关后访问http://localhost:8205/monitor 或者直接访问monitor端口。
@@ -64,7 +64,7 @@ SpringAdmin监控一览。
 
 # 秒杀的代码逻辑
 - 关于秒杀的业务逻辑，用户访问，在uaa模块登入时，进行资格筛选，认证后。进入秒杀商品列表页面，点入秒杀商品详情后，点击立即秒杀，如果在规定时间内（按钮没有置灰），并且没有重复秒杀，则开启秒杀。
-- 这里涉及到秒杀接口的URL加盐动态化，后端相关的秒杀代码，没有选择Redis的LUA脚本和Redisson分布式锁，因为项目中没有使用过多的Redis事务逻辑和Redis分布式逻辑。秒杀主要运用的是Redis库存预热加载和Redis预减库存解决超卖，RabbitMQ(RocketMQ)消息队列使用串行化，保证项目的高可用和高并发。
+- 这里涉及到秒杀接口的URL加盐动态化，后端相关的秒杀代码，没有选择Redis的LUA脚本和Redisson分布式锁，因为项目中没有使用过多的Redis事务逻辑和Redis分布式逻辑。秒杀主要运用的是Redis库存预热加载和Redis预减库存解决超卖，RocketMQ消息队列使用串行化，保证项目的高可用和高并发。
 - 秒杀的策略配置，是由cloud-manage模块提供，持久层主要使用MyBatis完成。
 - 在后台系统中，在商品列表里增加一个商品，则会分别在商品表和库存表中分别增加对应的信息，以及在Redis缓存中的商品缓存和库存缓存中增加，并且也会在后台秒杀库存页面中显示。并且在商品信息中有是否启用这个信息以及对应的控制，不启用的时候，客户端访问商品列表只会显示那些缓存中的启用的商品信息。
 - 在后台中使用的SpringSecurity的JWT认证，而客户端使用的是自己写的Token加盐令牌的逻辑，每次客户端访问接口就需要前端服务器传递token给后端验证。其中的客户端的登录和注册的密码，为了做到脱敏，都是前端服务器进行国密加密然后传输到后端存储。
