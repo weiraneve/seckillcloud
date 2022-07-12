@@ -17,17 +17,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--项目中集成通用代码-->
         <dependency>
             <groupId>com.weiran.seckillcloud</groupId>
             <artifactId>cloud-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--整合Rabbit-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-amqp</artifactId>-->
-<!--        </dependency>-->
-        <!--整合Rocket-->
+        <!--整合RocketMQ-->
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-spring-boot-starter</artifactId>
@@ -55,17 +51,6 @@
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
             <version>3.4.1</version><!--版本号-->
         </dependency>
-<!--        &lt;!&ndash;mybatis 代码生成器&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.baomidou</groupId>-->
-<!--            <artifactId>mybatis-plus-generator</artifactId>-->
-<!--            <version>3.5.1</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash;freemarker&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.freemarker</groupId>-->
-<!--            <artifactId>freemarker</artifactId>-->
-<!--        </dependency>-->
         <!--测试-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

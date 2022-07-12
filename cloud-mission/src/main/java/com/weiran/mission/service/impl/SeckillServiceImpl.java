@@ -102,7 +102,6 @@ public class SeckillServiceImpl implements SeckillService {
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
-//        manualAckPublisher.sendMsg(seckillMessage); // 这里使用的RabbitMQ多消费者实例，增加并发能力。使用BasicPublisher则是单一消费者实例
         messageSender.asyncSend(seckillMessage, SECKILL_TOPIC_TAG); // 这里使用RocketMQ
     }
 
