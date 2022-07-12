@@ -73,17 +73,21 @@ public class SeckillServiceImpl implements SeckillService {
         // 若为非，则为商品已经售完
         isCountOver(goodsId);
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
+        getOrderId(goodsId, userId);
+        // LUA脚本判断库存和预减库存
+        luaCheckAndReduceStock(goodsId);
+        // 入队
+        handleMQ(goodsId, userId);
+        return Result.success(0); // 排队中
+    }
+
+    private void getOrderId(long goodsId, long userId) {
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
         if (order != null) {
             throw new SeckillException(CodeMsg.REPEATED_SECKILL);
         }
-        // LUA脚本判断库存和预减库存
-        luaCheckAndReduceStock(goodsId);
-        // 入队
-        doMQ(goodsId, userId);
-        return Result.success(0); // 排队中
     }
 
     private void isCountOver(long goodsId) {
@@ -93,7 +97,7 @@ public class SeckillServiceImpl implements SeckillService {
         }
     }
 
-    private void doMQ(long goodsId, long userId) {
+    private void handleMQ(long goodsId, long userId) {
         SeckillMessage seckillMessage = new SeckillMessage();
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
@@ -127,22 +131,25 @@ public class SeckillServiceImpl implements SeckillService {
     @Override
     public Result<Long> seckillResult(long goodsId, HttpServletRequest request) {
         long userId = getUserId(request);
-        long result; // orderId：成功; 0：排队中; -1：秒杀失败(秒杀时间已结束)
+        // resultId 为 orderId：成功; 0：排队中; -1：秒杀失败(秒杀时间已结束)
+        long resultId = getResultId(goodsId, userId);
+        return Result.success(resultId);
+    }
+
+    private long getResultId(long goodsId, long userId) {
+        long resultId;
         // 查寻订单
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getUserId, userId)
                 .eq(Order::getGoodsId, goodsId));
         if (order != null) { // 秒杀成功
-            result = order.getId();
+            resultId = order.getId();
+        } else if (getGoodsIsOver(goodsId)) {
+            resultId = -1; // 秒杀失败(秒杀时间已结束)
         } else {
-            boolean isOver = getGoodsOver(goodsId);
-            if (isOver) {
-                result = -1; // 秒杀失败(秒杀时间已结束)
-            } else {
-                result = 0; // 排队中
-            }
+            resultId = 0; // 排队中
         }
-        return Result.success(result);
+        return resultId;
     }
 
     // 返回一个唯一的path的id
@@ -174,7 +181,7 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     // 查看秒杀商品是否已经结束
-    private boolean getGoodsOver(long goodsId) {
+    private boolean getGoodsIsOver(long goodsId) {
         return redisService.exists(SeckillKey.isGoodsOver, "" + goodsId);
     }
 }
