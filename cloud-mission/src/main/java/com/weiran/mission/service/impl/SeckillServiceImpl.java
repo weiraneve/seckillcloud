@@ -65,7 +65,7 @@ public class SeckillServiceImpl implements SeckillService {
 
     // 执行秒杀
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result<Integer> doSeckill(long goodsId, String path, HttpServletRequest request) {
         long userId = getUserId(request);
         // 验证path

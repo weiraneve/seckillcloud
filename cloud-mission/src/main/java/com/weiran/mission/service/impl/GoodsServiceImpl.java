@@ -23,6 +23,7 @@ import com.weiran.mission.pojo.vo.GoodsDetailVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -137,14 +138,16 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 新增商品
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result<Object> create(GoodsDTO goodsDTO) {
         try {
             goodsMapper.addGoods(goodsDTO);
+            SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
+            seckillGoodsMapper.addSeckillGoods(seckillGoodsDTO);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(ResponseEnum.Goods_CREATE_FAIL);
         }
-        addGoodsToDatabase(goodsDTO);
         // 表增加后，在缓存中增加
         addGoodsToCache(goodsDTO);
         return Result.success();
@@ -155,13 +158,9 @@ public class GoodsServiceImpl implements GoodsService {
         redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
     }
 
-    private void addGoodsToDatabase(GoodsDTO goodsDTO) {
-        SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
-        seckillGoodsMapper.addSeckillGoods(seckillGoodsDTO);
-    }
-
     // 删除指定商品
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
         GoodsDTO goodsDTO = goodsMapper.selectGoodsById(id);
         if (goodsDTO.getGoodsImg() != null) {
