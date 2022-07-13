@@ -1,7 +1,7 @@
 # 前言
 项目是基于Java微服务方案的商品秒杀系统。是前后端分离的项目，前端用React，后端为Java的微服务架构。
 
-项目本身用于学习，在一些地方还不够成熟，欢迎各位多多交流。
+项目本身用于学习，在一些地方还不够成熟。是我自己的毕业设计，欢迎各位多多交流。
 
 - [客户端前端服务器](https://github.com/weiran1999/seckill-front)
 - [后台系统前端服务器](https://github.com/weiran1999/admin-manager)
