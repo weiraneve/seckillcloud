@@ -92,7 +92,8 @@ public class UserServiceImpl implements UserService {
             userManager.save(getUserByRegisterParam(registerParam));
             log.info(registerParam.getRegisterMobile() + "用户注册成功");
         } catch (Exception e) {
-            log.info(registerParam.getRegisterMobile() + "用户注册失败");
+            log.error(registerParam.getRegisterMobile() + "用户注册失败");
+            log.error(e.toString());
             throw new RegisterException(CodeMsg.SERVER_ERROR);
         }
         return new Result<>(CodeMsg.SUCCESS);
@@ -132,7 +133,8 @@ public class UserServiceImpl implements UserService {
         try {
             userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
         } catch (Exception e) {
-            log.info(user.getPhone() + "用户更换密码失败");
+            log.error(user.getPhone() + "用户更换密码失败");
+            log.error(e.toString());
             throw new UpdatePassException((CodeMsg.UPDATE_PASSWORD_ERROR));
         }
         log.info(user.getPhone() + "用户更换密码成功");

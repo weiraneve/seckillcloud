@@ -47,7 +47,7 @@ public class Consumer implements RocketMQListener<SeckillMessage> {
         try {
             boolean flag = orderManager.save(order);
             if (!flag) {
-                log.warn("写入订单表失败: {}", JSONUtil.toJsonStr(seckillMessage));
+                log.error("写入订单表失败: {}", JSONUtil.toJsonStr(seckillMessage));
                 throw new SeckillException(CodeMsg.ORDER_WRITE_ERROR);
             }
             log.info("成功写入订单表: {}", JSONUtil.toJsonStr(seckillMessage));
@@ -56,10 +56,9 @@ public class Consumer implements RocketMQListener<SeckillMessage> {
             Throwable cause = e.getCause();
             // 违反数据库唯一约束条件
             if (cause instanceof SQLIntegrityConstraintViolationException) {
-                log.warn("{}订单写入异步操作问题", orderId);
-            } else {
-                e.printStackTrace();
+                log.error("{}订单写入异步操作问题", orderId);
             }
+            log.error(e.toString());
         }
     }
 }

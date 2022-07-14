@@ -48,7 +48,8 @@ public class RedisLua {
             DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(countScript, Long.class);
             return redisTemplate.execute(redisScript, Collections.singletonList(lockKey));
         } catch (Exception e) {
-            log.error("统计访问次数失败！！！", e);
+            log.error("统计访问次数失败！！！");
+            log.error(e.toString());
             return null;
         }
     }
@@ -64,7 +65,8 @@ public class RedisLua {
             // 限制60s访问5次
             redisTemplate.execute(redisScript, Collections.singletonList(lockKey));
         } catch (Exception e) {
-            log.error("增加访问次数失败！！！", e);
+            log.error("增加访问次数失败！！！");
+            log.error(e.toString());
         }
     }
 }

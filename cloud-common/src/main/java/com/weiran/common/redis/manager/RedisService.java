@@ -26,8 +26,7 @@ public class RedisService {
 			// 生成真正的key
 			String realKey  = prefix.getPrefix() + key;
 			String str = (String) redisTemplate.opsForValue().get(realKey);
-			T t =  BeanUtil.stringToBean(str, clazz);
-			return t;
+			return BeanUtil.stringToBean(str, clazz);
 		} catch (Exception e) {
 			log.error("获取单个对象失败,key为{}, 异常为{}", key, e);
 			return null;
@@ -85,11 +84,11 @@ public class RedisService {
 	/**
 	 * 判断key是否存在
 	 */
-	public <T> boolean exists(KeyPrefix prefix, String key) {
+	public boolean exists(KeyPrefix prefix, String key) {
 		try {
 			// 生成真正的key
 			String realKey  = prefix.getPrefix() + key;
-			return redisTemplate.hasKey(realKey);
+			return Boolean.TRUE.equals(redisTemplate.hasKey(realKey));
 		} catch (Exception e) {
 			log.error("判断key是否存在失败,key为{}, 异常为{}", key, e);
 			return false;
@@ -99,14 +98,13 @@ public class RedisService {
 	/**
 	 * 增加值(加1)
 	 */
-	public <T> Long increase(KeyPrefix prefix, String key) {
+	public <T> void increase(KeyPrefix prefix, String key) {
 		try {
 			// 生成真正的key
 			String realKey  = prefix.getPrefix() + key;
-			return redisTemplate.opsForValue().increment(realKey, 1);
+			redisTemplate.opsForValue().increment(realKey, 1);
 		} catch (Exception e) {
 			log.error("增加值(加1)失败,key为{}, 异常为{}", key, e);
-			return null;
 		}
 	}
 

@@ -7,6 +7,7 @@ import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.exception.CustomizeException;
 import com.weiran.mission.config.qiniu.QiNiuProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ImageScalaKit {
@@ -31,7 +33,7 @@ public class ImageScalaKit {
             imageKit = initResult(ret);
             return imageKit;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.toString());
             throw new CustomizeException(ResponseEnum.IMAGE_UPLOAD_FAIL);
         }
 
@@ -43,7 +45,7 @@ public class ImageScalaKit {
         try {
             qiNiuUploadKit.delete(key);
         } catch (QiniuException e) {
-            e.printStackTrace();
+            log.error(e.toString());
         }
     }
 

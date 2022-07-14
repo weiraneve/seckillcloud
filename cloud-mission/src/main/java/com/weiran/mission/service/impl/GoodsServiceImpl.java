@@ -21,6 +21,7 @@ import com.weiran.mission.utils.POJOConverter;
 import com.weiran.mission.utils.qiniu.ImageScalaKit;
 import com.weiran.mission.pojo.vo.GoodsDetailVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GoodsServiceImpl implements GoodsService {
@@ -145,7 +147,7 @@ public class GoodsServiceImpl implements GoodsService {
             SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
             seckillGoodsMapper.addSeckillGoods(seckillGoodsDTO);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.toString());
             return Result.error(ResponseEnum.Goods_CREATE_FAIL);
         }
         // 表增加后，在缓存中增加
@@ -168,7 +170,7 @@ public class GoodsServiceImpl implements GoodsService {
                 URL url = new URL(goodsDTO.getGoodsImg());
                 imageScalaKit.delete(url.getPath().replaceFirst("/",""));
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                log.error(e.toString());
             }
         }
         // 删除对应缓存
@@ -201,7 +203,7 @@ public class GoodsServiceImpl implements GoodsService {
                 goodsMapper.deleteGoods(goodsDTO.getId());
                 seckillGoodsMapper.deleteSeckillGoods(goodsDTO.getId());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.toString());
             }
         }
     }
@@ -213,7 +215,7 @@ public class GoodsServiceImpl implements GoodsService {
         try {
             row = goodsMapper.updateGoods(goodsDTO);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.toString());
             return Result.error(ResponseEnum.Goods_CREATE_FAIL);
         }
         if (row > 0) {
