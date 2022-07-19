@@ -1,7 +1,6 @@
 package com.weiran.common.handler;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.exception.BusinessException;
 import com.weiran.common.exception.UserInfoException;
@@ -30,8 +29,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SeckillException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public Result<CodeMsg> handle(SeckillException exception) {
-        return Result.error(exception.getCodeMsg());
+    public Result<ResponseEnum> handle(SeckillException exception) {
+        return Result.error(exception.getResponseEnum());
     }
 
     @ExceptionHandler(BusinessException.class)

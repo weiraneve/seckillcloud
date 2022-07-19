@@ -1,7 +1,7 @@
 package com.weiran.uaa.interceptor;
 
 import cn.hutool.json.JSONUtil;
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.AccessKey;
 import com.weiran.common.redis.manager.RedisService;
@@ -12,9 +12,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -25,10 +27,11 @@ import java.io.OutputStream;
 @RequiredArgsConstructor
 public class AccessInterceptor implements HandlerInterceptor {
 
+    public static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json;charset=UTF-8";
     final RedisService redisService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull Object handler) throws Exception {
 
         // 获取调用 获取主要方法
         if (handler instanceof HandlerMethod) {
@@ -54,18 +57,18 @@ public class AccessInterceptor implements HandlerInterceptor {
                 redisService.increase(accessKey, ip);
             } else {
                 log.info("用户IP{}，访问太频繁!", ip);
-                render(response, CodeMsg.ACCESS_LIMIT_REACHED);
+                render(response);
                 return false;
             }
         }
         return true;
     }
 
-    private void render(HttpServletResponse response, CodeMsg codeMsg) throws Exception {
-        response.setContentType("application/json;charset=UTF-8");
+    private void render(HttpServletResponse response) throws Exception {
+        response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
         OutputStream out = response.getOutputStream();
-        String str = JSONUtil.toJsonStr(Result.error(codeMsg));
-        out.write(str.getBytes("UTF-8"));
+        String str = JSONUtil.toJsonStr(Result.error(ResponseEnum.ACCESS_LIMIT_REACHED));
+        out.write(str.getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();
     }

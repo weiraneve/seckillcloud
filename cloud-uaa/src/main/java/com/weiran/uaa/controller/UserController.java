@@ -1,6 +1,6 @@
 package com.weiran.uaa.controller;
 
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.uaa.annotations.AccessLimit;
 import com.weiran.uaa.param.LoginParam;
@@ -36,19 +36,19 @@ public class UserController {
     @PostMapping("user/doRegister")
     @ApiOperation("注册")
     @ApiImplicitParam(value = "注册传递字段")
-    public Result<CodeMsg> doRegister(@RequestBody RegisterParam registerParam) {
+    public Result<ResponseEnum> doRegister(@RequestBody RegisterParam registerParam) {
         return userService.doRegister(registerParam);
     }
 
     @PostMapping("user/updatePass")
     @ApiOperation("更换密码")
-    public Result<CodeMsg> updatePass(@RequestBody UpdatePassParam updatePassParam, HttpServletRequest request) {
+    public Result<ResponseEnum> updatePass(@RequestBody UpdatePassParam updatePassParam, HttpServletRequest request) {
         return userService.updatePass(updatePassParam, request);
     }
 
     @RequestMapping("user/logout")
     @ApiOperation("注销")
-    public Result<CodeMsg> doLogout(HttpServletRequest request) {
+    public Result<ResponseEnum> doLogout(HttpServletRequest request) {
         return userService.doLogout(request);
     }
 

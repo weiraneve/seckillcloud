@@ -27,7 +27,7 @@ public class HttpStatusLoginFailureHandler implements AuthenticationFailureHandl
         response.setCharacterEncoding("UTF-8");
         // 防request.getRemoteHost止乱码
         response.setContentType("application/json;charset=UTF-8");
-        Result httpResultVO = Result.error(ResponseEnum.USER_NOT_FOUND);
+        Result<ResponseEnum> httpResultVO = Result.error(ResponseEnum.USER_NOT_FOUND);
         if (exception instanceof BadCredentialsException) {
             httpResultVO = Result.error(ResponseEnum.USER_PASSWORD_VALID);
         } else if (exception instanceof NonceExpiredException) {
@@ -36,7 +36,7 @@ public class HttpStatusLoginFailureHandler implements AuthenticationFailureHandl
         } else if (exception instanceof InsufficientAuthenticationException) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpResultVO = Result.error(ResponseEnum.UNAUTHORIZED);
-        }else if (exception instanceof DisabledException) {
+        } else if (exception instanceof DisabledException) {
             httpResultVO = Result.error(ResponseEnum.USER_IS_BAN_FOUND);
         }
 

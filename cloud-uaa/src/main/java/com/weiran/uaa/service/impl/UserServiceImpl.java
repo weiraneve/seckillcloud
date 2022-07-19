@@ -3,7 +3,7 @@ package com.weiran.uaa.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     // 注销
     @Override
-    public Result<CodeMsg> doLogout(HttpServletRequest request) {
+    public Result<ResponseEnum> doLogout(HttpServletRequest request) {
         String loginToken = getTokenByRequest(request);
         long userId = redisService.get(UserKey.getById, loginToken, Long.class);
         redisService.delete(UserKey.getById, loginToken);
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
     // 注册
     @Override
-    public Result<CodeMsg> doRegister(RegisterParam registerParam) {
+    public Result<ResponseEnum> doRegister(RegisterParam registerParam) {
         // 判断电话、用户名、身份证有无被注册
         isRegistered(registerParam);
         try {
@@ -90,18 +90,18 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             log.error(registerParam.getRegisterMobile() + "用户注册失败");
             log.error(e.toString());
-            AssertUtil.userInfoInvalid(CodeMsg.SERVER_ERROR);
+            AssertUtil.userInfoInvalid(ResponseEnum.SERVER_ERROR);
         }
-        return new Result<>(CodeMsg.SUCCESS);
+        return new Result<>(ResponseEnum.SUCCESS);
     }
 
     private void isRegistered(RegisterParam registerParam) {
         // 手机号已经被注册
-        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null, CodeMsg.REPEATED_REGISTER_MOBILE);
+        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null, ResponseEnum.REPEATED_REGISTER_MOBILE);
         // 用户名已经被注册
-        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getUserName, registerParam.getRegisterUsername())) != null, CodeMsg.REPEATED_REGISTER_USERNAME);
+        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getUserName, registerParam.getRegisterUsername())) != null, ResponseEnum.REPEATED_REGISTER_USERNAME);
         // 身份证已经被注册
-        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getIdentityCardId, registerParam.getRegisterIdentity())) != null, CodeMsg.REPEATED_REGISTER_IDENTITY);
+        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getIdentityCardId, registerParam.getRegisterIdentity())) != null, ResponseEnum.REPEATED_REGISTER_IDENTITY);
     }
 
     private User getUserByRegisterParam(RegisterParam registerParam) {
@@ -115,17 +115,17 @@ public class UserServiceImpl implements UserService {
 
     // 更换密码
     @Override
-    public Result<CodeMsg> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
+    public Result<ResponseEnum> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
         long userId = getUserId(request);
         User user = userManager.getById(userId);
-        AssertUtil.userInfoInvalid(!user.getPassword().equals(updatePassParam.getOldPassword()), CodeMsg.OLD_PASSWORD_ERROR);
+        AssertUtil.userInfoInvalid(!user.getPassword().equals(updatePassParam.getOldPassword()), ResponseEnum.OLD_PASSWORD_ERROR);
         user.setPassword(updatePassParam.getNewPassword());
         try {
             userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
         } catch (Exception e) {
             log.error(user.getPhone() + "用户更换密码失败");
             log.error(e.toString());
-            AssertUtil.userInfoInvalid((CodeMsg.UPDATE_PASSWORD_ERROR));
+            AssertUtil.userInfoInvalid((ResponseEnum.UPDATE_PASSWORD_ERROR));
         }
         log.info(user.getPhone() + "用户更换密码成功");
         return Result.success();
@@ -141,11 +141,11 @@ public class UserServiceImpl implements UserService {
         User user = userManager.getOne(Wrappers.<User>lambdaQuery()
                 .eq(User::getPhone, loginParam.getMobile())); // 根据手机号查询出User对象数据
         if (user == null) {
-            return Result.error(CodeMsg.MOBILE_NOT_EXIST);
+            return Result.error(ResponseEnum.MOBILE_NOT_EXIST);
         }
         // 数据库里存储的都是密码本身加加盐后的密文
         if (!user.getPassword().equals(loginParam.getPassword())) {
-            return Result.error(CodeMsg.PASSWORD_ERROR);
+            return Result.error(ResponseEnum.PASSWORD_ERROR);
         }
         // 密码置为空 防止泄漏
         user.setPassword("");

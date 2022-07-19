@@ -2,7 +2,7 @@ package com.weiran.mission.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.*;
 import com.weiran.common.redis.manager.RedisLua;
@@ -85,12 +85,12 @@ public class SeckillServiceImpl implements SeckillService {
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
-        AssertUtil.seckillInvalid(order != null, CodeMsg.REPEATED_SECKILL);
+        AssertUtil.seckillInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
     }
 
     private void isCountOver(long goodsId) {
         boolean over = localOverMap.get(goodsId);
-        AssertUtil.seckillInvalid(!over, CodeMsg.SECKILL_OVER);
+        AssertUtil.seckillInvalid(!over, ResponseEnum.SECKILL_OVER);
     }
 
     private void handleMQ(long goodsId, long userId) {
@@ -105,13 +105,13 @@ public class SeckillServiceImpl implements SeckillService {
         Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
             localOverMap.put(goodsId, false);
-            AssertUtil.seckillInvalid(CodeMsg.SECKILL_OVER);
+            AssertUtil.seckillInvalid(ResponseEnum.SECKILL_OVER);
         }
     }
 
     private void checkPath(long goodsId, String path, long userId) {
         boolean check = checkPath(userId, goodsId, path);
-        AssertUtil.seckillInvalid(!check, CodeMsg.REQUEST_ILLEGAL);
+        AssertUtil.seckillInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
     }
 
     private long getUserId(HttpServletRequest request) {

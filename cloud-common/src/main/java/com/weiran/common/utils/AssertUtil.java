@@ -1,6 +1,5 @@
 package com.weiran.common.utils;
 
-import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.exception.BusinessException;
 import com.weiran.common.exception.SeckillException;
@@ -13,16 +12,16 @@ public class AssertUtil {
     /**
      * 抛出异常(默认错误1000)
      */
-    public static void userInfoInvalid(CodeMsg codeMsg) {
-        throw new UserInfoException(codeMsg);
+    public static void userInfoInvalid(ResponseEnum responseEnum) {
+        throw new UserInfoException(responseEnum);
     }
 
     /**
      * 表达式为真即抛出异常(默认错误1000)
      */
-    public static void userInfoInvalid(boolean expression, CodeMsg codeMsg) {
+    public static void userInfoInvalid(boolean expression, ResponseEnum responseEnum) {
         if (expression) {
-            throw new UserInfoException(codeMsg);
+            throw new UserInfoException(responseEnum);
         }
     }
 
@@ -31,9 +30,9 @@ public class AssertUtil {
      */
     public static void userInfoInvalid(boolean expression, int resultCode, String mobile, String resultMsg) {
         if (expression) {
-            if (resultCode == CodeMsg.PASSWORD_ERROR.getCode()) {
+            if (resultCode == ResponseEnum.PASSWORD_ERROR.getCode()) {
                 log.info("{} 号码登录失败，密码错误" , mobile);
-            } else if (resultCode == CodeMsg.MOBILE_NOT_EXIST.getCode()) {
+            } else if (resultCode == ResponseEnum.MOBILE_NOT_EXIST.getCode()) {
                 log.info("{} 号码登录，无此手机号", mobile);
             }
             throw new UserInfoException(resultMsg);
@@ -59,17 +58,17 @@ public class AssertUtil {
     /**
      * 表达式为真即抛出异常
      */
-    public static void seckillInvalid(boolean expression, CodeMsg codeMsg) {
+    public static void seckillInvalid(boolean expression, ResponseEnum responseEnum) {
         if (expression) {
-            throw new SeckillException(codeMsg);
+            throw new SeckillException(responseEnum);
         }
     }
 
     /**
      * 抛出异常
      */
-    public static void seckillInvalid(CodeMsg codeMsg) {
-        throw new SeckillException(codeMsg);
+    public static void seckillInvalid(ResponseEnum responseEnum) {
+        throw new SeckillException(responseEnum);
     }
 
 }

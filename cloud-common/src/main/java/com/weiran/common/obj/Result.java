@@ -1,6 +1,5 @@
 package com.weiran.common.obj;
 
-import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.enums.ResponseEnum;
 import lombok.Data;
 
@@ -27,7 +26,7 @@ public class Result<T> implements Serializable {
 	 * 验证是否返回响应成功
 	 */
 	public boolean isSuccess() {
-		return this.code == CodeMsg.SUCCESS.getCode();
+		return this.code == ResponseEnum.SUCCESS.getCode();
 	}
 
 	public static <T> Result<T> success(T data) {
@@ -35,15 +34,11 @@ public class Result<T> implements Serializable {
 	}
 
 	public static <T> Result<T> success() {
-		return new Result<>(CodeMsg.SUCCESS);
+		return new Result<>(ResponseEnum.SUCCESS);
 	}
 
 	public static <T> Result<T> error(ResponseEnum responseEnum) {
 		return new Result<>(responseEnum.getCode(), responseEnum.getMsg());
-	}
-
-	public static <T> Result<T> error(CodeMsg codeMsg) {
-		return new Result<>(codeMsg);
 	}
 
 	public static <T> Result<T> error(String msg) {
@@ -57,8 +52,8 @@ public class Result<T> implements Serializable {
 	public Result() {}
 
 	public Result(T data) {
-		this.code = CodeMsg.SUCCESS.getCode();
-		this.msg = CodeMsg.SUCCESS.getMsg();
+		this.code = ResponseEnum.SUCCESS.getCode();
+		this.msg = ResponseEnum.SUCCESS.getMsg();
 		this.data = data;
 	}
 
@@ -72,10 +67,10 @@ public class Result<T> implements Serializable {
 		this.msg = msg;
 	}
 
-	public Result(CodeMsg codeMsg) {
-		if(codeMsg != null) {
-			this.code = codeMsg.getCode();
-			this.msg = codeMsg.getMsg();
+	public Result(ResponseEnum responseEnum) {
+		if(responseEnum != null) {
+			this.code = responseEnum.getCode();
+			this.msg = responseEnum.getMsg();
 		}
 	}
 

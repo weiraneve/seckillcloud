@@ -1,6 +1,6 @@
 package com.weiran.common.exception;
 
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,9 +8,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class SeckillException extends RuntimeException {
 
-    private CodeMsg codeMsg;
+    private ResponseEnum responseEnum;
 
-    public SeckillException(CodeMsg codeMsg) {
-        this.codeMsg = codeMsg;
+    public SeckillException(ResponseEnum responseEnum) {
+        this.responseEnum = responseEnum;
     }
 }

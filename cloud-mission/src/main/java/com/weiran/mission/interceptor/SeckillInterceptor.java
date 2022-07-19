@@ -1,7 +1,7 @@
 package com.weiran.mission.interceptor;
 
 import cn.hutool.json.JSONUtil;
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.AccessKey;
 import com.weiran.common.redis.manager.RedisService;
@@ -12,9 +12,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 秒杀限流拦截器
@@ -27,14 +29,14 @@ import java.io.OutputStream;
 @RequiredArgsConstructor
 public class SeckillInterceptor implements HandlerInterceptor {
 
+    public static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json;charset=UTF-8";
     final RedisService redisService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull Object handler) throws Exception {
 
         // 获取调用 获取主要方法
         if (handler instanceof HandlerMethod) {
-//            log.info("打印拦截方法handler ：{} ", handler);
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             // 这一套流程是：先定义注解，然后在想使用的方法上加上注解，然后在拦截器或者处理器这里这样写。这里的用处是，限流
             SeckillLimit seckillLimit = handlerMethod.getMethodAnnotation(SeckillLimit.class);
@@ -56,19 +58,18 @@ public class SeckillInterceptor implements HandlerInterceptor {
                 redisService.increase(accessKey, requestURI);
             } else {
                 log.info("访问太频繁!");
-                render(response, CodeMsg.ACCESS_LIMIT_REACHED);
+                render(response);
                 return false;
             }
         }
         return true;
     }
 
-    private void render(HttpServletResponse response, CodeMsg codeMsg) throws Exception {
-        response.setContentType("application/json;charset=UTF-8");
+    private void render(HttpServletResponse response) throws Exception {
+        response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
         OutputStream out = response.getOutputStream();
-
-        String str = JSONUtil.toJsonStr(Result.error(codeMsg));
-        out.write(str.getBytes("UTF-8"));
+        String str = JSONUtil.toJsonStr(Result.error(ResponseEnum.ACCESS_LIMIT_REACHED));
+        out.write(str.getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();
     }

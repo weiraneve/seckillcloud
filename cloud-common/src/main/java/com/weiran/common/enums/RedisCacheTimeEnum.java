@@ -30,9 +30,9 @@ public enum RedisCacheTimeEnum {
      */
     GOODS_INFO_EXTIME(60);
 
-    private int value;
+    private final int value;
 
-    private RedisCacheTimeEnum(int value) {
+    RedisCacheTimeEnum(int value) {
         this.value = value;
     }
 

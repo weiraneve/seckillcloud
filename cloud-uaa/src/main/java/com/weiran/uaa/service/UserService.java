@@ -1,6 +1,6 @@
 package com.weiran.uaa.service;
 
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.uaa.param.LoginParam;
 import com.weiran.uaa.param.RegisterParam;
@@ -18,16 +18,16 @@ public interface UserService {
     /**
      * 注销
      */
-    Result<CodeMsg> doLogout(HttpServletRequest request);
+    Result<ResponseEnum> doLogout(HttpServletRequest request);
 
     /**
      * 注册
      */
-    Result<CodeMsg> doRegister(RegisterParam registerParam);
+    Result<ResponseEnum> doRegister(RegisterParam registerParam);
 
     /**
      * 更换密码
      */
-    Result<CodeMsg> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request);
+    Result<ResponseEnum> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request);
 
 }

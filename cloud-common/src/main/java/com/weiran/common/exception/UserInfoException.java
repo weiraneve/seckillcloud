@@ -1,7 +1,7 @@
 package com.weiran.common.exception;
 
 
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,8 +15,8 @@ public class UserInfoException extends RuntimeException {
         this.msg = msg;
     }
 
-    public UserInfoException(CodeMsg codeMsg) {
-        this.msg = codeMsg.getMsg();
+    public UserInfoException(ResponseEnum responseEnum) {
+        this.msg = responseEnum.getMsg();
     }
 
 }

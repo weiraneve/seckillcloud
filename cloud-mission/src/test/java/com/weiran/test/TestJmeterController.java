@@ -2,7 +2,7 @@ package com.weiran.test;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
-import com.weiran.common.enums.CodeMsg;
+import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
@@ -103,19 +103,19 @@ public class TestJmeterController {
     Result<Integer> doSeckill(Long userId, long goodsId, String path) {
         // 验证path
         boolean check = checkPath(userId, goodsId, path);
-        AssertUtil.seckillInvalid(!check, CodeMsg.REQUEST_ILLEGAL);
+        AssertUtil.seckillInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
         // 若为非，则为商品已经售完
         boolean over = localOverMap.get(goodsId);
-        AssertUtil.seckillInvalid(!over, CodeMsg.SECKILL_OVER);
+        AssertUtil.seckillInvalid(!over, ResponseEnum.SECKILL_OVER);
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
-        AssertUtil.seckillInvalid(order != null, CodeMsg.REPEATED_SECKILL);
+        AssertUtil.seckillInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
         Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
             localOverMap.put(goodsId, false);
-            AssertUtil.seckillInvalid(CodeMsg.SECKILL_OVER);
+            AssertUtil.seckillInvalid(ResponseEnum.SECKILL_OVER);
         }
 
         // 入队
