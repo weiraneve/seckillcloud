@@ -32,10 +32,11 @@ public class AssertUtil {
         if (expression) {
             if (resultCode == ResponseEnum.PASSWORD_ERROR.getCode()) {
                 log.info("{} 号码登录失败，密码错误" , mobile);
+                throw new UserInfoException(ResponseEnum.PASSWORD_ERROR);
             } else if (resultCode == ResponseEnum.MOBILE_NOT_EXIST.getCode()) {
                 log.info("{} 号码登录，无此手机号", mobile);
+                throw new UserInfoException(ResponseEnum.MOBILE_NOT_EXIST);
             }
-            throw new UserInfoException(resultMsg);
         }
     }
 

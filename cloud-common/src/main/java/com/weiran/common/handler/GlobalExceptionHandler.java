@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserInfoException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Result<String> handle(UserInfoException exception) {
-        return Result.error(exception.getMsg());
+        return Result.error(exception.getResponseEnum());
     }
 
     @ExceptionHandler(SeckillException.class)
