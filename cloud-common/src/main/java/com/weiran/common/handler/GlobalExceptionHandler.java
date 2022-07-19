@@ -1,11 +1,10 @@
-package com.weiran.common.exception.handler;
+package com.weiran.common.handler;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.weiran.common.enums.CodeMsg;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.exception.CustomizeException;
-import com.weiran.common.exception.LoginException;
-import com.weiran.common.exception.RegisterException;
+import com.weiran.common.exception.BusinessException;
+import com.weiran.common.exception.UserInfoException;
 import com.weiran.common.exception.SeckillException;
 import com.weiran.common.obj.Result;
 import org.springframework.http.HttpStatus;
@@ -23,16 +22,10 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(LoginException.class)
+    @ExceptionHandler(UserInfoException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Result<String> handle(LoginException exception) {
+    public Result<String> handle(UserInfoException exception) {
         return Result.error(exception.getMsg());
-    }
-
-    @ExceptionHandler(RegisterException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Result<CodeMsg> handle(RegisterException exception) {
-        return Result.error(exception.getCodeMsg());
     }
 
     @ExceptionHandler(SeckillException.class)
@@ -41,9 +34,9 @@ public class GlobalExceptionHandler {
         return Result.error(exception.getCodeMsg());
     }
 
-    @ExceptionHandler(CustomizeException.class)
+    @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.OK)
-    public Result<Object> handle(CustomizeException exception) {
+    public Result<Object> handle(BusinessException exception) {
         return Result.error(exception.getResponseEnum());
     }
 

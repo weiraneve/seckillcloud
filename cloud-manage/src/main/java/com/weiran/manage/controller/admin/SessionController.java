@@ -1,8 +1,8 @@
 package com.weiran.manage.controller.admin;
 
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.exception.CustomizeException;
 import com.weiran.common.obj.Result;
+import com.weiran.common.utils.AssertUtil;
 import com.weiran.manage.dto.AdminUserDTO;
 import com.weiran.manage.request.AdminUserInfoReq;
 import com.weiran.manage.request.AdminUserPassReq;
@@ -43,9 +43,7 @@ public class SessionController {
     @GetMapping("/findByUsername")
     public Result<Object> findByUsername(@RequestParam String username) {
         Optional<AdminUserDTO> userDTO =  adminUserService.findByUsername(username);
-        if (!userDTO.isPresent()) {
-            throw new CustomizeException(ResponseEnum.USER_NOT_FOUND);
-        }
+        AssertUtil.businessInvalid(!userDTO.isPresent(), ResponseEnum.USER_NOT_FOUND);
         return Result.success();
     }
 

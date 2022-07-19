@@ -1,15 +1,16 @@
 package com.weiran.mission.service.impl;
 
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.exception.CustomizeException;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.GoodsKey;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
+import com.weiran.common.utils.AssertUtil;
 import com.weiran.mission.pojo.entity.Goods;
 import com.weiran.mission.manager.GoodsManager;
 import com.weiran.mission.mapper.GoodsMapper;
@@ -238,9 +239,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsDTO selectById(Long id) {
         GoodsDTO goodsDTO = goodsMapper.selectGoodsById(id);
-        if (goodsDTO == null) {
-            throw new CustomizeException(ResponseEnum.RESOURCE_NOT_FOUND);
-        }
+        AssertUtil.businessInvalid(ObjectUtil.isNull(goodsDTO), ResponseEnum.RESOURCE_NOT_FOUND);
         return goodsDTO;
     }
 

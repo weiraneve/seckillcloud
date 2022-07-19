@@ -4,13 +4,11 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.CodeMsg;
-import com.weiran.common.exception.LoginException;
-import com.weiran.common.exception.RegisterException;
-import com.weiran.common.exception.UpdatePassException;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
+import com.weiran.common.utils.AssertUtil;
 import com.weiran.uaa.entity.User;
 import com.weiran.uaa.manager.UserManager;
 import com.weiran.uaa.param.LoginParam;
@@ -39,9 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<String> doLogin(LoginParam loginParam) {
         Result<User> userResult = login(loginParam);
-        if (!userResult.isSuccess()) {
-            throw new LoginException(userResult, loginParam.getMobile());
-        }
+        AssertUtil.userInfoInvalid(!userResult.isSuccess(), userResult.getCode(), loginParam.getMobile(), userResult.getMsg());
         User user = userResult.getData();
         long userId  = user.getId();
         // 将用户手机号进行MD5和随机数加盐加密，作为Token给到前端服务器
@@ -94,22 +90,18 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             log.error(registerParam.getRegisterMobile() + "用户注册失败");
             log.error(e.toString());
-            throw new RegisterException(CodeMsg.SERVER_ERROR);
+            AssertUtil.userInfoInvalid(CodeMsg.SERVER_ERROR);
         }
         return new Result<>(CodeMsg.SUCCESS);
     }
 
     private void isRegistered(RegisterParam registerParam) {
-        // 电话、用户名、身份证都不等于的模型为空，或逻辑，全部为false才返回false; 范例lambdaQuery().or(i -> i.eq(User::getUserName, registerUsername))
-        if (userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null) {
-            throw new RegisterException(CodeMsg.REPEATED_REGISTER_MOBILE); // 手机号已经被注册
-        }
-        if (userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getUserName, registerParam.getRegisterUsername())) != null) {
-            throw new RegisterException(CodeMsg.REPEATED_REGISTER_USERNAME); // 用户名已经被注册
-        }
-        if (userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getIdentityCardId, registerParam.getRegisterIdentity())) != null) {
-            throw new RegisterException(CodeMsg.REPEATED_REGISTER_IDENTITY); // 身份证已经被注册
-        }
+        // 手机号已经被注册
+        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null, CodeMsg.REPEATED_REGISTER_MOBILE);
+        // 用户名已经被注册
+        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getUserName, registerParam.getRegisterUsername())) != null, CodeMsg.REPEATED_REGISTER_USERNAME);
+        // 身份证已经被注册
+        AssertUtil.userInfoInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getIdentityCardId, registerParam.getRegisterIdentity())) != null, CodeMsg.REPEATED_REGISTER_IDENTITY);
     }
 
     private User getUserByRegisterParam(RegisterParam registerParam) {
@@ -126,16 +118,14 @@ public class UserServiceImpl implements UserService {
     public Result<CodeMsg> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
         long userId = getUserId(request);
         User user = userManager.getById(userId);
-        if (!user.getPassword().equals(updatePassParam.getOldPassword())) {
-            throw new UpdatePassException(CodeMsg.OLD_PASSWORD_ERROR);
-        }
+        AssertUtil.userInfoInvalid(!user.getPassword().equals(updatePassParam.getOldPassword()), CodeMsg.OLD_PASSWORD_ERROR);
         user.setPassword(updatePassParam.getNewPassword());
         try {
             userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
         } catch (Exception e) {
             log.error(user.getPhone() + "用户更换密码失败");
             log.error(e.toString());
-            throw new UpdatePassException((CodeMsg.UPDATE_PASSWORD_ERROR));
+            AssertUtil.userInfoInvalid((CodeMsg.UPDATE_PASSWORD_ERROR));
         }
         log.info(user.getPhone() + "用户更换密码成功");
         return Result.success();

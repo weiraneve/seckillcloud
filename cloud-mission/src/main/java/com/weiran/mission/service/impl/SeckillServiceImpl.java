@@ -3,11 +3,11 @@ package com.weiran.mission.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.CodeMsg;
-import com.weiran.common.exception.SeckillException;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.*;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
+import com.weiran.common.utils.AssertUtil;
 import com.weiran.common.utils.SM3Util;
 import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.pojo.entity.SeckillGoods;
@@ -85,16 +85,12 @@ public class SeckillServiceImpl implements SeckillService {
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
-        if (order != null) {
-            throw new SeckillException(CodeMsg.REPEATED_SECKILL);
-        }
+        AssertUtil.seckillInvalid(order != null, CodeMsg.REPEATED_SECKILL);
     }
 
     private void isCountOver(long goodsId) {
         boolean over = localOverMap.get(goodsId);
-        if (!over) {
-            throw new SeckillException(CodeMsg.SECKILL_OVER);
-        }
+        AssertUtil.seckillInvalid(!over, CodeMsg.SECKILL_OVER);
     }
 
     private void handleMQ(long goodsId, long userId) {
@@ -109,15 +105,13 @@ public class SeckillServiceImpl implements SeckillService {
         Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
             localOverMap.put(goodsId, false);
-            throw new SeckillException(CodeMsg.SECKILL_OVER);
+            AssertUtil.seckillInvalid(CodeMsg.SECKILL_OVER);
         }
     }
 
     private void checkPath(long goodsId, String path, long userId) {
         boolean check = checkPath(userId, goodsId, path);
-        if (!check) {
-            throw new SeckillException(CodeMsg.REQUEST_ILLEGAL);
-        }
+        AssertUtil.seckillInvalid(!check, CodeMsg.REQUEST_ILLEGAL);
     }
 
     private long getUserId(HttpServletRequest request) {

@@ -4,7 +4,7 @@ package com.weiran.mission.utils.qiniu;
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.exception.CustomizeException;
+import com.weiran.common.utils.AssertUtil;
 import com.weiran.mission.config.qiniu.QiNiuProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,18 +25,17 @@ public class ImageScalaKit {
 
     // 上传
     public ImageKit upload(MultipartFile file, String prefix) {
-        ImageKit imageKit;
+        ImageKit imageKit = null;
         try {
             String uuid = UUID.randomUUID().toString().replaceAll("-", "");
             String extension = fileExtension(file);
             DefaultPutRet ret = qiNiuUploadKit.upload(file.getBytes(), prefix + "/" + uuid + extension);
             imageKit = initResult(ret);
-            return imageKit;
         } catch (IOException e) {
             log.error(e.toString());
-            throw new CustomizeException(ResponseEnum.IMAGE_UPLOAD_FAIL);
+            AssertUtil.businessInvalid(ResponseEnum.IMAGE_UPLOAD_FAIL);
         }
-
+        return imageKit;
     }
 
     // 删除
