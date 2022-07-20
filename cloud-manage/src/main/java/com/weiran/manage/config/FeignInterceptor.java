@@ -23,7 +23,7 @@ import feign.codec.Encoder;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class FeignConfig implements RequestInterceptor {
+public class FeignInterceptor implements RequestInterceptor {
 
     private final ObjectFactory<HttpMessageConverters> messageConverters;
 
@@ -38,6 +38,7 @@ public class FeignConfig implements RequestInterceptor {
         return Logger.Level.FULL;
     }
 
+    // 可以拦截feign内部请求
     @Override
     public void apply(RequestTemplate requestTemplate) {
 

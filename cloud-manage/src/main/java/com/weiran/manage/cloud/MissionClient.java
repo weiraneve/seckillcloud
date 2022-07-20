@@ -7,7 +7,7 @@ import com.weiran.common.pojo.dto.OrderDTO;
 import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.common.pojo.vo.WelcomeVO;
 import com.weiran.manage.cloud.fallback.MissionClientFallback;
-import com.weiran.manage.config.FeignConfig;
+import com.weiran.manage.config.FeignInterceptor;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
-@FeignClient(name = "cloud-mission", fallback = MissionClientFallback.class, configuration = FeignConfig.class)
+@FeignClient(name = "cloud-mission", fallback = MissionClientFallback.class, configuration = FeignInterceptor.class)
 public interface MissionClient {
 
     // 分页查询goods
