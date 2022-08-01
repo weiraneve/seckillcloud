@@ -42,6 +42,16 @@ spring:
       stat-view-servlet:
         enabled: true
         url-pattern: /druid/* # druid监控页面，账号和密码都在配置类代码中配置
+  flyway:
+    enabled: true
+    # 版本更新历史记录表
+    table: t_db_version
+    # 非空数据库初始化Flyway时需要打开此开关进行Baseline操作
+    baseline-on-migrate: true
+    # 是否可以无序执行。开发环境最好开启 outOfOrder, 生产环境关闭 outOfOrder
+    out-of-order: true
+    # 迁移前校验 SQL 文件是否存在问题
+    validate-on-migrate: true
 
 management:
   endpoints:

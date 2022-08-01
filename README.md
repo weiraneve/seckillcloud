@@ -7,7 +7,7 @@
 - [后台系统前端服务器](https://github.com/weiran1999/admin-manager)
 
 # 简介
-项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RocketMQ等一系列技术栈，优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
+项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、Flyway数据库版本管理工具和多数据源处理方案、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RocketMQ等一系列技术栈，优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
 
 ## 项目模块
 因为是用微服务架构构建的项目，很多地方需要一些微服务必须的组件。下面简单介绍一些项目模块。
@@ -19,11 +19,11 @@
 - cloud-common
 通用模块。负责一些通用的依赖管理和一些通用代码如Redis等的复用。
 - cloud-manage
-后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单。后端提供接口给React框架下的后台前端服务器，实现前后端分离。
+后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单。后端提供接口给React框架下的后台前端服务器，实现前后端分离。对应cloud-manage表。
 - cloud-uaa
-用户认证中心模块，统一登录，与客户注册功能。
+用户认证中心模块，统一登录，与客户注册功能。对应cloud-uaa表。
 - cloud-mission
-主要秒杀业务模块。React框架下的秒杀客户端前后端分离。cloud-mission模块里的test包里，有TestJmeterController类专供Jmeter压测工具测试秒杀性能。
+主要秒杀业务模块。React框架下的秒杀客户端前后端分离。cloud-mission模块里的test包里，有TestJmeterController类专供Jmeter压测工具测试秒杀性能。对应cloud-mission-goods、order、seckillGoods三个表的多数据源。
 
 ## 图文一览
 
@@ -48,12 +48,11 @@ SpringAdmin监控一览。
 <img src="./docs/images/monitor_interface.png" alt="SpringAdmin监控一览" width="100%" />
 
 # 如何使用
-- 首先将SQL导入自己的数据库，用户名root、密码123456即可。Mysql的表名得是SQL文件名。因为使用了分库分表，所以五张表对应五个数据库。
+- 项目拥有Flyway数据库版本管理，首先在项目启动之前需要创建对应的Mysql数据库，cloud-mission-goods、cloud-mission-order、cloud-mission-seckillGoods、cloud-uaa、cloud-manage五个库。然后分别启动以下中间件，如果没启动好中间件，项目则会报错。
 - 启动Nacos，如果没有则先安装，安装后按网上文章博客启动。
 - 启动本地的Redis，密码为空即可。如果本地没有安装Redis，则先安装。
 - 启动本地的RocketMQ(没有则安装，网上搜索如何安装RocketMQ与可视化软件)，用户名和密码默认即可。
-- 依次启动项目中的cloud-gateway、cloud-uaa、cloud-mission、cloud-manage模块，如果不用到后台管理系统可以不启动cloud-manage模块。
-- 其中参数都可以了解后自行在项目里更改。
+- 当对应的中间件都启动好后，启动项目Flyway会自动帮助创建对应的表结构和导入一些必要的初始信息。对应的SQL文件在sql文件夹中，Flyway的迁移sql文件则在对应模块之中。依次启动项目中的cloud-gateway、cloud-uaa、cloud-mission、cloud-manage模块，如果不用到后台管理系统可以不启动cloud-manage模块。
 - cloud-monitor模块的SpringBoot Admin监控技术栈，使用只需要开启网关后访问http://localhost:8205/monitor 或者直接访问monitor端口。
 - 启动后台前端服务器和客户端前端服务器。客户端有账号和密码(密码都为123) ，后台系统有超级管理员账号与密码和普通管理员账号与密码(密码都为123) 。客户端端口为3000，后台系统端口为3001。因为项目中使用了qiniu云对象储存配置上传空间，如若需要，需在配置文件中配置自己的域名以及信息（已经加密脱敏）。
 - cloud-manage调用cloud-mission模块的商品上传配置是使用qiniu相关的依赖，也需要qiniu云对象储存账号的一些信息，项目是使用了配置文件加密脱敏后qiniu云对象储存密钥信息。其中配置商品图片(只能上传jpg后缀图片文件)的功能有qiniu云对象储存以及对应依赖提供。

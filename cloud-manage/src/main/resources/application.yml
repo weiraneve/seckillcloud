@@ -11,6 +11,16 @@ spring:
     jdbc-url: jdbc:mysql://localhost:3306/cloud-manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
     username: root
     password: 123456
+  flyway:
+    enabled: true
+    # 版本更新历史记录表
+    table: t_db_version
+    # 非空数据库初始化Flyway时需要打开此开关进行Baseline操作
+    baseline-on-migrate: true
+    # 是否可以无序执行。开发环境最好开启 outOfOrder, 生产环境关闭 outOfOrder
+    out-of-order: true
+    # 迁移前校验 SQL 文件是否存在问题
+    validate-on-migrate: true
   redis:
     database: 0
     host: 127.0.0.1
