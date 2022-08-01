@@ -29,10 +29,6 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
-  boot:
-    admin:
-      client:
-        url: http://localhost:8890 # Spring Boot Admin 监控服务器端地址
 
 security:
   jwt:

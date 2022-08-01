@@ -6,6 +6,25 @@ spring:
     active: weiran
   application:
     name: cloud-monitor
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  security:
+    user:
+      name: weiran
+      password: weiran
+
+management:
+  endpoints:
+    web:
+      # 开放指定节点 /actuator/（info, health, beans, env, metrics）或者全部
+      exposure:
+        include: '*'
+  # 在访问/actuator/health时显示完整信息
+  endpoint:
+    logfile:
+      external-file: log/cloud-monitor/monitor.log
 
 logging:
   config: classpath:logback.xml

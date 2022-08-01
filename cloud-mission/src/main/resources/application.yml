@@ -16,10 +16,6 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
-  boot:
-    admin:
-      client:
-        url: http://localhost:8890 # Spring Boot Admin 监控服务器端地址
   autoconfigure:
     # 排除 Druid 自动配置
     exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
@@ -68,17 +64,6 @@ rocketmq:
   producer:
     group: seckill-producer-rocketmq-group
 
-management:
-  endpoints:
-    web:
-      # 开放指定节点 /actuator/（info, health, beans, env, metrics）或者全部
-      exposure:
-        include: '*'
-  # 在访问/actuator/health时显示完整信息
-  endpoint:
-    logfile:
-      external-file: log/cloud-mission/mission.log
-
 qiniu:
   accessKey: ENC(XEL2TdE7S3eBkI4lukdgHuP03m3FKV/NaCpUezk6z6KCR6UOo7UGmS8VXI2YlI/cDCXyuGbuqFw=)
   secretKey: ENC(RySyvFuZ+SfUDAVA0VSUX4fexjmQ1t/D45oADbkAkRMQdy0kQX+cF9uyRsh/BUzJciemr1GK610=)
@@ -95,6 +80,17 @@ jasypt:
 
 mybatis-plus:
   mapper-locations: classpath:mappers/**.xml
+
+management:
+  endpoints:
+    web:
+      # 开放指定节点 /actuator/（info, health, beans, env, metrics）或者全部
+      exposure:
+        include: '*'
+  # 在访问/actuator/health时显示完整信息
+  endpoint:
+    logfile:
+      external-file: log/cloud-mission/mission.log
 
 logging:
   config: classpath:logback.xml
