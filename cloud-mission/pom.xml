@@ -28,7 +28,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-            <version>3.4.1</version><!--版本号-->
+            <version>3.4.1</version>
         </dependency>
         <!--测试-->
         <dependency>
