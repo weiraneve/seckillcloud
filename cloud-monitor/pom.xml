@@ -12,7 +12,7 @@
     <artifactId>cloud-monitor</artifactId>
 
     <dependencies>
-        <!--SpringBoot web-->
+        <!--springBoot web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -21,12 +21,11 @@
         <dependency>
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-server</artifactId>
-            <version>2.2.0</version>
+            <version>${admin-version}</version>
         </dependency>
-        <!--nacos-->
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
     </dependencies>
 

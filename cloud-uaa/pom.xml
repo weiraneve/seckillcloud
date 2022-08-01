@@ -12,7 +12,7 @@
     <artifactId>cloud-uaa</artifactId>
 
     <dependencies>
-        <!--SpringBoot web-->
+        <!--springBoot web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

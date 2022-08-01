@@ -12,7 +12,7 @@
     <artifactId>cloud-manage</artifactId>
 
     <dependencies>
-        <!--SpringBoot web-->
+        <!--springBoot web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -43,7 +43,7 @@
             <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
             <version>2.2.0</version>
         </dependency>
-        <!--Spring Security-->
+        <!--spring Security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
