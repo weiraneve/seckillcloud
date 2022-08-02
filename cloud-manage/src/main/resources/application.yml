@@ -8,7 +8,7 @@ spring:
     name: cloud-manage
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://localhost:3306/cloud-manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+    url: jdbc:mysql://localhost:3306/cloud-manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
     username: root
     password: 123456
   flyway:
@@ -18,7 +18,7 @@ spring:
     # 非空数据库初始化Flyway时需要打开此开关进行Baseline操作
     baseline-on-migrate: true
     # 是否可以无序执行。开发环境最好开启 outOfOrder, 生产环境关闭 outOfOrder
-    out-of-order: true
+    out-of-order: false
     # 迁移前校验 SQL 文件是否存在问题
     validate-on-migrate: true
   redis:
@@ -56,6 +56,9 @@ management:
   endpoint:
     logfile:
       external-file: log/cloud-manage/manage.log
+
+mybatis-plus:
+  mapper-locations: classpath:mappers/*.xml
 
 logging:
   config: classpath:logback.xml
