@@ -21,7 +21,7 @@ public class DruidConfig {
      * 解决druid 日志报错：discard long time none received connection:xxx
      */
     @PostConstruct
-    public void setProperties(){
+    public void setProperties() {
         System.setProperty("druid.mysql.usePingMethod","false");
     }
 
@@ -29,7 +29,7 @@ public class DruidConfig {
      * 配置 Druid 监控界面
      */
     @Bean
-    public ServletRegistrationBean<StatViewServlet> statViewServlet(){
+    public ServletRegistrationBean<StatViewServlet> statViewServlet() {
         ServletRegistrationBean<StatViewServlet> srb = new ServletRegistrationBean<>(new StatViewServlet(),"/druid/*");
         // 设置控制台管理用户
         srb.addInitParameter("loginUsername","root");
@@ -40,7 +40,7 @@ public class DruidConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<WebStatFilter> statFilter(){
+    public FilterRegistrationBean<WebStatFilter> statFilter() {
         // 创建过滤器
         FilterRegistrationBean<WebStatFilter> frb = new FilterRegistrationBean<>(new WebStatFilter());
         // 设置过滤器过滤路径

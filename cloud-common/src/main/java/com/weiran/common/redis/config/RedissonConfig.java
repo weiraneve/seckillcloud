@@ -15,7 +15,7 @@
 //public class RedissonConfig {
 //
 //    @Bean
-//    public RedissonClient redissonClient(){
+//    public RedissonClient redissonClient() {
 //        Config config = new Config();
 //        config.setTransportMode(TransportMode.NIO);
 //        SingleServerConfig singleServerConfig = config.useSingleServer();
