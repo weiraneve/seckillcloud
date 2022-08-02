@@ -74,7 +74,7 @@ public class DruidConfig {
         datasource.setMaxWait(maxWait);
         datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
         datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-        datasource.setMaxEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        datasource.setMaxEvictableIdleTimeMillis(maxEvictableIdleTimeMillis);
         datasource.setValidationQuery(validationQuery);
         datasource.setTestWhileIdle(testWhileIdle);
         datasource.setTestOnBorrow(testOnBorrow);
@@ -102,9 +102,9 @@ public class DruidConfig {
      * 配置 Druid 监控界面
      */
     @Bean
-    public ServletRegistrationBean statViewServlet(){
-        ServletRegistrationBean srb =
-                new ServletRegistrationBean(new StatViewServlet(),"/druid/*");
+    public ServletRegistrationBean<StatViewServlet> statViewServlet(){
+        ServletRegistrationBean<StatViewServlet> srb =
+                new ServletRegistrationBean<>(new StatViewServlet(),"/druid/*");
         // 设置控制台管理用户
         srb.addInitParameter("loginUsername","root");
         srb.addInitParameter("loginPassword","root");
@@ -114,9 +114,9 @@ public class DruidConfig {
     }
 
     @Bean
-    public FilterRegistrationBean statFilter(){
+    public FilterRegistrationBean<WebStatFilter> statFilter(){
         // 创建过滤器
-        FilterRegistrationBean frb = new FilterRegistrationBean(new WebStatFilter());
+        FilterRegistrationBean<WebStatFilter> frb = new FilterRegistrationBean<>(new WebStatFilter());
         // 设置过滤器过滤路径
         frb.addUrlPatterns("/*");
         // 忽略过滤的形式

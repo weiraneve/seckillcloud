@@ -5,13 +5,10 @@ import com.weiran.manage.request.AdminUserReq;
 import com.weiran.manage.dto.AdminUserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-
-@Repository
 @Mapper
 public interface AdminUserMapper {
 
@@ -64,7 +61,7 @@ public interface AdminUserMapper {
     /**
      * 批量删除管理员
      */
-    void deletesByIds(@Param("userIds") List userIds);
+    void deletesByIds(@Param("userIds") List<String> userIds);
 
 
     /**

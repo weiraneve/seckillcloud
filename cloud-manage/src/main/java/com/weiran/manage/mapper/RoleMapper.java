@@ -4,12 +4,9 @@ import com.weiran.manage.dto.RoleDTO;
 import com.weiran.manage.request.RoleReq;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
-@Repository
 @Mapper
 public interface RoleMapper {
 
@@ -31,20 +28,15 @@ public interface RoleMapper {
 
 
     /**
-     * 查询角色
-     */
-    List<RoleDTO> findRolesByRoles(String roles);
-
-    /**
      * 新增角色信息
      */
-    Integer createRole(@Param("role") RoleReq roleReq);
+    void createRole(@Param("role") RoleReq roleReq);
 
 
     /**
      * 批量删除角色
      */
-    void deletesByIds(@Param("roleIds")List roleIds);
+    void deletesByIds(@Param("roleIds")List<String> roleIds);
 
 
     /**

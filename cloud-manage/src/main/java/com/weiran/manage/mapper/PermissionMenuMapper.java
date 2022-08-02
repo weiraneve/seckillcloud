@@ -5,12 +5,9 @@ import com.weiran.manage.dto.PermissionMenuDTO;
 import com.weiran.manage.dto.TreeRoleMenuDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
-@Repository
 @Mapper
 public interface PermissionMenuMapper {
 
@@ -29,7 +26,7 @@ public interface PermissionMenuMapper {
     /**
      * 统计菜单
      */
-    Integer countByPermissionIds(@Param("ids") List permissionIds);
+    Integer countByPermissionIds(@Param("ids") List<String> permissionIds);
 
     /**
      * 查询所有树形结构菜单

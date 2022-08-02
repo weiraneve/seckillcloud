@@ -2,12 +2,9 @@ package com.weiran.manage.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
-@Repository
 @Mapper
 public interface UserRolePermissionMapper {
 
@@ -15,19 +12,19 @@ public interface UserRolePermissionMapper {
     /**
      * 统计
      */
-    Integer countByPermissionIds(@Param("ids") List permissionIds);
+    Integer countByPermissionIds(@Param("ids") List<String> permissionIds);
 
 
     /**
      * 批量删除关系
      */
-    void deletesByRoleIds(@Param("roleIds")List roleIds);
+    void deletesByRoleIds(@Param("roleIds")List<String> roleIds);
 
 
     /**
      * 通过角色ids统计
      */
-    Integer countByRoleIds(@Param("roleIds") List roleIds);
+    Integer countByRoleIds(@Param("roleIds") List<String> roleIds);
 
 
     /**
@@ -41,7 +38,7 @@ public interface UserRolePermissionMapper {
     /**
      * 批量删除
      */
-    void deletesByUserIds(@Param("userIds") List userIds);
+    void deletesByUserIds(@Param("userIds") List<String> userIds);
 
 
     /**
