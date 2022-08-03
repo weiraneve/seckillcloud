@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableFeignClients
-@ComponentScan(basePackages = {"com.weiran"}) // 扫描其他包如common模块的Bean
+@ComponentScan(basePackages = {"com.weiran.common", "com.weiran.manage"})
 @MapperScan("com.weiran.manage.mapper")
 public class ManageApplication {
     public static void main(String[] args) {

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @MapperScan("com.weiran.uaa.mapper")
-@ComponentScan(basePackages = {"com.weiran"}) // 扫描其他包如common模块的Bean
+@ComponentScan(basePackages = {"com.weiran.common", "com.weiran.uaa"})
 public class UaaApplication {
 
     public static void main(String[] args) {
