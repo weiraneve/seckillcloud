@@ -2,10 +2,10 @@ package com.weiran.mission.rocketmq;
 
 import cn.hutool.json.JSONUtil;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.utils.AssertUtil;
-import com.weiran.mission.pojo.entity.Order;
-import com.weiran.mission.manager.OrderManager;
 import com.weiran.common.obj.SeckillMessage;
+import com.weiran.common.validation.SeckillValidation;
+import com.weiran.mission.manager.OrderManager;
+import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.service.SeckillGoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class Consumer implements RocketMQListener<SeckillMessage> {
             boolean flag = orderManager.save(order);
             if (!flag) {
                 log.error("写入订单表失败: {}", JSONUtil.toJsonStr(seckillMessage));
-                AssertUtil.seckillInvalid(ResponseEnum.ORDER_WRITE_ERROR);
+                SeckillValidation.invalid(ResponseEnum.ORDER_WRITE_ERROR);
             }
             log.info("成功写入订单表: {}", JSONUtil.toJsonStr(seckillMessage));
             seckillGoodsService.reduceStock(goodsId);

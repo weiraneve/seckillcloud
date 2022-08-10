@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.utils.AssertUtil;
+import com.weiran.common.validation.BusinessValidation;
 import com.weiran.manage.dto.PermissionDTO;
 import com.weiran.manage.mapper.PermissionMapper;
 import com.weiran.manage.mapper.PermissionMenuMapper;
@@ -45,7 +45,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public boolean createPermission(PermissionReq permissionReq) {
         Optional<PermissionDTO> permission = permissionMapper.findByPermission(permissionReq.getPermission());
-        AssertUtil.businessInvalid(ObjectUtil.isNull(permission.isPresent()), ResponseEnum.PERMISSION_EXIST_ERROR);
+        BusinessValidation.isInvalid(ObjectUtil.isNull(permission.isPresent()), ResponseEnum.PERMISSION_EXIST_ERROR);
         Integer row = permissionMapper.insert(permissionReq);
         return row > 0;
     }
@@ -56,13 +56,13 @@ public class PermissionServiceImpl implements PermissionService {
         List<String> permissionIds = Arrays.asList(split);
         // 删除关联菜单
         Integer roleMenu = permissionMenuMapper.countByPermissionIds(permissionIds);
-        AssertUtil.businessInvalid(roleMenu > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
+        BusinessValidation.isInvalid(roleMenu > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
         // 删除角色权限
         Integer role = rolePermissionMapper.countByPermissionIds(permissionIds);
-        AssertUtil.businessInvalid(role > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
+        BusinessValidation.isInvalid(role > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
         // 删除用户权限
         Integer userRole = userRolePermissionMapper.countByPermissionIds(permissionIds);
-        AssertUtil.businessInvalid(userRole > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
+        BusinessValidation.isInvalid(userRole > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
         // 删除权限
         permissionMapper.deletes(permissionIds);
     }
@@ -70,7 +70,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public boolean update(PermissionReq permissionReq) {
         Optional<PermissionDTO> permission = permissionMapper.findByPermissionAndId(permissionReq);
-        AssertUtil.businessInvalid(permission.isPresent(), ResponseEnum.PERMISSION_EXIST_ERROR);
+        BusinessValidation.isInvalid(permission.isPresent(), ResponseEnum.PERMISSION_EXIST_ERROR);
         Integer row = permissionMapper.update(permissionReq);
         return row > 0;
     }

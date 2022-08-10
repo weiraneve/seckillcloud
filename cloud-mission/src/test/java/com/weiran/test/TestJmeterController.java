@@ -4,19 +4,19 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
+import com.weiran.common.obj.SeckillMessage;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.AssertUtil;
 import com.weiran.common.utils.SM3Util;
+import com.weiran.common.validation.SeckillValidation;
+import com.weiran.mission.manager.OrderManager;
+import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.pojo.entity.User;
-import com.weiran.mission.manager.OrderManager;
-import com.weiran.mission.manager.SeckillGoodsManager;
-import com.weiran.common.obj.SeckillMessage;
 import com.weiran.mission.rocketmq.MessageSender;
 import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
@@ -103,19 +103,19 @@ public class TestJmeterController {
     Result<Integer> doSeckill(Long userId, long goodsId, String path) {
         // 验证path
         boolean check = checkPath(userId, goodsId, path);
-        AssertUtil.seckillInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
+        SeckillValidation.isInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
         // 若为非，则为商品已经售完
         boolean over = localOverMap.get(goodsId);
-        AssertUtil.seckillInvalid(!over, ResponseEnum.SECKILL_OVER);
+        SeckillValidation.isInvalid(!over, ResponseEnum.SECKILL_OVER);
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
-        AssertUtil.seckillInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
+        SeckillValidation.isInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
         Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
             localOverMap.put(goodsId, false);
-            AssertUtil.seckillInvalid(ResponseEnum.SECKILL_OVER);
+            SeckillValidation.invalid(ResponseEnum.SECKILL_OVER);
         }
 
         // 入队

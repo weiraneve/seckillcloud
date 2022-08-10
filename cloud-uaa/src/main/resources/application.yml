@@ -31,7 +31,7 @@ spring:
       max-pool-prepared-statement-per-connection-size: 20 # 开启poolPreparedStatements后生效
       time-between-eviction-runs-millis: 60000 # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
       min-evictable-idle-time-millis: 300000 # 配置一个连接在池中最小生存的时间，单位是毫秒
-      max-evictable-idle-time-millis: 60000
+      max-evictable-idle-time-millis: 600000 # 配置一个连接在池中最小生存的时间，单位是毫秒,必须比配置大最小值大
       validation-query: SELECT 1 FROM DUAL # 测试连接
       # validation-query-timeout: 5000
       test-on-borrow: false # 获取连接时执行检测，建议关闭，影响性能

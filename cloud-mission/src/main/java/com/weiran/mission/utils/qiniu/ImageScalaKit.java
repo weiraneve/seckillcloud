@@ -4,7 +4,7 @@ package com.weiran.mission.utils.qiniu;
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.utils.AssertUtil;
+import com.weiran.common.validation.BusinessValidation;
 import com.weiran.mission.config.qiniu.QiNiuProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class ImageScalaKit {
             imageKit = initResult(ret);
         } catch (IOException e) {
             log.error(e.toString());
-            AssertUtil.businessInvalid(ResponseEnum.IMAGE_UPLOAD_FAIL);
+            BusinessValidation.invalid(ResponseEnum.IMAGE_UPLOAD_FAIL);
         }
         return imageKit;
     }

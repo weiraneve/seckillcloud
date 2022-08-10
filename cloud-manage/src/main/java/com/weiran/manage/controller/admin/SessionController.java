@@ -2,18 +2,13 @@ package com.weiran.manage.controller.admin;
 
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
-import com.weiran.common.utils.AssertUtil;
+import com.weiran.common.validation.BusinessValidation;
 import com.weiran.manage.dto.AdminUserDTO;
 import com.weiran.manage.request.AdminUserInfoReq;
 import com.weiran.manage.request.AdminUserPassReq;
 import com.weiran.manage.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -43,7 +38,7 @@ public class SessionController {
     @GetMapping("/findByUsername")
     public Result<Object> findByUsername(@RequestParam String username) {
         Optional<AdminUserDTO> userDTO =  adminUserService.findByUsername(username);
-        AssertUtil.businessInvalid(!userDTO.isPresent(), ResponseEnum.USER_NOT_FOUND);
+        BusinessValidation.isInvalid(!userDTO.isPresent(), ResponseEnum.USER_NOT_FOUND);
         return Result.success();
     }
 

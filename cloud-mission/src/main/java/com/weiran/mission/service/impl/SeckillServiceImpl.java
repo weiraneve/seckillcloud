@@ -7,8 +7,8 @@ import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.*;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.AssertUtil;
 import com.weiran.common.utils.SM3Util;
+import com.weiran.common.validation.SeckillValidation;
 import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.manager.OrderManager;
@@ -85,12 +85,12 @@ public class SeckillServiceImpl implements SeckillService {
         Long orderId  = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
-        AssertUtil.seckillInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
+        SeckillValidation.isInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
     }
 
     private void isCountOver(long goodsId) {
         boolean over = localOverMap.get(goodsId);
-        AssertUtil.seckillInvalid(!over, ResponseEnum.SECKILL_OVER);
+        SeckillValidation.isInvalid(!over, ResponseEnum.SECKILL_OVER);
     }
 
     private void handleMQ(long goodsId, long userId) {
@@ -105,13 +105,13 @@ public class SeckillServiceImpl implements SeckillService {
         Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
             localOverMap.put(goodsId, false);
-            AssertUtil.seckillInvalid(ResponseEnum.SECKILL_OVER);
+            SeckillValidation.invalid(ResponseEnum.SECKILL_OVER);
         }
     }
 
     private void checkPath(long goodsId, String path, long userId) {
         boolean check = checkPath(userId, goodsId, path);
-        AssertUtil.seckillInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
+        SeckillValidation.isInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
     }
 
     private long getUserId(HttpServletRequest request) {

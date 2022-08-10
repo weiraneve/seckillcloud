@@ -7,20 +7,20 @@ import com.github.pagehelper.PageInfo;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
+import com.weiran.common.pojo.dto.GoodsDTO;
+import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.common.redis.key.GoodsKey;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.AssertUtil;
-import com.weiran.mission.pojo.entity.Goods;
+import com.weiran.common.validation.BusinessValidation;
 import com.weiran.mission.manager.GoodsManager;
 import com.weiran.mission.mapper.GoodsMapper;
 import com.weiran.mission.mapper.SeckillGoodsMapper;
-import com.weiran.common.pojo.dto.GoodsDTO;
-import com.weiran.common.pojo.dto.SeckillGoodsDTO;
+import com.weiran.mission.pojo.entity.Goods;
+import com.weiran.mission.pojo.vo.GoodsDetailVo;
 import com.weiran.mission.service.GoodsService;
 import com.weiran.mission.utils.POJOConverter;
 import com.weiran.mission.utils.qiniu.ImageScalaKit;
-import com.weiran.mission.pojo.vo.GoodsDetailVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -85,8 +85,9 @@ public class GoodsServiceImpl implements GoodsService {
             }
             GoodsDetailVo goodsDetailVo = result.getData();
             // 商品信息中是否可用字段
-            if (goodsDetailVo.getGoods().getIsUsing())
-            goodsDetailVoList.add(goodsDetailVo);
+            if (goodsDetailVo.getGoods().getIsUsing()) {
+                goodsDetailVoList.add(goodsDetailVo);
+            }
         }
         return goodsDetailVoList;
     }
@@ -239,7 +240,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsDTO selectById(Long id) {
         GoodsDTO goodsDTO = goodsMapper.selectGoodsById(id);
-        AssertUtil.businessInvalid(ObjectUtil.isNull(goodsDTO), ResponseEnum.RESOURCE_NOT_FOUND);
+        BusinessValidation.isInvalid(ObjectUtil.isNull(goodsDTO), ResponseEnum.RESOURCE_NOT_FOUND);
         return goodsDTO;
     }
 
