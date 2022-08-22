@@ -37,10 +37,9 @@ public class PermissionMenuServiceImpl implements PermissionMenuService {
     }
 
     @Override
-    public boolean creatMenu(MenuReq menuReq) {
+    public void creatMenu(MenuReq menuReq) {
         menuReq.setLevel(menuReq.getLevel() + 1);
-        Integer row = permissionMenuMapper.creatMenu(menuReq);
-        return row > 0;
+        permissionMenuMapper.creatMenu(menuReq);
     }
 
     @Override
@@ -50,8 +49,7 @@ public class PermissionMenuServiceImpl implements PermissionMenuService {
     }
 
     @Override
-    public boolean updateMenu(MenuReq menuReq) {
-        Integer row = permissionMenuMapper.updateMenu(menuReq);
-        return row > 0;
+    public void updateMenu(MenuReq menuReq) {
+        permissionMenuMapper.updateMenu(menuReq);
     }
 }

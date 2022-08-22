@@ -24,7 +24,7 @@ public interface PermissionMenuService {
     /**
      * 创建菜单
      */
-    boolean creatMenu(MenuReq menuReq);
+    void creatMenu(MenuReq menuReq);
 
 
     /**
@@ -36,6 +36,6 @@ public interface PermissionMenuService {
     /**
      * 修改菜单
      */
-    boolean updateMenu(MenuReq menuReq);
+    void updateMenu(MenuReq menuReq);
 
 }

@@ -213,22 +213,12 @@ public class GoodsServiceImpl implements GoodsService {
     // 更新商品
     @Override
     public Result<Object> update(GoodsDTO goodsDTO) {
-        int row;
-        try {
-            row = goodsMapper.updateGoods(goodsDTO);
-        } catch (Exception e) {
-            log.error(e.toString());
-            return Result.error(ResponseEnum.Goods_CREATE_FAIL);
-        }
-        if (row > 0) {
-            // 更改对应缓存
-            addGoodsToCache(goodsDTO);
-            // 更改秒杀库
-            updateGoodsTOSeckillDatabase(goodsDTO);
-            return Result.success();
-        } else {
-            return Result.error(ResponseEnum.Goods_CREATE_FAIL);
-        }
+        goodsMapper.updateGoods(goodsDTO);
+        // 更改对应缓存
+        addGoodsToCache(goodsDTO);
+        // 更改秒杀库
+        updateGoodsTOSeckillDatabase(goodsDTO);
+        return Result.success();
     }
 
     private void updateGoodsTOSeckillDatabase(GoodsDTO goodsDTO) {

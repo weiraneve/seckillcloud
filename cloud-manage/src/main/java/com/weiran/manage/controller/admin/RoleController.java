@@ -1,21 +1,13 @@
 package com.weiran.manage.controller.admin;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.manage.dto.RoleDTO;
 import com.weiran.manage.request.RoleReq;
 import com.weiran.manage.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -57,8 +49,8 @@ public class RoleController {
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
     public Result<Object> updateRole(@RequestBody RoleReq roleReq) {
-        boolean updateSuccess = roleService.updateRole(roleReq);
-        return updateSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_UPDATE_ERROR);
+        roleService.updateRole(roleReq);
+        return Result.success();
     }
 
 
@@ -78,8 +70,8 @@ public class RoleController {
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
     public Result<Object> createRole(@RequestBody RoleReq roleReq) {
-        boolean createSuccess = roleService.createRole(roleReq);
-        return createSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_CREATE_ERROR);
+        roleService.createRole(roleReq);
+        return Result.success();
     }
 
 }

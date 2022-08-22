@@ -8,6 +8,7 @@ import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
+import com.weiran.common.utils.CommonUtil;
 import com.weiran.common.validation.UserInfoValidation;
 import com.weiran.uaa.entity.User;
 import com.weiran.uaa.manager.UserManager;
@@ -67,16 +68,11 @@ public class UserServiceImpl implements UserService {
     // 注销
     @Override
     public Result<ResponseEnum> doLogout(HttpServletRequest request) {
-        String loginToken = getTokenByRequest(request);
+        String loginToken = CommonUtil.getLoginTokenByRequest(request);
         long userId = redisService.get(UserKey.getById, loginToken, Long.class);
         redisService.delete(UserKey.getById, loginToken);
         log.info("用户" + userId + " 已经注销");
         return Result.success();
-    }
-
-    private String getTokenByRequest(HttpServletRequest request) {
-        String authInfo = request.getHeader("Authorization");
-        return authInfo.split("Bearer ")[1];
     }
 
     // 注册
@@ -84,14 +80,8 @@ public class UserServiceImpl implements UserService {
     public Result<ResponseEnum> doRegister(RegisterParam registerParam) {
         // 判断电话、用户名、身份证有无被注册
         isRegistered(registerParam);
-        try {
-            userManager.save(getUserByRegisterParam(registerParam));
-            log.info(registerParam.getRegisterMobile() + "用户注册成功");
-        } catch (Exception e) {
-            log.error(registerParam.getRegisterMobile() + "用户注册失败");
-            log.error(e.toString());
-            UserInfoValidation.invalid(ResponseEnum.SERVER_ERROR);
-        }
+        userManager.save(getUserByRegisterParam(registerParam));
+        log.info(registerParam.getRegisterMobile() + "用户注册成功");
         return new Result<>(ResponseEnum.SUCCESS);
     }
 
@@ -116,24 +106,13 @@ public class UserServiceImpl implements UserService {
     // 更换密码
     @Override
     public Result<ResponseEnum> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
-        long userId = getUserId(request);
+        long userId = redisService.get(UserKey.getById, CommonUtil.getLoginTokenByRequest(request), Long.class);
         User user = userManager.getById(userId);
         UserInfoValidation.isInvalid(!user.getPassword().equals(updatePassParam.getOldPassword()), ResponseEnum.OLD_PASSWORD_ERROR);
         user.setPassword(updatePassParam.getNewPassword());
-        try {
-            userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
-        } catch (Exception e) {
-            log.error(user.getPhone() + "用户更换密码失败");
-            log.error(e.toString());
-            UserInfoValidation.invalid((ResponseEnum.UPDATE_PASSWORD_ERROR));
-        }
+        userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
         log.info(user.getPhone() + "用户更换密码成功");
         return Result.success();
-    }
-
-    private long getUserId(HttpServletRequest request) {
-        String loginToken = getTokenByRequest(request);
-        return redisService.get(UserKey.getById, loginToken, Long.class);
     }
 
     // 登录方法，检查比对传入的登录字段

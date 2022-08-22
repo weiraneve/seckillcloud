@@ -43,11 +43,10 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public boolean createPermission(PermissionReq permissionReq) {
+    public void createPermission(PermissionReq permissionReq) {
         Optional<PermissionDTO> permission = permissionMapper.findByPermission(permissionReq.getPermission());
         BusinessValidation.isInvalid(ObjectUtil.isNull(permission.isPresent()), ResponseEnum.PERMISSION_EXIST_ERROR);
-        Integer row = permissionMapper.insert(permissionReq);
-        return row > 0;
+        permissionMapper.insert(permissionReq);
     }
 
     @Override
@@ -68,11 +67,10 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public boolean update(PermissionReq permissionReq) {
+    public void update(PermissionReq permissionReq) {
         Optional<PermissionDTO> permission = permissionMapper.findByPermissionAndId(permissionReq);
         BusinessValidation.isInvalid(permission.isPresent(), ResponseEnum.PERMISSION_EXIST_ERROR);
-        Integer row = permissionMapper.update(permissionReq);
-        return row > 0;
+        permissionMapper.update(permissionReq);
     }
 
     @Override

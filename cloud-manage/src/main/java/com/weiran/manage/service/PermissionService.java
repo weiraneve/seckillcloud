@@ -18,7 +18,7 @@ public interface PermissionService {
     /**
      * 创建权限
      */
-    boolean createPermission(PermissionReq permissionReq);
+    void createPermission(PermissionReq permissionReq);
 
 
     /**
@@ -30,7 +30,7 @@ public interface PermissionService {
     /**
      * 修改权限
      */
-    boolean update(PermissionReq permissionReq);
+    void update(PermissionReq permissionReq);
 
 
     /**

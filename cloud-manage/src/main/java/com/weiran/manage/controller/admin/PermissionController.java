@@ -1,21 +1,13 @@
 package com.weiran.manage.controller.admin;
 
 import com.github.pagehelper.PageInfo;
-import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.manage.dto.PermissionDTO;
 import com.weiran.manage.request.PermissionReq;
 import com.weiran.manage.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,8 +39,8 @@ public class PermissionController {
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
     public Result<Object> update(@RequestBody PermissionReq permissionReq) {
-        boolean updateSuccess = permissionService.update(permissionReq);
-        return updateSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_UPDATE_ERROR);
+        permissionService.update(permissionReq);
+        return Result.success();
     }
 
     /**
@@ -67,8 +59,8 @@ public class PermissionController {
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
     public Result<Object> createPermission(@RequestBody PermissionReq permissionReq) {
-        boolean createSuccess = permissionService.createPermission(permissionReq);
-        return createSuccess ? Result.success() : Result.error(ResponseEnum.PERMISSION_CREATE_ERROR);
+        permissionService.createPermission(permissionReq);
+        return Result.success();
     }
 
     /**

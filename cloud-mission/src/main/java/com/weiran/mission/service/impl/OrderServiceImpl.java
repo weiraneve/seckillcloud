@@ -7,6 +7,7 @@ import com.weiran.common.obj.Result;
 
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisService;
+import com.weiran.common.utils.CommonUtil;
 import com.weiran.mission.pojo.entity.Goods;
 import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.manager.GoodsManager;
@@ -35,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
     // 返回客户的所有订单数据
     @Override
     public Result<List<OrderDetailVo>> getOrderList(HttpServletRequest request) {
-        long userId = getUserId(request);
+        long userId = redisService.get(UserKey.getById, CommonUtil.getLoginTokenByRequest(request), Long.class);
         return getListResult(userId);
     }
 
@@ -66,9 +67,5 @@ public class OrderServiceImpl implements OrderService {
         return Result.success(orderDetailVoList);
     }
 
-    private long getUserId(HttpServletRequest request) {
-        String authInfo = request.getHeader("Authorization");
-        String loginToken = authInfo.split("Bearer ")[1];
-        return redisService.get(UserKey.getById, loginToken, Long.class);
-    }
+
 }

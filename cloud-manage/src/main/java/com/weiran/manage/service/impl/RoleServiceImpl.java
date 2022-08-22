@@ -44,11 +44,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean createRole(RoleReq roleReq) {
+    public void createRole(RoleReq roleReq) {
         roleMapper.createRole(roleReq);
         BusinessValidation.isInvalid(roleReq.getId() <= 0, ResponseEnum.PERMISSION_CREATE_ERROR);
-        Integer rows = rolePermissionMapper.inserts(roleReq);
-        return rows > 0;
+        rolePermissionMapper.inserts(roleReq);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateRole(RoleReq roleReq) {
+    public void updateRole(RoleReq roleReq) {
         roleMapper.updateRole(roleReq);
         List<Integer> permissionIds = rolePermissionMapper.findPermissionIdsByRoleId(roleReq.getId());
         // 相同权限不变
@@ -82,7 +81,6 @@ public class RoleServiceImpl implements RoleService {
         if (permissionIds.size() != 0) {
             rolePermissionMapper.deletesByPermissionIds(permissionIds,roleReq.getId());
         }
-        return true;
     }
 
     @Override

@@ -19,7 +19,7 @@ public interface RoleService {
     /**
      * 新增角色信息
      */
-    boolean createRole(RoleReq roleReq);
+    void createRole(RoleReq roleReq);
 
     /**
      * 批量删除
@@ -30,7 +30,7 @@ public interface RoleService {
     /**
      * 修改角色信息
      */
-    boolean updateRole(RoleReq roleReq);
+    void updateRole(RoleReq roleReq);
 
 
     /**
