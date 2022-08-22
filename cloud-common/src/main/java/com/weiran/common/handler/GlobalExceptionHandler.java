@@ -3,18 +3,18 @@ package com.weiran.common.handler;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.exception.BusinessException;
-import com.weiran.common.exception.UserInfoException;
 import com.weiran.common.exception.SeckillException;
+import com.weiran.common.exception.UserInfoException;
 import com.weiran.common.obj.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 // 全局异常处理器
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserInfoException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<String> handle(UserInfoException exception) {
         return Result.error(exception.getResponseEnum());
     }
@@ -34,13 +34,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<Object> handle(BusinessException exception) {
         return Result.error(exception.getResponseEnum());
     }
 
     @ExceptionHandler(JWTDecodeException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<Object> handle() {
         return Result.error(ResponseEnum.TOKEN_PARSING_ERROR);
     }
