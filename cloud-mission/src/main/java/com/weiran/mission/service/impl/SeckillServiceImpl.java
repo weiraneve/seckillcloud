@@ -7,6 +7,7 @@ import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.*;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
+import com.weiran.common.utils.CommonUtil;
 import com.weiran.common.utils.SM3Util;
 import com.weiran.common.validation.SeckillValidation;
 import com.weiran.mission.pojo.entity.Order;
@@ -115,9 +116,7 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     private long getUserId(HttpServletRequest request) {
-        String authInfo = request.getHeader("Authorization");
-        String loginToken = authInfo.split("Bearer ")[1];
-        return redisService.get(UserKey.getById, loginToken, Long.class);
+        return redisService.get(UserKey.getById, CommonUtil.getLoginTokenByRequest(request), Long.class);
     }
 
     // 客户端-前端服务器轮询查询是否下单成功
