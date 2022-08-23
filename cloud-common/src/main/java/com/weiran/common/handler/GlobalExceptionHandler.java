@@ -6,6 +6,7 @@ import com.weiran.common.exception.BusinessException;
 import com.weiran.common.exception.SeckillException;
 import com.weiran.common.exception.UserInfoException;
 import com.weiran.common.obj.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,30 +19,35 @@ import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 // 全局异常处理器
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserInfoException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<String> handle(UserInfoException exception) {
+        log.error(exception.getResponseEnum().getMsg());
         return Result.error(exception.getResponseEnum());
     }
 
     @ExceptionHandler(SeckillException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<ResponseEnum> handle(SeckillException exception) {
+        log.error(exception.getResponseEnum().getMsg());
         return Result.error(exception.getResponseEnum());
     }
 
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<Object> handle(BusinessException exception) {
+        log.error(exception.getResponseEnum().getMsg());
         return Result.error(exception.getResponseEnum());
     }
 
     @ExceptionHandler(JWTDecodeException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<Object> handle() {
+        log.error(ResponseEnum.TOKEN_PARSING_ERROR.getMsg());
         return Result.error(ResponseEnum.TOKEN_PARSING_ERROR);
     }
 
@@ -51,6 +57,7 @@ public class GlobalExceptionHandler {
         String message = ex.getBindingResult().getAllErrors().stream()
                 .map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining(";"));
+        log.error(ex.getMessage());
         return Result.error(message);
     }
 
@@ -60,12 +67,14 @@ public class GlobalExceptionHandler {
         String message = ex.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining(";"));
+        log.error(ex.getMessage());
         return Result.error(message);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<String> handle(Exception ex) {
+        log.error(ex.getMessage());
         return Result.error(ex.getMessage());
     }
 
