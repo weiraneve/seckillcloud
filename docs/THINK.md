@@ -179,3 +179,4 @@ SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分�
 [常用消息队列 Kafka、RabbitMQ、RocketMQ、ActiveMQ 综合对比](https://mp.weixin.qq.com/s/AgBOplDsVc2CL57WWv9eaw)
 [Nginx从安装到高可用，一篇搞定！](https://mp.weixin.qq.com/s/d51GW-xSzXGAD06qAXU2Hg)
 [36个接口设计锦囊](https://mp.weixin.qq.com/s/wtF_cj1Y8r3NGoBAY6NzSQ)
+[了解 QPS、TPS、RT、吞吐量 这些高并发性能指标](https://mp.weixin.qq.com/s/HI08c1OuMPsQUZv126FhLA)
