@@ -6,7 +6,6 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import feign.form.spring.SpringFormEncoder;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
@@ -17,10 +16,8 @@ import feign.codec.Encoder;
 
 /**
  * Feign日志打印
- *
  * Feign提供了日志打印功能，我们可以通过配置来调整日志级别，从而了解Feign中Http请求的细节。
  */
-@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class FeignInterceptor implements RequestInterceptor {

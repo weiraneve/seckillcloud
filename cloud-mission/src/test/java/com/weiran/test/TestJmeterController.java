@@ -20,7 +20,6 @@ import com.weiran.mission.pojo.entity.User;
 import com.weiran.mission.rocketmq.MessageSender;
 import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +35,6 @@ import java.util.UUID;
 /**
  * Jmeter测试
  */
-@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class TestJmeterController {
@@ -75,7 +73,7 @@ public class TestJmeterController {
     @RequestMapping("/test")
     @ResponseBody
     public Result<Integer> test(@RequestParam("id") long id) {
-
+        // 默认传入id为1
         return doTest(id);
     }
 
@@ -86,42 +84,42 @@ public class TestJmeterController {
         String userName = "user" + id;
         user.setUserName(userName);
         redisService.set(UserKey.getById, userName, userId, 120);
-        String path = getSeckillPath(userName, 1);
-        return doSeckill(userId, 1, path);
+        String path = getSeckillPath(userName);
+        return doSeckill(userId, path);
     }
 
-    private String getSeckillPath(String token, long goodsId) {
+    private String getSeckillPath(String token) {
         Long userId = redisService.get(UserKey.getById, token, Long.class);
         if (userId == null) {
             return null;
         }
-        return createSeckillPath(userId, goodsId);
+        return createSeckillPath(userId);
     }
 
     // 进行秒杀
     @Transactional
-    Result<Integer> doSeckill(Long userId, long goodsId, String path) {
+    Result<Integer> doSeckill(Long userId, String path) {
         // 验证path
-        boolean check = checkPath(userId, goodsId, path);
+        boolean check = checkPath(userId, path);
         SeckillValidation.isInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
         // 若为非，则为商品已经售完
-        boolean over = localOverMap.get(goodsId);
+        boolean over = localOverMap.get((long) 1);
         SeckillValidation.isInvalid(!over, ResponseEnum.SECKILL_OVER);
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
-        Long orderId  = goodsId * 1000000 + userId;
+        Long orderId  = (long) 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
         SeckillValidation.isInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
-        Long count = redisLua.judgeStockAndDecrStock(goodsId);
+        Long count = redisLua.judgeStockAndDecrStock((long) 1);
         if (count == -1) {
-            localOverMap.put(goodsId, false);
+            localOverMap.put((long) 1, false);
             SeckillValidation.invalid(ResponseEnum.SECKILL_OVER);
         }
 
         // 入队
         SeckillMessage seckillMessage = new SeckillMessage();
         seckillMessage.setUserId(userId);
-        seckillMessage.setGoodsId(goodsId);
+        seckillMessage.setGoodsId(1);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
         messageSender.asyncSend(seckillMessage, SECKILL_TOPIC_TAG); // 这里使用RocketMQ
 
@@ -129,22 +127,22 @@ public class TestJmeterController {
     }
 
     // 加盐生成唯一path，构成URl动态化
-    private String createSeckillPath(Long userId, long goodsId) {
-        if (userId == null || goodsId <= 0) {
+    private String createSeckillPath(Long userId) {
+        if (userId == null) {
             return null;
         }
         // 随机返回一个唯一的id，加上123456的盐，然后sm3加密
         String str = SM3Util.sm3(UUID.randomUUID() + "123456");
-        redisService.set(SeckillKey.getSeckillPath, "" + userId + "_" + goodsId, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
+        redisService.set(SeckillKey.getSeckillPath, "" + userId + "_" + (long) 1, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
         return str;
     }
 
     // 在redis里验证path
-    private boolean checkPath(Long userId, long goodsId, String path) {
+    private boolean checkPath(Long userId, String path) {
         if (userId == null || path == null) {
             return false;
         }
-        String redis_path = redisService.get(SeckillKey.getSeckillPath, "" + userId + "_"+ goodsId, String.class);
+        String redis_path = redisService.get(SeckillKey.getSeckillPath, "" + userId + "_"+ (long) 1, String.class);
         return path.equals(redis_path);
     }
 

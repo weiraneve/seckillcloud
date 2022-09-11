@@ -1,8 +1,6 @@
 package com.weiran.common.enums;
 
 
-import com.weiran.common.enums.BaseEnum;
-
 public enum ImageDirEnum implements BaseEnum {
 
     /**
@@ -11,8 +9,8 @@ public enum ImageDirEnum implements BaseEnum {
     goods(0, "goods"),
     index(1, "index");
 
-    private Integer code;
-    private String msg;
+    private final Integer code;
+    private final String msg;
 
     ImageDirEnum(int code, String msg) {
         this.code = code;

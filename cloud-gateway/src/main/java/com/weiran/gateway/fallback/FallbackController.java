@@ -13,11 +13,10 @@ public class FallbackController {
 
     /**
      * 全局服务降级处理返回
-     * @return
      */
     @RequestMapping("/defaultFallback")
-    public Msg fallback() {
-        Msg msg = new Msg();
+    public Msg<Integer> fallback() {
+        Msg<Integer> msg = new Msg<>();
         msg.setCode(ErrorCode.MICRO_SERVICE_UNAVAILABLE);
         msg.setMsg("系统更新中，请稍后再试");
         return msg;

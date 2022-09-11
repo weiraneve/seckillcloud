@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class GoodsDetailVo extends BaseVo {
 
     @ApiModelProperty(value = "剩余时间")
+    @Builder.Default
     private int remainSeconds = 0;
 
     @ApiModelProperty(value = "库存数量")

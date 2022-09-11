@@ -18,7 +18,6 @@ public class RedisService {
 
 	/**
 	 * 获取单个对象
-	 *
 	 * 方法返回类型里有<T> T 与 T 两种情况
 	 */
 	public <T> T get(KeyPrefix prefix, String key, Class<T> clazz) {
@@ -50,7 +49,7 @@ public class RedisService {
 	public <T> boolean set(KeyPrefix prefix, String key, T value, int exTime) {
 		try {
 			String str = BeanUtil.beanToString(value);
-			if (str == null || str.length() <= 0) {
+			if (str == null || str.length() == 0) {
 				return false;
 			}
 			// 生成真正的key
@@ -98,27 +97,13 @@ public class RedisService {
 	/**
 	 * 增加值(加1)
 	 */
-	public <T> void increase(KeyPrefix prefix, String key) {
+	public void increase(KeyPrefix prefix, String key) {
 		try {
 			// 生成真正的key
 			String realKey  = prefix.getPrefix() + key;
 			redisTemplate.opsForValue().increment(realKey, 1);
 		} catch (Exception e) {
 			log.error("增加值(加1)失败,key为{}, 异常为{}", key, e);
-		}
-	}
-
-	/**
-	 * 减少值(减1)
-	 */
-	public <T> Long decrease(KeyPrefix prefix, String key) {
-		try {
-			// 生成真正的key
-			String realKey  = prefix.getPrefix() + key;
-			return redisTemplate.opsForValue().decrement(realKey, 1);
-		} catch (Exception e) {
-			log.error("减少值(减1)失败,key为{}, 异常为{}", key, e);
-			return null;
 		}
 	}
 

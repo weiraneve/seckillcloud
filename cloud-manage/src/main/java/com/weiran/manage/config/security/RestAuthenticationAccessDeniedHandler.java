@@ -22,7 +22,7 @@ public class RestAuthenticationAccessDeniedHandler implements AccessDeniedHandle
         response.setCharacterEncoding("UTF-8");
         // 防止乱码
         response.setContentType("application/json;charset=UTF-8");
-        Result httpResultVO = Result.error(ResponseEnum.FORBIDDEN);
+        Result<ResponseEnum> httpResultVO = Result.error(ResponseEnum.FORBIDDEN);
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpResultVO));
     }
 }

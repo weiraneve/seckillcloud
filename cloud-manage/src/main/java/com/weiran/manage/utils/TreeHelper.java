@@ -44,17 +44,6 @@ public class TreeHelper {
         return root;
     }
 
-    private static void addNode(List<PermissionMenuDTO> nodes, PermissionMenuDTO node, int currentLevel) {
-        nodes.add(node);
-        if (node.getChildren().size() == 0) {
-            return;
-        }
-        for (int i = 0; i < node.getChildren().size(); i++) {
-            addNode(nodes, node.getChildren().get(i), currentLevel + 1);
-        }
-    }
-
-
     public static List<TreeRoleMenuDTO> getSortedTreeNodes(List<TreeRoleMenuDTO> datas) {
         List<TreeRoleMenuDTO> nodes = convertData2TreeNode(datas);
         // 拿到根节点

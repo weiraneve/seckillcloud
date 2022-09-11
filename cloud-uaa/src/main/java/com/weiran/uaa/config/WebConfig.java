@@ -5,7 +5,6 @@ import com.weiran.uaa.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -20,7 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * 注册拦截器
-     *
      * addPathPatterns 用于添加拦截规则
      * excludePathPatterns 用户排除拦截
      */

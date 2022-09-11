@@ -2,7 +2,6 @@ package com.weiran.mission.config;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import javax.annotation.PostConstruct;
 /**
  * Druid数据库连接池配置文件
  */
-@Slf4j
 @Configuration
 public class DruidConfig {
 
