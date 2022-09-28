@@ -80,3 +80,11 @@ SpringAdmin监控一览。
 - 数据库的容灾，可以在云数据库厂商直接配置。主从结构，定时备份。也可以用容器构建。集群部署，主从分离，定时备份。
 - 本身项目中秒杀模块也有注解加拦截器负责限流。关于限流、熔断等功能，还可以由网关来承载，这可能是未来改进的一个方向，项目中是以自定义注解加拦截器来限流。
 - 消息队列、JVM和一些环境上的调优。
+
+# 其他
+
+## 特别感谢
+-  <a href="https://www.jetbrains.com/?from=spring-boot-demo"><img src="https://account.jetbrains.com/static/images/jetbrains-logo-inv.svg" width="20%" alt="jetbrains"> 感谢 JetBrains 提供的免费开源 License</a>
+
+## License
+- [MIT](https://github.com/weiran1999/seckillcloud/blob/master/LICENSE)
