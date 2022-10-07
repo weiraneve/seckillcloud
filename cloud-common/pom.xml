@@ -5,7 +5,7 @@
     <parent>
         <artifactId>seckillcloud</artifactId>
         <groupId>com.weiran.seckillcloud</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${seckillcloud.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
