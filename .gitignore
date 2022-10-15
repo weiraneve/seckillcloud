@@ -37,4 +37,5 @@ build/
 .txlcn/
 .txlcn
 /.idea/
+/.fleet/
 .DS_Store
