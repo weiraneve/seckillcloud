@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.exception.BusinessException;
 import com.weiran.common.exception.SeckillException;
+import com.weiran.common.exception.SystemException;
 import com.weiran.common.exception.UserInfoException;
 import com.weiran.common.obj.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,13 @@ public class GlobalExceptionHandler {
     public Result<Object> handle(BusinessException exception) {
         log.error(exception.getResponseEnum().getMsg());
         return Result.error(exception.getResponseEnum());
+    }
+
+    @ExceptionHandler(SystemException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Result<String> handle(SystemException ex) {
+        log.error(ex.getResponseEnum().getMsg());
+        return Result.error(ex.getResponseEnum());
     }
 
     @ExceptionHandler(JWTDecodeException.class)

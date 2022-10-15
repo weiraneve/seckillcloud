@@ -82,7 +82,13 @@ public enum ResponseEnum implements BaseEnum {
      * 模型相关
      */
     Goods_CREATE_FAIL(600, "goods创建失败"),
+
+    /**
+     * 系统相关
+     */
+    INTERNAL_ACCESS_ERROR(700, "只有微服务内网才可访问"),
     ;
+
 
     private final int code;
     private final String msg;
