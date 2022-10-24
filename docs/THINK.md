@@ -147,7 +147,7 @@ SM3是杂凑、哈希加密，为单向加密函数，无法解密。SM4为分�
 - 在MyBatisPlus与MyBatis共存之时，配置的XML文件中的Mapper层的函数不要与MP本身的方法冲突。以及要在模块中的application配置文件中申明XML地址。
 - 使用dynamic-datasource这个依赖来分库分表时，主库不设计为order会出问题。然后也集成了druid连接池。
 - Flyway + Druid + dynamic的多数据源方案，在flyway的配置上，主库和flyway的配置类需要像项目那样配合才能行，否则每次主库会强制执行所有同一模块中的所有flyway的SQL文件，导致多数据源的所有表都在那个主库中出现。
-- maven 给微服务打包时，发现cloud-common通用模块要打包需要用到发到私库，这时候mission、uaa、manage模块需要依赖common模块。网上一堆答案，都尝试过无果，摸索出来的pom配置可以供大家参考。
+- maven 给微服务打包时，发现cloud-common通用模块要打包需要用到发到私库，这时候mission、uaa、manage模块需要依赖common模块。网上一堆答案，都尝试过无果，[摸索出来的pom配置可以供大家参考](https://zhuanlan.zhihu.com/p/571980021)。
 
 # 参考
 [如何设计一个秒杀系统总结](https://blog.csdn.net/yin767833376/article/details/103028616)
