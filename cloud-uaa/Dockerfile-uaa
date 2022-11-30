@@ -1,0 +1,10 @@
+FROM adoptopenjdk/openjdk8:jdk8u345-b01-debian-slim
+
+WORKDIR /app
+
+COPY ./target/cloud-uaa-1.0.0.jar /app/cloud-uaa.jar
+
+ENV LANG=en_US.UTF8
+ENV TZ=Asia/Shanghai
+
+EXPOSE 8088

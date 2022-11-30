@@ -1,0 +1,157 @@
+version: "3.9"
+
+services:
+  mission:
+    build:
+      context: ./cloud-mission
+      dockerfile: Dockerfile-mission
+    image: cloud-mission:1.0.0
+    ports:
+      - "8888:8888"
+    environment:
+      DOCKER_HOST: database
+    links:
+      - "mysql:database"
+    depends_on:
+      - mysql
+    restart: always
+    entrypoint: java -jar /app/cloud-mission
+
+  manage:
+    build:
+      context: ./cloud-manage
+      dockerfile: Dockerfile-manage
+    image: cloud-manage:1.0.0
+    ports:
+      - "8070:8070"
+    environment:
+      DOCKER_HOST: database
+    links:
+      - "mysql:database"
+    depends_on:
+      - mysql
+    restart: always
+    entrypoint: java -jar /app/cloud-manage.jar
+
+  uaa:
+    build:
+      context: ./cloud-uaa
+      dockerfile: Dockerfile-uaa
+    image: cloud-uaa:1.0.0
+    ports:
+      - "8088:8088"
+    environment:
+      DOCKER_HOST: database
+    links:
+      - "mysql:database"
+    depends_on:
+      - mysql
+    restart: always
+    entrypoint: java -jar /app/cloud-uaa.jar
+
+  gateway:
+    build:
+      context: ./cloud-gateway
+      dockerfile: Dockerfile-gateway
+    image: cloud-gateway:1.0.0
+    ports:
+      - "8205:8205"
+    environment:
+      DOCKER_HOST: database
+    links:
+      - "mysql:database"
+    depends_on:
+      - mysql
+    restart: always
+    entrypoint: java -jar /app/cloud-gateway.jar
+
+  monitor:
+    build:
+      context: ./cloud-monitor
+      dockerfile: Dockerfile-monitor
+    image: cloud-monitor:1.0.0
+    ports:
+      - "8890:8890"
+    environment:
+      DOCKER_HOST: database
+    links:
+      - "mysql:database"
+    depends_on:
+      - mysql
+    restart: always
+    entrypoint: java -jar /app/cloud-monitor.jar
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3305:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE:  // TODO 初始化多个sql脚本
+      TZ: Asia/Shanghai
+    restart: always
+
+  redis:
+    image: redis:7.0
+    volumes:
+      - redis-data:/var/lib/redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  nacos:
+    image: nacos/nacos-server:v2.1.2-slim
+    ports:
+      - "8848:8848"
+    restart: always
+
+  namesrv:
+    image: apache/rocketmq:4.9.2
+    container_name: rocketmq-namesrv
+    ports:
+      - "9876:9876"
+    environment:
+      - JAVA_OPT_EXT=-server -Xms256m -Xmx256m -Xmn256m
+    volumes:
+      - mq-data:/root/logs
+    command: sh mqnamesrv
+
+  broker:
+    image: apache/rocketmq:4.9.2
+    container_name: rocketmq-broker
+    links:
+      - namesrv
+    depends_on:
+      - namesrv
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    environment:
+      - NAMESRV_ADDR=namesrv:9876
+      - JAVA_OPT_EXT=-server -Xms512m -Xmx512m -Xmn256m
+    volumes:
+      - mq-data:/home/rocketmq/logs
+      - mq-data:/home/rocketmq/store
+      - mq-data:/home/rocketmq/conf/broker.conf
+    command: sh mqbroker -c /home/rocketmq/conf/broker.conf
+
+  dashboard:
+    image:
+      schnell18/rocketmq-dashboard:1.0.0-alpine
+    container_name: rocketmq-dashboard
+    ports:
+      - "8085:8085"
+    links:
+      - namesrv
+    depends_on:
+      - namesrv
+    environment:
+      - NAMESRV_ADDR=namesrv:9876
+
+volumes:
+  mysql-data:
+  redis-data:
+  mq-data:
