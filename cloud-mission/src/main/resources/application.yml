@@ -26,17 +26,17 @@ spring:
       datasource:
         goods:
           driverClassName: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/cloud-mission-goods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          url: jdbc:mysql://${DOCKER_HOST:localhost}:3306/cloud-mission-goods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
           username: root
           password: 123456
         order:
           driverClassName: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/cloud-mission-order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          url: jdbc:mysql://${DOCKER_HOST:localhost}:3306/cloud-mission-order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
           username: root
           password: 123456
         seckill:
           driverClassName: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/cloud-mission-seckillGoods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          url: jdbc:mysql://${DOCKER_HOST:localhost}:3306/cloud-mission-seckillGoods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
           username: root
           password: 123456
       primary: order # 设置默认的数据源或者数据源组,默认值即为master

@@ -15,7 +15,7 @@ services:
     depends_on:
       - mysql
     restart: always
-    entrypoint: java -jar /app/cloud-mission
+    entrypoint: java -jar /app/cloud-mission.jar
 
   manage:
     build:
@@ -56,12 +56,6 @@ services:
     image: cloud-gateway:1.0.0
     ports:
       - "8205:8205"
-    environment:
-      DOCKER_HOST: database
-    links:
-      - "mysql:database"
-    depends_on:
-      - mysql
     restart: always
     entrypoint: java -jar /app/cloud-gateway.jar
 
@@ -89,7 +83,10 @@ services:
       - "3305:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE:  // TODO 初始化多个sql脚本
+      # TODO 初始化多个sql脚本
+      MYSQL_DATABASE: 
+      - cloud-manage 
+      - cloud-uaa
       TZ: Asia/Shanghai
     restart: always
 
@@ -102,54 +99,60 @@ services:
     restart: always
 
   nacos:
-    image: nacos/nacos-server:v2.1.2-slim
+    image: zhusaidong/nacos-server-m1:2.0.3
     ports:
       - "8848:8848"
     restart: always
+    environment: 
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=
+      - MYSQL_SERVICE_HOST=127.0.0.1
+      - MYSQL_SERVICE_DB_NAME=nacos_config
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=root
+      - MYSQL_SERVICE_DB_PARAM=allowPublicKeyRetrieval=true
 
   namesrv:
-    image: apache/rocketmq:4.9.2
-    container_name: rocketmq-namesrv
-    ports:
-      - "9876:9876"
-    environment:
-      - JAVA_OPT_EXT=-server -Xms256m -Xmx256m -Xmn256m
+    image: apacherocketmq/rocketmq:4.6.0
+    container_name: rmqnamesrv
+    restart: on-failure
     volumes:
-      - mq-data:/root/logs
+      - mq-data:/var/lib/rocketmq
+    ports:
+      - 9876:9876
+    environment:
+      JAVA_OPT: -server -Xms256m -Xmx256m
     command: sh mqnamesrv
-
+  
   broker:
-    image: apache/rocketmq:4.9.2
-    container_name: rocketmq-broker
-    links:
-      - namesrv
-    depends_on:
-      - namesrv
+    image: apacherocketmq/rocketmq:4.6.0
+    container_name: rmqbroker
+    restart: on-failure
     ports:
-      - "10909:10909"
-      - "10911:10911"
-      - "10912:10912"
-    environment:
-      - NAMESRV_ADDR=namesrv:9876
-      - JAVA_OPT_EXT=-server -Xms512m -Xmx512m -Xmn256m
+      - 10909:10909
+      - 10911:10911
+      - 10912:10912
     volumes:
-      - mq-data:/home/rocketmq/logs
-      - mq-data:/home/rocketmq/store
-      - mq-data:/home/rocketmq/conf/broker.conf
-    command: sh mqbroker -c /home/rocketmq/conf/broker.conf
-
-  dashboard:
-    image:
-      schnell18/rocketmq-dashboard:1.0.0-alpine
-    container_name: rocketmq-dashboard
-    ports:
-      - "8085:8085"
-    links:
-      - namesrv
+    # 本地目录broker.conf 文件映射: 容器目录文件broker.conf
+      - ./broker.conf:/home/rocketmq/conf/broker.conf
+    command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/conf/broker.conf
     depends_on:
       - namesrv
+  
+  rocketmq-console:
+    image: candice0630/rocketmq-console-ng:2.0
+    container_name: rmqconsole
+    volumes:
+      - mq-data:/var/lib/rocketmq
+    restart: on-failure
+    ports:
+      - 19876:8080
     environment:
-      - NAMESRV_ADDR=namesrv:9876
+      JAVA_OPTS: -Drocketmq.config.namesrvAddr=namesrv:9876 -Drocketmq.config.isVIPChannel=false
+    depends_on:
+      - namesrv
 
 volumes:
   mysql-data:
