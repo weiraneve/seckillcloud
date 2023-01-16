@@ -56,6 +56,12 @@ services:
     image: cloud-gateway:1.0.0
     ports:
       - "8205:8205"
+    environment:
+      DOCKER_HOST: database
+    links:
+      - "mysql:database"
+    depends_on:
+      - mysql
     restart: always
     entrypoint: java -jar /app/cloud-gateway.jar
 
@@ -84,9 +90,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       # TODO 初始化多个sql脚本
-      MYSQL_DATABASE: 
-      - cloud-manage 
-      - cloud-uaa
+      MYSQL_DATABASE: cloud-uaa
       TZ: Asia/Shanghai
     restart: always
 
@@ -103,7 +107,7 @@ services:
     ports:
       - "8848:8848"
     restart: always
-    environment: 
+    environment:
       - PREFER_HOST_MODE=hostname
       - MODE=standalone
       - SPRING_DATASOURCE_PLATFORM=
@@ -125,7 +129,7 @@ services:
     environment:
       JAVA_OPT: -server -Xms256m -Xmx256m
     command: sh mqnamesrv
-  
+
   broker:
     image: apacherocketmq/rocketmq:4.6.0
     container_name: rmqbroker
@@ -140,7 +144,7 @@ services:
     command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/conf/broker.conf
     depends_on:
       - namesrv
-  
+
   rocketmq-console:
     image: candice0630/rocketmq-console-ng:2.0
     container_name: rmqconsole
