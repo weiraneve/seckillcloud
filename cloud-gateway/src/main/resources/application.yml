@@ -8,7 +8,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848 # 配置Nacos服务发现地址
+        server-addr: ${DOCKER_NACOS:localhost}:8848 # 配置Nacos服务发现地址
     gateway:
       # 全局自定义过滤器Hystrix实现降级处理，但此处如果使用，则让秒杀性能大减。
 #      default-filters:

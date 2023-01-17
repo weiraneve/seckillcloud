@@ -8,7 +8,7 @@ spring:
     name: cloud-manage
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DOCKER_HOST:localhost}:3306/cloud-manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
     password: 123456
   flyway:
@@ -23,7 +23,7 @@ spring:
     validate-on-migrate: true
   redis:
     database: 0
-    host: 127.0.0.1
+    host: ${DOCKER_REDIS:localhost}
     port: 6379
     password:
     timeout: 5000 # 连接超时时间（毫秒）
@@ -38,7 +38,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: ${DOCKER_NACOS:localhost}:8848
 
 security:
   jwt:

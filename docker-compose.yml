@@ -9,29 +9,17 @@ services:
     ports:
       - "8888:8888"
     environment:
-      DOCKER_HOST: database
-    links:
-      - "mysql:database"
+      - DOCKER_DB=mysql
+      - DOCKER_NACOS=nacos
+      - DOCKER_REDIS=redis
+      - DOCKER_MQ=namesrv
     depends_on:
       - mysql
+      - nacos
+      - redis
+      - namesrv
     restart: always
     entrypoint: java -jar /app/cloud-mission.jar
-
-  manage:
-    build:
-      context: ./cloud-manage
-      dockerfile: Dockerfile-manage
-    image: cloud-manage:1.0.0
-    ports:
-      - "8070:8070"
-    environment:
-      DOCKER_HOST: database
-    links:
-      - "mysql:database"
-    depends_on:
-      - mysql
-    restart: always
-    entrypoint: java -jar /app/cloud-manage.jar
 
   uaa:
     build:
@@ -41,13 +29,33 @@ services:
     ports:
       - "8088:8088"
     environment:
-      DOCKER_HOST: database
-    links:
-      - "mysql:database"
+      - DOCKER_DB=mysql
+      - DOCKER_NACOS=nacos
+      - DOCKER_REDIS=redis
     depends_on:
       - mysql
+      - nacos
+      - redis
     restart: always
     entrypoint: java -jar /app/cloud-uaa.jar
+
+  # manage:
+  #   build:
+  #     context: ./cloud-manage
+  #     dockerfile: Dockerfile-manage
+  #   image: cloud-manage:1.0.0
+  #   ports:
+  #     - "8070:8070"
+  #   environment:
+  #     - DOCKER_DB=mysql
+  #     - DOCKER_NACOS=nacos
+  #     - DOCKER_REDIS=redis
+  #   depends_on:
+  #     - mysql
+  #     - nacos
+  #     - redis
+  #   restart: always
+  #   entrypoint: java -jar /app/cloud-manage.jar
 
   gateway:
     build:
@@ -56,43 +64,32 @@ services:
     image: cloud-gateway:1.0.0
     ports:
       - "8205:8205"
-    environment:
-      DOCKER_HOST: database
-    links:
-      - "mysql:database"
-    depends_on:
-      - mysql
     restart: always
     entrypoint: java -jar /app/cloud-gateway.jar
 
-  monitor:
-    build:
-      context: ./cloud-monitor
-      dockerfile: Dockerfile-monitor
-    image: cloud-monitor:1.0.0
-    ports:
-      - "8890:8890"
-    environment:
-      DOCKER_HOST: database
-    links:
-      - "mysql:database"
-    depends_on:
-      - mysql
-    restart: always
-    entrypoint: java -jar /app/cloud-monitor.jar
+  # monitor:
+  #   build:
+  #     context: ./cloud-monitor
+  #     dockerfile: Dockerfile-monitor
+  #   image: cloud-monitor:1.0.0
+  #   ports:
+  #     - "8890:8890"
+  #   restart: always
+  #   entrypoint: java -jar /app/cloud-monitor.jar
 
   mysql:
     image: mysql:8.0
     volumes:
+      - ./sql/init:/docker-entrypoint-initdb.d/
       - mysql-data:/var/lib/mysql
     ports:
       - "3305:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       # TODO 初始化多个sql脚本
-      MYSQL_DATABASE: cloud-uaa
       TZ: Asia/Shanghai
     restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
   redis:
     image: redis:7.0

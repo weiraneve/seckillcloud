@@ -8,19 +8,19 @@ spring:
     name: cloud-uaa
   redis:
     database: 0
-    host: 127.0.0.1
+    host: ${DOCKER_REDIS:localhost}
     port: 6379
     password:
     timeout: 5000 # 连接超时时间（毫秒）
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: ${DOCKER_NACOS:localhost}:8848
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driverClassName: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://${DOCKER_HOST:localhost}:3306/cloud-uaa?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-uaa?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
       username: root
       password: 123456
       initial-size: 5 # 初始化连接大小

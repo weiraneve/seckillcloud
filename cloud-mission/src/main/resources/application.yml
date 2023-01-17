@@ -8,14 +8,14 @@ spring:
     name: cloud-mission
   redis:
     database: 0
-    host: 127.0.0.1
+    host: ${DOCKER_REDIS:localhost}
     port: 6379
     password:
     timeout: 30000 # 连接超时时间（毫秒）
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: ${DOCKER_NACOS:localhost}:8848
   autoconfigure:
     # 排除 Druid 自动配置
     exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
@@ -26,17 +26,17 @@ spring:
       datasource:
         goods:
           driverClassName: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://${DOCKER_HOST:localhost}:3306/cloud-mission-goods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-mission-goods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
           username: root
           password: 123456
         order:
           driverClassName: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://${DOCKER_HOST:localhost}:3306/cloud-mission-order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-mission-order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
           username: root
           password: 123456
         seckill:
           driverClassName: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://${DOCKER_HOST:localhost}:3306/cloud-mission-seckillGoods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+          url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-mission-seckillGoods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
           username: root
           password: 123456
       primary: order # 设置默认的数据源或者数据源组,默认值即为master
@@ -71,7 +71,7 @@ spring:
     locations: classpath:db/order # 这里写主库路径，然后在配置类中转换
 
 rocketmq:
-  name-server: 127.0.0.1:9876
+  name-server: ${DOCKER_MQ:localhost}:9876
   producer:
     group: seckill-producer-rocketmq-group
 
