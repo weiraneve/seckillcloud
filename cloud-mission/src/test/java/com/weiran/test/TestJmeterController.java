@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
-import com.weiran.common.obj.SeckillMessage;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
@@ -17,7 +16,8 @@ import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.pojo.entity.User;
-import com.weiran.mission.rocketmq.MessageSender;
+import com.weiran.mission.rabbitmq.BasicPublisher;
+import com.weiran.mission.rabbitmq.SeckillMessage;
 import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -39,13 +39,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TestJmeterController {
 
-    public static final String SECKILL_TOPIC_TAG = "seckill-topic:tag1";
     final RedisService redisService;
     final RedisTemplate<String, Object> redisTemplate;
     final GoodsService goodsService;
     final OrderManager orderManager;
     final SeckillGoodsManager seckillGoodsManager;
-    final MessageSender messageSender;
+    final BasicPublisher messageSender;
     private final RedisLua redisLua;
     // 内存标记，减少redis访问
     private final HashMap<Long, Boolean> localOverMap = new HashMap<>();
@@ -106,7 +105,7 @@ public class TestJmeterController {
         boolean over = localOverMap.get((long) 1);
         SeckillValidation.isInvalid(!over, ResponseEnum.SECKILL_OVER);
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
-        Long orderId  = (long) 1000000 + userId;
+        Long orderId = (long) 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
         SeckillValidation.isInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
@@ -121,7 +120,7 @@ public class TestJmeterController {
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(1);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
-        messageSender.asyncSend(seckillMessage, SECKILL_TOPIC_TAG); // 这里使用RocketMQ
+        messageSender.sendMsg(seckillMessage);
 
         return Result.success(0); // 排队中
     }
@@ -142,7 +141,7 @@ public class TestJmeterController {
         if (userId == null || path == null) {
             return false;
         }
-        String redis_path = redisService.get(SeckillKey.getSeckillPath, "" + userId + "_"+ (long) 1, String.class);
+        String redis_path = redisService.get(SeckillKey.getSeckillPath, "" + userId + "_" + (long) 1, String.class);
         return path.equals(redis_path);
     }
 

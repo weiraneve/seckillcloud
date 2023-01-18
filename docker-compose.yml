@@ -12,12 +12,11 @@ services:
       - DOCKER_DB=mysql
       - DOCKER_NACOS=nacos
       - DOCKER_REDIS=redis
-      - DOCKER_MQ=namesrv
+#      - DOCKER_MQ=
     depends_on:
       - mysql
       - nacos
       - redis
-      - namesrv
     restart: always
     entrypoint: java -jar /app/cloud-mission.jar
 
@@ -127,33 +126,6 @@ services:
       JAVA_OPT: -server -Xms256m -Xmx256m
     command: sh mqnamesrv
 
-  broker:
-    image: apacherocketmq/rocketmq:4.6.0
-    container_name: rmqbroker
-    restart: on-failure
-    ports:
-      - 10909:10909
-      - 10911:10911
-      - 10912:10912
-    volumes:
-    # 本地目录broker.conf 文件映射: 容器目录文件broker.conf
-      - ./broker.conf:/home/rocketmq/conf/broker.conf
-    command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/conf/broker.conf
-    depends_on:
-      - namesrv
-
-  rocketmq-console:
-    image: candice0630/rocketmq-console-ng:2.0
-    container_name: rmqconsole
-    volumes:
-      - mq-data:/var/lib/rocketmq
-    restart: on-failure
-    ports:
-      - 19876:8080
-    environment:
-      JAVA_OPTS: -Drocketmq.config.namesrvAddr=namesrv:9876 -Drocketmq.config.isVIPChannel=false
-    depends_on:
-      - namesrv
 
 volumes:
   mysql-data:

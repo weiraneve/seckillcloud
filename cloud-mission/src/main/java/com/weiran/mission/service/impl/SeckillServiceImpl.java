@@ -4,18 +4,20 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
-import com.weiran.common.redis.key.*;
+import com.weiran.common.redis.key.SeckillGoodsKey;
+import com.weiran.common.redis.key.SeckillKey;
+import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.CommonUtil;
 import com.weiran.common.utils.SM3Util;
 import com.weiran.common.validation.SeckillValidation;
-import com.weiran.mission.pojo.entity.Order;
-import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
-import com.weiran.common.obj.SeckillMessage;
-import com.weiran.mission.rocketmq.MessageSender;
+import com.weiran.mission.pojo.entity.Order;
+import com.weiran.mission.pojo.entity.SeckillGoods;
+import com.weiran.mission.rabbitmq.BasicPublisher;
+import com.weiran.mission.rabbitmq.SeckillMessage;
 import com.weiran.mission.service.SeckillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,11 +35,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SeckillServiceImpl implements SeckillService {
 
-    public static final String SECKILL_TOPIC_TAG = "seckill-topic:tag1";
     private final RedisService redisService;
     private final SeckillGoodsManager seckillGoodsManager;
     private final OrderManager orderManager;
-    private final MessageSender messageSender;
+    private final BasicPublisher messageSender;
     private final RedisLua redisLua;
     final RedisTemplate<String, Object> redisTemplate;
 
@@ -83,7 +84,7 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     private void getOrderId(long goodsId, long userId) {
-        Long orderId  = goodsId * 1000000 + userId;
+        Long orderId = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
         SeckillValidation.isInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
@@ -99,7 +100,7 @@ public class SeckillServiceImpl implements SeckillService {
         seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
-        messageSender.asyncSend(seckillMessage, SECKILL_TOPIC_TAG); // 这里使用RocketMQ
+        messageSender.sendMsg(seckillMessage);
     }
 
     private void luaCheckAndReduceStock(long goodsId) {
@@ -157,7 +158,7 @@ public class SeckillServiceImpl implements SeckillService {
         if (userId == null || path == null) {
             return false;
         }
-        String redis_path = redisService.get(SeckillKey.getSeckillPath, "" + userId + "_"+ goodsId, String.class);
+        String redis_path = redisService.get(SeckillKey.getSeckillPath, "" + userId + "_" + goodsId, String.class);
         return path.equals(redis_path);
     }
 
