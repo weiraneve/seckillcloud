@@ -1,7 +1,10 @@
 package com.weiran.mission.rabbitmq;
 
 import cn.hutool.json.JSONUtil;
-import com.rabbitmq.client.Channel;
+
+import com.weiran.mission.pojo.entity.Order;
+import com.weiran.mission.manager.OrderManager;
+import com.weiran.mission.service.SeckillGoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -11,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import com.rabbitmq.client.Channel;
+
 /**
  * rabbitmq demo-消费者
  */
@@ -19,14 +24,32 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class BasicConsumer {
 
+    final OrderManager orderManager;
+    final SeckillGoodsService seckillGoodsService;
+
     /**
      * 监听并接收消费队列中的消息-在这里采用单一容器工厂实例即可
      */
-    @RabbitListener(queues = RabbitMqConstants.BASIC_QUEUE, containerFactory = "singleListenerContainer") // 设置消费者监听的队列以及监听的消息容器
+    @RabbitListener(queues = RabbitMqConstants.BASIC_QUEUE, containerFactory = "singleListenerContainer")
+    // 设置消费者监听的队列以及监听的消息容器
     public void consumeMsg(SeckillMessage seckillMessage, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) Long tag) throws IOException {
         try {
-            log.info("");
-            log.warn("写入订单表失败: {}", JSONUtil.toJsonStr(seckillMessage));
+            log.info("rabbitmq demo-消费者-监听消息：{} ", JSONUtil.toJsonStr(seckillMessage));
+            long userId = seckillMessage.getUserId();
+            long goodsId = seckillMessage.getGoodsId();
+            // 减库存，下订单，写入订单表
+            Order order = new Order();
+            order.setUserId(userId);
+            order.setGoodsId(goodsId);
+            boolean flag = orderManager.save(order);
+            if (!flag) {
+                log.warn("写入订单表失败: {}", JSONUtil.toJsonStr(seckillMessage));
+                // 执行完业务逻辑后，手动进行确认消费，其中第一个参数为：消息的分发标识(全局唯一);第二个参数：是否允许批量确认消费
+                channel.basicAck(tag, false);
+                return;
+            }
+            log.info("成功写入订单表: {}", JSONUtil.toJsonStr(seckillMessage));
+            seckillGoodsService.reduceStock(goodsId);
             // 执行完业务逻辑后，手动进行确认消费，其中第一个参数为：消息的分发标识(全局唯一);第二个参数：是否允许批量确认消费
             channel.basicAck(tag, false);
         } catch (Exception e) {
