@@ -1,119 +1,118 @@
 version: "3.9"
 
 services:
-  # mission:
-  #   build:
-  #     context: ./cloud-mission
-  #     dockerfile: Dockerfile-mission
-  #   image: cloud-mission:1.0.0
-  #   ports:
-  #     - "8888:8888"
-  #   environment:
-  #     - DOCKER_DB=mysql
-  #     - DOCKER_NACOS=nacos
-  #     - DOCKER_REDIS=redis
-  #    - DOCKER_MQ=rabbitmq
-  #   depends_on:
-  #     - mysql
-  #     - nacos
-  #     - redis
-  #     - rabbitmq
-  #   restart: always
-  #   entrypoint: java -jar /app/cloud-mission.jar
+  mission:
+    build:
+      context: ./cloud-mission
+      dockerfile: Dockerfile-mission
+    image: cloud-mission:1.0.1
+    ports:
+      - "8888:8888"
+    environment:
+      - DOCKER_DB=mysql
+      - DOCKER_NACOS=nacos
+      - DOCKER_REDIS=redis
+      - DOCKER_MQ=rabbitmq
+    depends_on:
+      - mysql
+      - nacos
+      - redis
+      - rabbitmq
+    restart: always
+    entrypoint: java -jar /app/cloud-mission.jar
 
-  # uaa:
-  #   build:
-  #     context: ./cloud-uaa
-  #     dockerfile: Dockerfile-uaa
-  #   image: cloud-uaa:1.0.0
-  #   ports:
-  #     - "8088:8088"
-  #   environment:
-  #     - DOCKER_DB=mysql
-  #     - DOCKER_NACOS=nacos
-  #     - DOCKER_REDIS=redis
-  #   depends_on:
-  #     - mysql
-  #     - nacos
-  #     - redis
-  #   restart: always
-  #   entrypoint: java -jar /app/cloud-uaa.jar
+  uaa:
+    build:
+      context: ./cloud-uaa
+      dockerfile: Dockerfile-uaa
+    image: cloud-uaa:1.0.1
+    ports:
+      - "8088:8088"
+    environment:
+      - DOCKER_DB=mysql
+      - DOCKER_NACOS=nacos
+      - DOCKER_REDIS=redis
+    depends_on:
+      - mysql
+      - nacos
+      - redis
+    restart: always
+    entrypoint: java -jar /app/cloud-uaa.jar
 
-  # manage:
-  #   build:
-  #     context: ./cloud-manage
-  #     dockerfile: Dockerfile-manage
-  #   image: cloud-manage:1.0.0
-  #   ports:
-  #     - "8070:8070"
-  #   environment:
-  #     - DOCKER_DB=mysql
-  #     - DOCKER_NACOS=nacos
-  #     - DOCKER_REDIS=redis
-  #   depends_on:
-  #     - mysql
-  #     - nacos
-  #     - redis
-  #   restart: always
-  #   entrypoint: java -jar /app/cloud-manage.jar
+  manage:
+    build:
+      context: ./cloud-manage
+      dockerfile: Dockerfile-manage
+    image: cloud-manage:1.0.1
+    ports:
+      - "8070:8070"
+    environment:
+      - DOCKER_DB=mysql
+      - DOCKER_NACOS=nacos
+      - DOCKER_REDIS=redis
+    depends_on:
+      - mysql
+      - nacos
+      - redis
+    restart: always
+    entrypoint: java -jar /app/cloud-manage.jar
 
-  # gateway:
-  #   build:
-  #     context: ./cloud-gateway
-  #     dockerfile: Dockerfile-gateway
-  #   image: cloud-gateway:1.0.0
-  #   ports:
-  #     - "8205:8205"
-  #   restart: always
-  #   entrypoint: java -jar /app/cloud-gateway.jar
+  gateway:
+    build:
+      context: ./cloud-gateway
+      dockerfile: Dockerfile-gateway
+    image: cloud-gateway:1.0.1
+    ports:
+      - "8205:8205"
+    restart: always
+    entrypoint: java -jar /app/cloud-gateway.jar
 
-  # monitor:
-  #   build:
-  #     context: ./cloud-monitor
-  #     dockerfile: Dockerfile-monitor
-  #   image: cloud-monitor:1.0.0
-  #   ports:
-  #     - "8890:8890"
-  #   restart: always
-  #   entrypoint: java -jar /app/cloud-monitor.jar
+  monitor:
+    build:
+      context: ./cloud-monitor
+      dockerfile: Dockerfile-monitor
+    image: cloud-monitor:1.0.1
+    ports:
+      - "8890:8890"
+    restart: always
+    entrypoint: java -jar /app/cloud-monitor.jar
 
-  # mysql:
-  #   image: mysql:8.0
-  #   volumes:
-  #     - ./sql/init:/docker-entrypoint-initdb.d/
-  #     - mysql-data:/var/lib/mysql
-  #   ports:
-  #     - "3305:3306"
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: 123456
-  #     # TODO 初始化多个sql脚本
-  #     TZ: Asia/Shanghai
-  #   restart: always
-  #   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - ./sql/init:/docker-entrypoint-initdb.d/
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3305:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
-  # redis:
-  #   image: redis:7.0
-  #   volumes:
-  #     - redis-data:/var/lib/redis
-  #   ports:
-  #     - "6379:6379"
-  #   restart: always
+  redis:
+    image: redis:7.0
+    volumes:
+      - redis-data:/var/lib/redis
+    ports:
+      - "6379:6379"
+    restart: always
 
-  # nacos:
-  #   image: zhusaidong/nacos-server-m1:2.0.3
-  #   ports:
-  #     - "8848:8848"
-  #   restart: always
-  #   environment:
-  #     - PREFER_HOST_MODE=hostname
-  #     - MODE=standalone
-  #     - SPRING_DATASOURCE_PLATFORM=
-  #     - MYSQL_SERVICE_HOST=127.0.0.1
-  #     - MYSQL_SERVICE_DB_NAME=nacos_config
-  #     - MYSQL_SERVICE_PORT=3306
-  #     - MYSQL_SERVICE_USER=root
-  #     - MYSQL_SERVICE_PASSWORD=root
-  #     - MYSQL_SERVICE_DB_PARAM=allowPublicKeyRetrieval=true
+  nacos:
+    image: zhusaidong/nacos-server-m1:2.0.3
+    ports:
+      - "8848:8848"
+    restart: always
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=
+      - MYSQL_SERVICE_HOST=127.0.0.1
+      - MYSQL_SERVICE_DB_NAME=nacos_config
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=root
+      - MYSQL_SERVICE_DB_PARAM=allowPublicKeyRetrieval=true
 
   rabbitmq:
     image: rabbitmq:3.11.7
@@ -122,8 +121,8 @@ services:
     volumes:
       - mq-data:/var/lib/rabbitmq/
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
 
 volumes:
   mysql-data:
