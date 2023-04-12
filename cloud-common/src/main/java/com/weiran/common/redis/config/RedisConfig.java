@@ -8,10 +8,9 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 
-@Configuration // 当前类为配置类
+@Configuration
 public class RedisConfig {
 
-    // redisTemplate注入到Spring容器
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
