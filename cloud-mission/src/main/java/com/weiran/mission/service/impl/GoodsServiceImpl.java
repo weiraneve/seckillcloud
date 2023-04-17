@@ -53,11 +53,8 @@ public class GoodsServiceImpl implements GoodsService {
     @PostConstruct
     public void initGoodsInfo() {
         List<Goods> goodsList = goodsManager.list();
-        if (goodsList == null) {
-            return;
-        }
         for (Goods goods : goodsList) {
-            redisService.set(GoodsKey.goodsKey, "" + goods.getId(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+            redisService.set(GoodsKey.goodsKey, goods.getId().toString(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
         }
     }
 
@@ -78,11 +75,7 @@ public class GoodsServiceImpl implements GoodsService {
             if (!redisService.exists(GoodsKey.goodsKey, "" + goodsId)) {
                 continue;
             }
-            Result<GoodsDetailVo> result = getDetail(goodsId);
-            // 如果是null，则说明商品信息为不可用，不发送给前端
-            if (result == null) {
-                continue;
-            }
+            Result<GoodsDetailVo> result = getGoodsDetail(goodsId);
             GoodsDetailVo goodsDetailVo = result.getData();
             // 商品信息中是否可用字段
             if (goodsDetailVo.getGoods().getIsUsing()) {
@@ -94,7 +87,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 显示商品细节。剩余时间等于0，正在秒杀中；剩余时间大于0，还没有开始秒杀；小于0，已经结束秒杀。
     @Override
-    public Result<GoodsDetailVo> getDetail(long goodsId) {
+    public Result<GoodsDetailVo> getGoodsDetail(long goodsId) {
         // 从Redis中读取商品数据，这样多次访问都从缓存中取，减少数据库的压力
         Goods goods = redisService.get(GoodsKey.goodsKey, "" + goodsId, Goods.class);
         // 判断商品信息是否可用
@@ -167,7 +160,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
         GoodsDTO goodsDTO = goodsMapper.selectGoodsById(id);
-        if (goodsDTO.getGoodsImg() != null) {
+        if (ObjectUtil.isNotEmpty(goodsDTO.getGoodsImg())) {
             try {
                 URL url = new URL(goodsDTO.getGoodsImg());
                 imageScalaKit.delete(url.getPath().replaceFirst("/",""));

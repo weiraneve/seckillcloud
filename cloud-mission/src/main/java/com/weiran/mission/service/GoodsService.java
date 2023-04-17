@@ -17,7 +17,7 @@ public interface GoodsService {
     /**
      * 显示秒杀商品细节
      */
-    Result<GoodsDetailVo> getDetail(long goodsId);
+    Result<GoodsDetailVo> getGoodsDetail(long goodsId);
 
     /**
      * 查询所有goods

@@ -28,7 +28,7 @@ public class GoodsController {
     @ApiOperation("获得具体的商品细节")
     @GetMapping("/getDetail/{goodsId}")
     public Result<GoodsDetailVo> getDetail(@PathVariable("goodsId")long goodsId) {
-        return goodsService.getDetail(goodsId);
+        return goodsService.getGoodsDetail(goodsId);
     }
 
 }
