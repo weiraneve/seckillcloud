@@ -374,7 +374,7 @@ public class RabbitmqConfig {
     // 优先级队列
     @Bean
     public Queue priorityQueue() {
-        Map<String, Object> args = new <String, Object>HashMap(1);
+        Map<String, Object> args = new <String, Object>HashMap<String, Object>(1);
         // 设置消息优先级,有10个等级,消息不设置优先级默认为0
         args.put("x-max-priority", 10);
         return new Queue(RabbitMqConstants.PRIORITY_QUEUE, true, false, false, args);
