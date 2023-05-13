@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * 秒杀限流拦截器
- *
  * 在一个用户访问接口的时候我们把访问次数写到缓存中，在加上一个有效期。
  * 通过拦截器. 做一个注解 @SeckillLimit 然后封装这个注解，可以有效地设置在规定时间内能访问规定的次数
  */
@@ -68,7 +67,7 @@ public class SeckillInterceptor implements HandlerInterceptor {
     private void render(HttpServletResponse response) throws Exception {
         response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
         OutputStream out = response.getOutputStream();
-        String str = JSONUtil.toJsonStr(Result.error(ResponseEnum.ACCESS_LIMIT_REACHED));
+        String str = JSONUtil.toJsonStr(Result.fail(ResponseEnum.ACCESS_LIMIT_REACHED));
         out.write(str.getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();

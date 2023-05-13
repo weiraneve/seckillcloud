@@ -40,9 +40,9 @@ public class UserServiceImpl implements UserService {
         Result<User> userResult = login(loginParam);
         UserInfoValidation.isInvalidAndMobile(!userResult.isSuccess(), userResult.getCode(), loginParam.getMobile());
         User user = userResult.getData();
-        long userId  = user.getId();
+        long userId = user.getId();
         // 将用户手机号进行MD5和随机数加盐加密，作为Token给到前端服务器
-        String loginToken = getLoginToken(user);
+        String loginToken = generateLoginToken(user);
         // 更新用户的最后登录时间
         updateLastLoginTime(loginParam, user);
         // 将loginToken传入Redis
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         userManager.updateById(user);
     }
 
-    private String getLoginToken(User user) {
+    private String generateLoginToken(User user) {
         int salt = RandomUtil.randomInt(100000);
         return SecureUtil.md5(user.getPhone() + salt);
     }
@@ -120,11 +120,11 @@ public class UserServiceImpl implements UserService {
         User user = userManager.getOne(Wrappers.<User>lambdaQuery()
                 .eq(User::getPhone, loginParam.getMobile())); // 根据手机号查询出User对象数据
         if (user == null) {
-            return Result.error(ResponseEnum.MOBILE_NOT_EXIST);
+            return Result.fail(ResponseEnum.MOBILE_NOT_EXIST);
         }
         // 数据库里存储的都是密码本身加加盐后的密文
         if (!user.getPassword().equals(loginParam.getPassword())) {
-            return Result.error(ResponseEnum.PASSWORD_ERROR);
+            return Result.fail(ResponseEnum.PASSWORD_ERROR);
         }
         // 密码置为空 防止泄漏
         user.setPassword("");

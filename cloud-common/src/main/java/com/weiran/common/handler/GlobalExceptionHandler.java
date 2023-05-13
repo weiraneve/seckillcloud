@@ -28,35 +28,35 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<String> handle(UserInfoException exception) {
         log.error(exception.getResponseEnum().getMsg());
-        return Result.error(exception.getResponseEnum());
+        return Result.fail(exception.getResponseEnum());
     }
 
     @ExceptionHandler(SeckillException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<ResponseEnum> handle(SeckillException exception) {
         log.error(exception.getResponseEnum().getMsg());
-        return Result.error(exception.getResponseEnum());
+        return Result.fail(exception.getResponseEnum());
     }
 
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<Object> handle(BusinessException exception) {
         log.error(exception.getResponseEnum().getMsg());
-        return Result.error(exception.getResponseEnum());
+        return Result.fail(exception.getResponseEnum());
     }
 
     @ExceptionHandler(SystemException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<String> handle(SystemException ex) {
         log.error(ex.getResponseEnum().getMsg());
-        return Result.error(ex.getResponseEnum());
+        return Result.fail(ex.getResponseEnum());
     }
 
     @ExceptionHandler(JWTDecodeException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result<Object> handle() {
         log.error(ResponseEnum.TOKEN_PARSING_ERROR.getMsg());
-        return Result.error(ResponseEnum.TOKEN_PARSING_ERROR);
+        return Result.fail(ResponseEnum.TOKEN_PARSING_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
                 .map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining(";"));
         log.error(ex.getMessage());
-        return Result.error(message);
+        return Result.fail(message);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -76,14 +76,14 @@ public class GlobalExceptionHandler {
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining(";"));
         log.error(ex.getMessage());
-        return Result.error(message);
+        return Result.fail(message);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<String> handle(Exception ex) {
         log.error(ex.getMessage());
-        return Result.error(ex.getMessage());
+        return Result.fail(ex.getMessage());
     }
 
 }

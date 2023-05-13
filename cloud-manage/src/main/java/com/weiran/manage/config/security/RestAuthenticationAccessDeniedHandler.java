@@ -15,14 +15,14 @@ import java.io.IOException;
  * 自定义被拒绝
  */
 public class RestAuthenticationAccessDeniedHandler implements AccessDeniedHandler {
-    
+
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setCharacterEncoding("UTF-8");
         // 防止乱码
         response.setContentType("application/json;charset=UTF-8");
-        Result<ResponseEnum> httpResultVO = Result.error(ResponseEnum.FORBIDDEN);
+        Result<ResponseEnum> httpResultVO = Result.fail(ResponseEnum.FORBIDDEN);
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpResultVO));
     }
 }

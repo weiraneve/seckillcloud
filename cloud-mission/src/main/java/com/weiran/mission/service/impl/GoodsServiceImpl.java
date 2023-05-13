@@ -143,7 +143,7 @@ public class GoodsServiceImpl implements GoodsService {
             seckillGoodsMapper.addSeckillGoods(seckillGoodsDTO);
         } catch (Exception e) {
             log.error(e.toString());
-            return Result.error(ResponseEnum.Goods_CREATE_FAIL);
+            return Result.fail(ResponseEnum.Goods_CREATE_FAIL);
         }
         // 表增加后，在缓存中增加
         addGoodsToCache(goodsDTO);

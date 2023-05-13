@@ -37,16 +37,12 @@ public class Result<T> implements Serializable {
 		return new Result<>(ResponseEnum.SUCCESS);
 	}
 
-	public static <T> Result<T> error(ResponseEnum responseEnum) {
+	public static <T> Result<T> fail(ResponseEnum responseEnum) {
 		return new Result<>(responseEnum.getCode(), responseEnum.getMsg());
 	}
 
-	public static <T> Result<T> error(String msg) {
+	public static <T> Result<T> fail(String msg) {
 		return new Result<>(msg);
-	}
-
-	public static <T> Result<T> error(int code, String msg) {
-		return new Result<>(code, msg);
 	}
 
 	public Result() {}

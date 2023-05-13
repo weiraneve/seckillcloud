@@ -67,7 +67,7 @@ public class AccessInterceptor implements HandlerInterceptor {
     private void render(HttpServletResponse response) throws Exception {
         response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
         OutputStream out = response.getOutputStream();
-        String str = JSONUtil.toJsonStr(Result.error(ResponseEnum.ACCESS_LIMIT_REACHED));
+        String str = JSONUtil.toJsonStr(Result.fail(ResponseEnum.ACCESS_LIMIT_REACHED));
         out.write(str.getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();
