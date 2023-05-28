@@ -51,16 +51,11 @@ public class SeckillServiceImpl implements SeckillService {
     @PostConstruct
     public void initSeckillGoodsNumber() {
         List<SeckillGoods> seckillGoodsList = seckillGoodsManager.list();
-        if (seckillGoodsList == null) {
-            return;
-        }
-        for (SeckillGoods seckillGoods : seckillGoodsList) {
-            // 用商品Id作为key，加载秒杀商品的剩余数量
-            redisService.set(SeckillGoodsKey.seckillCount, "" + seckillGoods.getGoodsId(), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-            if (seckillGoods.getStockCount() > 0) {
-                localOverMap.put(seckillGoods.getGoodsId(), true);
-            } else {
-                localOverMap.put(seckillGoods.getGoodsId(), false);
+        if (seckillGoodsList != null) {
+            for (SeckillGoods seckillGoods : seckillGoodsList) {
+                // 用商品Id作为key，加载秒杀商品的剩余数量
+                redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(seckillGoods.getGoodsId()), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+                localOverMap.put(seckillGoods.getGoodsId(), seckillGoods.getStockCount() <= 0);
             }
         }
     }
@@ -158,8 +153,8 @@ public class SeckillServiceImpl implements SeckillService {
         if (userId == null || path == null) {
             return false;
         }
-        String redis_path = redisService.get(SeckillKey.getSeckillPath, "" + userId + "_" + goodsId, String.class);
-        return path.equals(redis_path);
+        String redisPath = redisService.get(SeckillKey.getSeckillPath, userId + "_" + goodsId, String.class);
+        return path.equals(redisPath);
     }
 
     // 加盐生成唯一path，构成URl动态化
@@ -169,12 +164,12 @@ public class SeckillServiceImpl implements SeckillService {
         }
         // 随机返回一个唯一的id，加上123456的盐，然后sm3加密
         String str = SM3Util.sm3(UUID.randomUUID() + "123456");
-        redisService.set(SeckillKey.getSeckillPath, "" + userId + "_" + goodsId, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
+        redisService.set(SeckillKey.getSeckillPath, userId + "_" + goodsId, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
         return str;
     }
 
     // 查看秒杀商品是否已经结束
     private boolean getGoodsIsOver(long goodsId) {
-        return redisService.exists(SeckillKey.isGoodsOver, "" + goodsId);
+        return redisService.exists(SeckillKey.isGoodsOver, String.valueOf(goodsId));
     }
 }
