@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
     final RedisService redisService;
     final RedisLua redisLua;
 
-    // 登录
     @Override
     public Result<String> doLogin(LoginParam loginParam) {
         Result<User> userResult = login(loginParam);
@@ -65,17 +64,18 @@ public class UserServiceImpl implements UserService {
         return SecureUtil.md5(user.getPhone() + salt);
     }
 
-    // 注销
     @Override
     public Result<ResponseEnum> doLogout(HttpServletRequest request) {
         String loginToken = CommonUtil.getLoginTokenByRequest(request);
+        if (loginToken == null) {
+            return Result.fail(ResponseEnum.TOKEN_PARSING_ERROR);
+        }
         long userId = redisService.get(UserKey.getById, loginToken, Long.class);
         redisService.delete(UserKey.getById, loginToken);
         log.info("用户" + userId + " 已经注销");
         return Result.success();
     }
 
-    // 注册
     @Override
     public Result<ResponseEnum> doRegister(RegisterParam registerParam) {
         // 判断电话、用户名、身份证有无被注册
@@ -103,7 +103,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    // 更换密码
     @Override
     public Result<ResponseEnum> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
         long userId = redisService.get(UserKey.getById, CommonUtil.getLoginTokenByRequest(request), Long.class);
@@ -115,7 +114,6 @@ public class UserServiceImpl implements UserService {
         return Result.success();
     }
 
-    // 登录方法，检查比对传入的登录字段
     private Result<User> login(LoginParam loginParam) {
         User user = userManager.getOne(Wrappers.<User>lambdaQuery()
                 .eq(User::getPhone, loginParam.getMobile())); // 根据手机号查询出User对象数据
