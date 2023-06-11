@@ -35,6 +35,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     private final RoleMapper roleMapper;
     private final PermissionMenuMapper permissionMenuMapper;
 
+    private static final int DEFAULT_ROLE_ID = 0;
+
     @Override
     public Optional<AdminUserDTO> findByUsername(String username) {
         return adminUserMapper.findByUsername(username);
@@ -106,7 +108,11 @@ public class AdminUserServiceImpl implements AdminUserService {
         String password = encodePass(adminUserReq.getPassword());
         adminUserReq.setPassword(password);
         adminUserMapper.updateAdminUserInfo(adminUserReq);
-        // 删除已有权限
+        // 更新用户权限
+        updateAdminUserPermission(adminUserReq, roleDTO);
+    }
+
+    private void updateAdminUserPermission(AdminUserReq adminUserReq, RoleDTO roleDTO) {
         AdminUserDTO userDTO = adminUserMapper.findById(adminUserReq.getId());
         if (!userDTO.getRole().equals(roleDTO.getRole())) {
             userRolePermissionMapper.deletesByUserIdAndRoleId(adminUserReq.getId(), userDTO.getRoles().get(0).getId());
@@ -119,20 +125,21 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void patchAdminUserPermission(AdminUserPermissionReq adminUserPermissionReq) {
         List<Integer> permissionIds = userRolePermissionMapper.findByUserId(adminUserPermissionReq.getId());
-        List<Integer> integers = Arrays.asList((Integer[]) ConvertUtils.convert(adminUserPermissionReq.getPermissionIds(), Integer.class));
-        // 相同权限不变
-        List<Integer> saveList = integers.stream().filter(permissionIds::contains).collect(Collectors.toList());
-        List<Integer> missionIds = new ArrayList<>(integers);
-        missionIds.removeAll(saveList);
-        // 多余权限新增
-        if (missionIds.size() != 0) {
-            userRolePermissionMapper.inserts(adminUserPermissionReq.getId(),0, missionIds);
+        List<Integer> newPermissionIds = Arrays.asList((Integer[]) ConvertUtils.convert(adminUserPermissionReq.getPermissionIds(), Integer.class));
+
+        List<Integer> unchangedPermissionIds = newPermissionIds.stream().filter(permissionIds::contains).collect(Collectors.toList());
+        List<Integer> addedPermissionIds = new ArrayList<>(newPermissionIds);
+        addedPermissionIds.removeAll(unchangedPermissionIds);
+
+        if (!addedPermissionIds.isEmpty()) {
+            userRolePermissionMapper.inserts(adminUserPermissionReq.getId(), DEFAULT_ROLE_ID, addedPermissionIds);
         }
-        permissionIds.removeAll(saveList);
-        if (permissionIds.size() != 0) {
+        permissionIds.removeAll(unchangedPermissionIds);
+        if (!permissionIds.isEmpty()) {
             userRolePermissionMapper.deletesByPermissionIds(permissionIds, adminUserPermissionReq.getId());
         }
     }
+
 
     @Override
     public List<PermissionMenuDTO> findByMenus(String username) {
