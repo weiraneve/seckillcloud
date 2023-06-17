@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -21,30 +22,30 @@ public class PermissionMenuServiceImpl implements PermissionMenuService {
 
     @Override
     public List<PermissionMenuDTO> findByRoleMenus(String search) {
-        List<PermissionMenuDTO> roleMenuS;
-        if (StringUtils.isEmpty(search)) {
-            roleMenuS = permissionMenuMapper.findByRoleMenus();
-        } else {
-            roleMenuS = permissionMenuMapper.findByRoleMenusLike(search);
-        }
-        return TreeHelper.getSortedNodes(roleMenuS);
+        List<PermissionMenuDTO> roleMenus = StringUtils.isEmpty(search) ?
+                permissionMenuMapper.findByRoleMenus() :
+                permissionMenuMapper.findByRoleMenusLike(search);
+        return TreeHelper.getSortedNodes(roleMenus);
     }
+
 
     @Override
     public List<TreeRoleMenuDTO> findRoleMenus() {
-        List<TreeRoleMenuDTO> treeRoleMenuDTOS = permissionMenuMapper.findRoleMenus();
-        return TreeHelper.getSortedTreeNodes(treeRoleMenuDTOS);
+        return TreeHelper.getSortedTreeNodes(permissionMenuMapper.findRoleMenus());
     }
 
     @Override
-    public void creatMenu(MenuReq menuReq) {
-        menuReq.setLevel(menuReq.getLevel() + 1);
-        permissionMenuMapper.creatMenu(menuReq);
+    public void createMenu(MenuReq menuReq) {
+        if (menuReq != null) {
+            menuReq.setLevel(Optional.ofNullable(menuReq.getLevel()).orElse(0) + 1);
+            permissionMenuMapper.createMenu(menuReq);
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
     public void deleteById(String id) {
-        // 并且删除子菜单
         permissionMenuMapper.deleteById(id);
     }
 

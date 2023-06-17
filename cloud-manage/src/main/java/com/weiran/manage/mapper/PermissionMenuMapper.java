@@ -36,7 +36,7 @@ public interface PermissionMenuMapper {
     /**
      * 创建权限
      */
-    Integer creatMenu(@Param("menu") MenuReq menuReq);
+    void createMenu(@Param("menu") MenuReq menuReq);
 
     /**
      * 删除菜单
@@ -47,7 +47,7 @@ public interface PermissionMenuMapper {
     /**
      * 修改菜单
      */
-    Integer updateMenu(@Param("menu") MenuReq menuReq);
+    void updateMenu(@Param("menu") MenuReq menuReq);
 
 
     /**

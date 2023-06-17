@@ -24,7 +24,7 @@ public interface PermissionMenuService {
     /**
      * 创建菜单
      */
-    void creatMenu(MenuReq menuReq);
+    void createMenu(MenuReq menuReq);
 
 
     /**

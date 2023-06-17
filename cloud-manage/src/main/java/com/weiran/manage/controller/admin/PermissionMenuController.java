@@ -67,7 +67,7 @@ public class PermissionMenuController {
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
     public Result<Object> creatMenu(@RequestBody MenuReq menuReq) {
-        permissionMenuService.creatMenu(menuReq);
+        permissionMenuService.createMenu(menuReq);
         return Result.success();
     }
 }
