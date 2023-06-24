@@ -1,6 +1,5 @@
 package com.weiran.manage.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.enums.ResponseEnum;
@@ -18,8 +17,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -33,43 +30,38 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public PageInfo<PermissionDTO> findByPermissions(Integer page, Integer pageSize, String search) {
         PageHelper.startPage(page, pageSize);
-        List<PermissionDTO> permissions;
-        if (StringUtils.isEmpty(search)) {
-            permissions = permissionMapper.findByPermissions();
-        } else {
-            permissions = permissionMapper.findPermissionsLikeBySearch(search);
-        }
+        List<PermissionDTO> permissions = StringUtils.isEmpty(search) ?
+                permissionMapper.findByPermissions() :
+                permissionMapper.findPermissionsLikeBySearch(search);
         return new PageInfo<>(permissions);
     }
 
     @Override
     public void createPermission(PermissionReq permissionReq) {
-        Optional<PermissionDTO> permission = permissionMapper.findByPermission(permissionReq.getPermission());
-        BusinessValidation.isInvalid(ObjectUtil.isNull(permission.isPresent()), ResponseEnum.PERMISSION_EXIST_ERROR);
+        permissionMapper.findByPermission(permissionReq.getPermission())
+                .ifPresent(permission -> BusinessValidation.invalid(ResponseEnum.PERMISSION_EXIST_ERROR));
         permissionMapper.insert(permissionReq);
     }
 
     @Override
     public void deletes(String ids) {
-        String[] split = ids.split(",");
-        List<String> permissionIds = Arrays.asList(split);
-        // 删除关联菜单
-        Integer roleMenu = permissionMenuMapper.countByPermissionIds(permissionIds);
-        BusinessValidation.isInvalid(roleMenu > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
-        // 删除角色权限
-        Integer role = rolePermissionMapper.countByPermissionIds(permissionIds);
-        BusinessValidation.isInvalid(role > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
-        // 删除用户权限
-        Integer userRole = userRolePermissionMapper.countByPermissionIds(permissionIds);
-        BusinessValidation.isInvalid(userRole > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
-        // 删除权限
+        List<String> permissionIds = Arrays.asList(ids.split(","));
+        validateDeletion(permissionIds);
         permissionMapper.deletes(permissionIds);
+    }
+
+    private void validateDeletion(List<String> permissionIds) {
+        boolean isMenuAssociated = permissionMenuMapper.countByPermissionIds(permissionIds) > 0;
+        boolean isRoleAssociated = rolePermissionMapper.countByPermissionIds(permissionIds) > 0;
+        boolean isUserRoleAssociated = userRolePermissionMapper.countByPermissionIds(permissionIds) > 0;
+
+        BusinessValidation.isInvalid(isMenuAssociated || isRoleAssociated || isUserRoleAssociated, ResponseEnum.PERMISSION_DELETES_ERROR);
     }
 
     @Override
     public void update(PermissionReq permissionReq) {
-        Optional<PermissionDTO> permission = permissionMapper.findByPermissionAndId(permissionReq);
-        BusinessValidation.isInvalid(permission.isPresent(), ResponseEnum.PERMISSION_EXIST_ERROR);
+        permissionMapper.findByPermissionAndId(permissionReq)
+                .ifPresent(permission -> BusinessValidation.invalid(ResponseEnum.PERMISSION_EXIST_ERROR));
         permissionMapper.update(permissionReq);
     }
 
