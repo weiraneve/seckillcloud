@@ -52,6 +52,12 @@ public enum ResponseEnum implements BaseEnum {
     OLD_PASSWORD_ERROR(500800, "旧密码有误"),
     UPDATE_PASSWORD_ERROR(500801, "更新密码失败"),
 
+    // 分页模块
+    INVALID_PAGE_OR_PAGESIZE(500900, "分页数据有错"),
+
+    // 角色模块
+    ROLE_NOT_FOUND(501000, "角色未曾找到"),
+
     /**
      * 管理端相关
      */
