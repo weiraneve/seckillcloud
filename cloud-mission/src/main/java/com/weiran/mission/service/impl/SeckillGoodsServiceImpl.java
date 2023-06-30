@@ -36,7 +36,7 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     }
 
     private void reduceStockCount(long goodsId, SeckillGoods seckillGoods) {
-        int preStockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
+        int preStockCount = redisService.get(SeckillGoodsKey.seckillCount, String.valueOf(goodsId), Integer.class);
         seckillGoods.setStockCount(preStockCount);
     }
 
