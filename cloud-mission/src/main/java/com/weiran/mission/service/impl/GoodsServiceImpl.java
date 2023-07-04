@@ -72,7 +72,7 @@ public class GoodsServiceImpl implements GoodsService {
         // 这里想要遍历缓存中所有商品，但没有更好的办法
         for (long goodsId = 1L; goodsId < 50L; goodsId++) {
             // 在redis缓存中是否存在
-            if (!redisService.exists(GoodsKey.goodsKey, "" + goodsId)) {
+            if (!redisService.exists(GoodsKey.goodsKey, String.valueOf(goodsId))) {
                 continue;
             }
             Result<GoodsDetailVo> result = getGoodsDetail(goodsId);
@@ -89,7 +89,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Result<GoodsDetailVo> getGoodsDetail(long goodsId) {
         // 从Redis中读取商品数据，这样多次访问都从缓存中取，减少数据库的压力
-        Goods goods = redisService.get(GoodsKey.goodsKey, "" + goodsId, Goods.class);
+        Goods goods = redisService.get(GoodsKey.goodsKey, String.valueOf(goodsId), Goods.class);
         // 判断商品信息是否可用
         if (!goods.getIsUsing()) {
             return null;
@@ -100,7 +100,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     private Result<GoodsDetailVo> getGoodsDetailVoResult(long goodsId, Goods goods) {
         // 从redis获取库存
-        int stockCount = redisService.get(SeckillGoodsKey.seckillCount, "" + goodsId, Integer.class);
+        int stockCount = redisService.get(SeckillGoodsKey.seckillCount, String.valueOf(goodsId), Integer.class);
         long startAt = Timestamp.valueOf(goods.getStartTime()).getTime(); // 秒杀开始时间
         long endAt = Timestamp.valueOf(goods.getEndTime()).getTime(); // 秒杀结束时间
         long now = System.currentTimeMillis(); // 系统当前时间
@@ -143,7 +143,7 @@ public class GoodsServiceImpl implements GoodsService {
             seckillGoodsMapper.addSeckillGoods(seckillGoodsDTO);
         } catch (Exception e) {
             log.error(e.toString());
-            return Result.fail(ResponseEnum.Goods_CREATE_FAIL);
+            return Result.fail(ResponseEnum.GOODS_CREATE_FAIL);
         }
         // 表增加后，在缓存中增加
         addGoodsToCache(goodsDTO);
@@ -151,8 +151,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     private void addGoodsToCache(GoodsDTO goodsDTO) {
-        redisService.set(GoodsKey.goodsKey, "" + goodsDTO.getId(), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        redisService.set(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId(), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(GoodsKey.goodsKey, String.valueOf(goodsDTO.getId()), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(goodsDTO.getId()), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
     }
 
     // 删除指定商品
@@ -169,9 +169,9 @@ public class GoodsServiceImpl implements GoodsService {
             }
         }
         // 删除对应缓存
-        redisService.delete(GoodsKey.goodsKey, "" + id);
+        redisService.delete(GoodsKey.goodsKey, String.valueOf(id));
         // 删除库存对应缓存
-        redisService.delete(SeckillGoodsKey.seckillCount, "" + id);
+        redisService.delete(SeckillGoodsKey.seckillCount, String.valueOf(id));
         goodsMapper.deleteGoods(id);
         seckillGoodsMapper.deleteSeckillGoods(id);
     }
@@ -193,8 +193,8 @@ public class GoodsServiceImpl implements GoodsService {
                 URL url = new URL(goodsDTO.getGoodsImg());
                 imageScalaKit.delete(url.getPath().replaceFirst("/",""));
                 // 删除对应缓存
-                redisService.delete(GoodsKey.goodsKey, "" + goodsDTO.getId());
-                redisService.delete(SeckillGoodsKey.seckillCount, "" + goodsDTO.getId());
+                redisService.delete(GoodsKey.goodsKey, String.valueOf(goodsDTO.getId()));
+                redisService.delete(SeckillGoodsKey.seckillCount, String.valueOf(goodsDTO.getId()));
                 goodsMapper.deleteGoods(goodsDTO.getId());
                 seckillGoodsMapper.deleteSeckillGoods(goodsDTO.getId());
             } catch (Exception e) {
@@ -231,10 +231,10 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void updateUsingById(Long id) {
         goodsMapper.updateGoodsUsingById(id);
-        GoodsDTO goodsDTO = redisService.get(GoodsKey.goodsKey, "" + id, GoodsDTO.class);
+        GoodsDTO goodsDTO = redisService.get(GoodsKey.goodsKey, String.valueOf(id), GoodsDTO.class);
         goodsDTO.setIsUsing(BooleanUtil.negate(goodsDTO.getIsUsing())); // 布尔值取反
         // 商品缓存中更改
-        redisService.set(GoodsKey.goodsKey, "" + id, goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(GoodsKey.goodsKey, String.valueOf(id), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
     }
 
 }

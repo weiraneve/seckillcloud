@@ -60,7 +60,7 @@ public class TestJmeterController {
         }
         for (SeckillGoods seckillGoods : seckillGoodsList) {
             // 用商品Id作为key，加载秒杀商品的剩余数量
-            redisService.set(SeckillGoodsKey.seckillCount, "" + seckillGoods.getGoodsId(), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+            redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(seckillGoods.getGoodsId()), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
             if (seckillGoods.getStockCount() > 0) {
                 localOverMap.put(seckillGoods.getGoodsId(), true);
             } else {
@@ -132,7 +132,7 @@ public class TestJmeterController {
         }
         // 随机返回一个唯一的id，加上123456的盐，然后sm3加密
         String str = SM3Util.sm3(UUID.randomUUID() + "123456");
-        redisService.set(SeckillKey.getSeckillPath, "" + userId + "_" + (long) 1, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
+        redisService.set(SeckillKey.getSeckillPath, userId + "_" + (long) 1, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
         return str;
     }
 
@@ -141,7 +141,7 @@ public class TestJmeterController {
         if (userId == null || path == null) {
             return false;
         }
-        String redis_path = redisService.get(SeckillKey.getSeckillPath, "" + userId + "_" + (long) 1, String.class);
+        String redis_path = redisService.get(SeckillKey.getSeckillPath, userId + "_" + (long) 1, String.class);
         return path.equals(redis_path);
     }
 

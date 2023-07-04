@@ -2,7 +2,7 @@ package com.weiran.common.redis.key;
 
 public abstract class BasePrefix implements KeyPrefix{
 
-	private String prefix;
+	private final String prefix;
 
 	public BasePrefix( String prefix) {
 		this.prefix = prefix;

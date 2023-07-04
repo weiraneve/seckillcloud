@@ -1,12 +1,7 @@
 package com.weiran.manage.filter;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -16,8 +11,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 
 public class MyUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -36,8 +33,8 @@ public class MyUsernamePasswordAuthenticationFilter extends AbstractAuthenticati
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException, IOException, ServletException {
-        String body = StreamUtils.copyToString(request.getInputStream(), Charset.forName("UTF-8"));
+            throws AuthenticationException, IOException {
+        String body = StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8);
         String username = null, password = null;
         if (StringUtils.hasText(body)) {
             JSONObject jsonObj = JSON.parseObject(body);

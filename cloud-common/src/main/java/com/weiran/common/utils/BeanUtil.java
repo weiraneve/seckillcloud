@@ -16,11 +16,11 @@ public class BeanUtil {
         }
         Class<?> clazz = value.getClass();
         if (clazz == Integer.class) {
-            return "" + value;
+            return String.valueOf(value);
         } else if (clazz == String.class) {
             return (String)value;
         } else if (clazz == Long.class) {
-            return "" + value;
+            return String.valueOf(value);
         } else {
             return JSONUtil.toJsonStr(value);
 

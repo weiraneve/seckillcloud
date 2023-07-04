@@ -11,13 +11,13 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
  * 配置JWT登录
  */
 public class JwtLoginConfigurer<T extends JwtLoginConfigurer<T, B>, B extends HttpSecurityBuilder<B>> extends AbstractHttpConfigurer<T, B> {
-    
-	private JwtAuthenticationFilter authFilter;
-	
+
+	private final JwtAuthenticationFilter authFilter;
+
 	JwtLoginConfigurer() {
 		this.authFilter = new JwtAuthenticationFilter();
 	}
-	
+
 	@Override
 	public void configure(B http) {
 		authFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
@@ -26,15 +26,15 @@ public class JwtLoginConfigurer<T extends JwtLoginConfigurer<T, B>, B extends Ht
 		JwtAuthenticationFilter filter = postProcess(authFilter);
 		http.addFilterBefore(filter, LogoutFilter.class);
 	}
-	
+
 	public JwtLoginConfigurer<T, B> permissiveRequestUrls(String ... urls) {
 		authFilter.setPermissiveUrl(urls);
 		return this;
 	}
-	
+
 	public JwtLoginConfigurer<T, B> tokenValidSuccessHandler(AuthenticationSuccessHandler successHandler) {
 		authFilter.setAuthenticationSuccessHandler(successHandler);
 		return this;
 	}
-	
+
 }
