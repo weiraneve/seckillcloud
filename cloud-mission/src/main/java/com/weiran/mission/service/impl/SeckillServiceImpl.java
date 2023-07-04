@@ -42,6 +42,8 @@ public class SeckillServiceImpl implements SeckillService {
     private final RedisLua redisLua;
     final RedisTemplate<String, Object> redisTemplate;
 
+    private final static String saltString = "123456";
+
     // 内存标记，减少redis访问，并且为线程安全的集合
     private final Map<Long, Boolean> localOverMap = new ConcurrentHashMap<>();
 
@@ -60,7 +62,6 @@ public class SeckillServiceImpl implements SeckillService {
         }
     }
 
-    // 执行秒杀
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result<Integer> doSeckill(long goodsId, String path, HttpServletRequest request) {
@@ -162,8 +163,8 @@ public class SeckillServiceImpl implements SeckillService {
         if (userId == null || goodsId == null) {
             return null;
         }
-        // 随机返回一个唯一的id，加上123456的盐，然后sm3加密
-        String str = SM3Util.sm3(UUID.randomUUID() + "123456");
+        // 随机返回一个唯一的id，加上盐，然后sm3加密
+        String str = SM3Util.sm3(UUID.randomUUID() + saltString);
         redisService.set(SeckillKey.getSeckillPath, userId + "_" + goodsId, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
         return str;
     }

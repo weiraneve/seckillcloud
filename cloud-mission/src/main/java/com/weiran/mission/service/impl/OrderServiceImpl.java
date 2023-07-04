@@ -33,11 +33,10 @@ public class OrderServiceImpl implements OrderService {
     private final RedisService redisService;
     private final OrderMapper orderMapper;
 
-    // 返回客户的所有订单数据
     @Override
     public Result<List<OrderDetailVo>> getOrderList(HttpServletRequest request) {
         long userId = redisService.get(UserKey.getById, CommonUtil.getLoginTokenByRequest(request), Long.class);
-        return getListResult(userId);
+        return getResultByUserId(userId);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
         return new PageInfo<>(orderDTOList);
     }
 
-    private Result<List<OrderDetailVo>> getListResult(long userId) {
+    private Result<List<OrderDetailVo>> getResultByUserId(long userId) {
         List<OrderDetailVo> orderDetailVoList = new ArrayList<>();
         List<Order> orderList = orderManager.list(Wrappers.<Order>lambdaQuery().eq(Order::getUserId, userId));
         for (Order order : orderList) {
@@ -66,6 +65,4 @@ public class OrderServiceImpl implements OrderService {
         }
         return Result.success(orderDetailVoList);
     }
-
-
 }

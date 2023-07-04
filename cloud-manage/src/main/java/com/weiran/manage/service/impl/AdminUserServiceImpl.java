@@ -82,14 +82,12 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public void createAdminUser(AdminUserReq adminUserReq) {
-        // 创建管理员·加密密码
         String password = encodePass(adminUserReq.getPassword());
         adminUserReq.setPassword(password);
         RoleDTO roleDTO = roleMapper.findById(adminUserReq.getRoleId());
         adminUserReq.setRole(roleDTO.getRole());
         adminUserMapper.insert(adminUserReq);
         List<Integer> rolePermissionIds = rolePermissionMapper.findPermissionIdsByRoleId(adminUserReq.getRoleId());
-        // 创建权限关系
         userRolePermissionMapper.inserts(adminUserReq.getId(),adminUserReq.getRoleId(),rolePermissionIds);
     }
 
@@ -108,7 +106,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         String password = encodePass(adminUserReq.getPassword());
         adminUserReq.setPassword(password);
         adminUserMapper.updateAdminUserInfo(adminUserReq);
-        // 更新用户权限
         updateAdminUserPermission(adminUserReq, roleDTO);
     }
 
@@ -117,7 +114,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (!userDTO.getRole().equals(roleDTO.getRole())) {
             userRolePermissionMapper.deletesByUserIdAndRoleId(adminUserReq.getId(), userDTO.getRoles().get(0).getId());
             List<Integer> rolePermissionIds = rolePermissionMapper.findPermissionIdsByRoleId(adminUserReq.getRoleId());
-            // 创建权限关系
             userRolePermissionMapper.inserts(adminUserReq.getId(),adminUserReq.getRoleId(), rolePermissionIds);
         }
     }

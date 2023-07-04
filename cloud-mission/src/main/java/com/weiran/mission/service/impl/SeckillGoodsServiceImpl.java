@@ -25,7 +25,6 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     private final RedisService redisService;
     private final SeckillGoodsMapper seckillGoodsMapper;
 
-    // 库存表库存减一
     @Override
     public int reduceStock(long goodsId) {
         SeckillGoods seckillGoods = seckillGoodsManager.getOne(Wrappers.<SeckillGoods>lambdaQuery().eq(SeckillGoods::getGoodsId, goodsId));
@@ -40,7 +39,6 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         seckillGoods.setStockCount(preStockCount);
     }
 
-    // 分页查询秒杀商品
     @Override
     public PageInfo<SeckillGoodsDTO> findSeckill(Integer page, Integer pageSize, Long goodsId) {
         PageHelper.startPage(page, pageSize);
@@ -48,10 +46,8 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         if (StringUtils.isEmpty(goodsId)) {
             seckillGoodsDTOList = seckillGoodsMapper.findSeckill();
         } else {
-            // 如果有字段传入，则模糊查询
             seckillGoodsDTOList = seckillGoodsMapper.findByGoodsIdLike(goodsId);
         }
         return new PageInfo<>(seckillGoodsDTOList);
     }
-
 }

@@ -44,7 +44,6 @@ public class UserServiceImpl implements UserService {
         String loginToken = generateLoginToken(user);
         // 更新用户的最后登录时间
         updateLastLoginTime(loginParam, user);
-        // 将loginToken传入Redis
         redisService.set(UserKey.getById, loginToken, userId, RedisCacheTimeEnum.LOGIN_EXTIME.getValue());
         log.info("用户" + userId + " 登录成功");
         return Result.success(loginToken);
@@ -86,11 +85,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void isRegistered(RegisterParam registerParam) {
-        // 手机号已经被注册
         UserInfoValidation.isInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null, ResponseEnum.REPEATED_REGISTER_MOBILE);
-        // 用户名已经被注册
         UserInfoValidation.isInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getUserName, registerParam.getRegisterUsername())) != null, ResponseEnum.REPEATED_REGISTER_USERNAME);
-        // 身份证已经被注册
         UserInfoValidation.isInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getIdentityCardId, registerParam.getRegisterIdentity())) != null, ResponseEnum.REPEATED_REGISTER_IDENTITY);
     }
 
@@ -116,7 +112,7 @@ public class UserServiceImpl implements UserService {
 
     private Result<User> login(LoginParam loginParam) {
         User user = userManager.getOne(Wrappers.<User>lambdaQuery()
-                .eq(User::getPhone, loginParam.getMobile())); // 根据手机号查询出User对象数据
+                .eq(User::getPhone, loginParam.getMobile()));
         if (user == null) {
             return Result.fail(ResponseEnum.MOBILE_NOT_EXIST);
         }
