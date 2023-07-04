@@ -12,9 +12,11 @@ import java.io.Serializable;
 public class Result<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final int successCode = 200;
+	private static final int failCode = 400;
 
 	// 状态码
-	private int code = 200;
+	private int code = successCode;
 
 	// 返回消息
 	private String msg;
@@ -59,7 +61,7 @@ public class Result<T> implements Serializable {
 	}
 
 	public Result(String msg) {
-		this.code = 100;
+		this.code = failCode;
 		this.msg = msg;
 	}
 
