@@ -2,8 +2,9 @@ package com.weiran.common.annotations;
 
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.exception.BaseCustomizeException;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -18,6 +19,10 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class InternalAccessAspect {
+
+    private static final String INTERNAL_ACCESS_ERROR_MESSAGE = "This API is only allowed invoked by an internal source";
+    private static final String FROM_PUBLIC = "public";
+
     @Pointcut("@within(com.weiran.common.annotations.InternalAccess)")
     public void internalAccessOnClass() {
     }
@@ -28,13 +33,16 @@ public class InternalAccessAspect {
 
     @Before(value = "internalAccessOnMethod() || internalAccessOnClass()")
     public void before() {
-        HttpServletRequest httpServletRequest = ((ServletRequestAttributes)
-                Objects.requireNonNull(RequestContextHolder.getRequestAttributes())
-        ).getRequest();
+        HttpServletRequest httpServletRequest = getRequestAttributes().getRequest();
         String from = httpServletRequest.getHeader("from");
-        if (!StringUtils.isEmpty(from) && "public".equals(from)) {
-            log.error("This api is only allowed invoked by internal source");
+        if (StringUtils.isNotBlank(from) && FROM_PUBLIC.equals(from)) {
+            log.error(INTERNAL_ACCESS_ERROR_MESSAGE);
             throw new BaseCustomizeException(ResponseEnum.INTERNAL_ACCESS_ERROR);
         }
+    }
+
+    @NonNull
+    private ServletRequestAttributes getRequestAttributes() {
+        return (ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
     }
 }
