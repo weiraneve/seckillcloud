@@ -7,7 +7,7 @@ public enum ResponseEnum implements BaseEnum {
 
     SUCCESS(200, "success"),
     ERROR(400, "error"),
-    INVALID_PAGE_OR_PAGESIZE(400, "分页数据有错"),
+    INVALID_PAGE_OR_PAGE_SIZE(400, "分页数据有错"),
     REQUEST_ILLEGAL(403, "请求非法"),
     USER_IS_BAN_FOUND(403, "该用户已禁用"),
     REPEATED_SECKILL(403, "不能重复秒杀"),

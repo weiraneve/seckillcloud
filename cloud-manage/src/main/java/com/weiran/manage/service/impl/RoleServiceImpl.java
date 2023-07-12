@@ -96,7 +96,7 @@ public class RoleServiceImpl implements RoleService {
 
     private void validatePageParameters(Integer page, Integer pageSize) {
         if (page == null || pageSize == null || page <= 0 || pageSize <= 0) {
-            throw new IllegalArgumentException(ResponseEnum.INVALID_PAGE_OR_PAGESIZE.getMsg());
+            throw new IllegalArgumentException(ResponseEnum.INVALID_PAGE_OR_PAGE_SIZE.getMsg());
         }
     }
 

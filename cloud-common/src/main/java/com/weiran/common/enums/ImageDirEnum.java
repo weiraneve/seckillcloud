@@ -3,9 +3,6 @@ package com.weiran.common.enums;
 
 public enum ImageDirEnum implements BaseEnum {
 
-    /**
-     * 图片类型
-     */
     goods(0, "goods"),
     index(1, "index");
 
