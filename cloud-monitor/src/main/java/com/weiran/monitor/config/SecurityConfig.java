@@ -1,14 +1,17 @@
 package com.weiran.monitor.config;
 
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class SecurityConfig {
 
     private final String adminContextPath;
 
@@ -16,12 +19,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.adminContextPath = adminServerProperties.getContextPath();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
         successHandler.setTargetUrlParameter("redirectTo");
         successHandler.setDefaultTargetUrl(adminContextPath + "/");
+
         http.authorizeRequests()
                 .antMatchers(adminContextPath + "/assets/**").permitAll()
                 .antMatchers(adminContextPath + "/actuator/**").permitAll()
@@ -37,5 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         adminContextPath + "/instances",
                         adminContextPath + "/actuator/**"
                 );
+
+        return http.build();
     }
 }
