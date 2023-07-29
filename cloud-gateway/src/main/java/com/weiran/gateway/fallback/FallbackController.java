@@ -1,7 +1,7 @@
 package com.weiran.gateway.fallback;
 
 import com.weiran.gateway.common.ErrorCode;
-import com.weiran.gateway.common.Msg;
+import com.weiran.gateway.common.FallbackMsg;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,10 +17,10 @@ public class FallbackController {
      * 全局服务降级处理返回
      */
     @RequestMapping("/defaultFallback")
-    public Msg<Integer> fallback() {
-        Msg<Integer> msg = new Msg<>();
-        msg.setCode(ErrorCode.MICRO_SERVICE_UNAVAILABLE);
-        msg.setMsg(UNAVAILABLE_MSG);
-        return msg;
+    public FallbackMsg<Integer> fallback() {
+        FallbackMsg<Integer> fallbackMsg = new FallbackMsg<>();
+        fallbackMsg.setCode(ErrorCode.MICRO_SERVICE_UNAVAILABLE);
+        fallbackMsg.setMsg(UNAVAILABLE_MSG);
+        return fallbackMsg;
     }
 }
