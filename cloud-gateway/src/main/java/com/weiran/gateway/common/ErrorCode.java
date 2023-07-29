@@ -13,8 +13,8 @@ public class ErrorCode {
 
     public static final int MICRO_SERVICE_UNAVAILABLE = 400; // 微服务不可用
 
-    public static final int SERVER_ERROR=500;
+    public static final int SERVER_ERROR = 500;
     public static final int BAD_GATEWAY = 502;
-    public static final int SERVICE_UNAVAILABLE=503;
+    public static final int SERVICE_UNAVAILABLE = 503;
 
 }

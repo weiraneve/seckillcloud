@@ -9,7 +9,6 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 /**
  * gateway 解决跨域
- * SaTokenConfigure中配置了全局跨域
  */
 @Configuration
 public class GatewayCorsConfiguration {

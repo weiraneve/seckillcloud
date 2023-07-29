@@ -22,10 +22,10 @@ public class GatewayFilterConfig implements GlobalFilter, Ordered {
         String path = exchange.getRequest().getPath().toString();
         log.info("当前请求地址：{}", path);
         return chain.filter(exchange.mutate().request(
-                        exchange.getRequest()
-                                .mutate()
-                                .header("from", "public")
-                                .build()).build());
+                exchange.getRequest()
+                        .mutate()
+                        .header("from", "public")
+                        .build()).build());
     }
 
     /**
