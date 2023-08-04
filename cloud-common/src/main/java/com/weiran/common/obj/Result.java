@@ -5,9 +5,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-/**
- * 统一返回体
- */
 @Data
 public class Result<T> implements Serializable {
 
@@ -16,18 +13,12 @@ public class Result<T> implements Serializable {
     private static final int FAILURE_CODE = ResponseEnum.ERROR.getCode();
     private static final String DEFAULT_SUCCESS_MSG = ResponseEnum.SUCCESS.getMsg();
 
-    // 状态码
     private int code = SUCCESS_CODE;
 
-    // 返回消息
     private String msg;
 
-    // 返回结果参数
     private T data;
 
-    /**
-     * 验证是否返回响应成功
-     */
     public boolean isSuccess() {
         return this.code == SUCCESS_CODE;
     }
