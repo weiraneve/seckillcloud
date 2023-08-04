@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
         isRegistered(registerParam);
         userManager.save(getUserByRegisterParam(registerParam));
         log.info(registerParam.getRegisterMobile() + "用户注册成功");
-        return new Result<>(ResponseEnum.SUCCESS);
+        return Result.success();
     }
 
     private void isRegistered(RegisterParam registerParam) {
