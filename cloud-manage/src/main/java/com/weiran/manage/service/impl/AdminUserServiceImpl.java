@@ -7,11 +7,13 @@ import com.weiran.manage.dto.AdminUserDTO;
 import com.weiran.manage.dto.PermissionMenuDTO;
 import com.weiran.manage.dto.RoleDTO;
 import com.weiran.manage.mapper.*;
-import com.weiran.manage.request.*;
+import com.weiran.manage.request.AdminUserInfoReq;
+import com.weiran.manage.request.AdminUserPassReq;
+import com.weiran.manage.request.AdminUserPermissionReq;
+import com.weiran.manage.request.AdminUserReq;
 import com.weiran.manage.service.AdminUserService;
 import com.weiran.manage.utils.TreeHelper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.beanutils.ConvertUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 public class AdminUserServiceImpl implements AdminUserService {
@@ -34,6 +35,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private final UserRolePermissionMapper userRolePermissionMapper;
     private final RoleMapper roleMapper;
     private final PermissionMenuMapper permissionMenuMapper;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private static final int DEFAULT_ROLE_ID = 0;
 
@@ -44,34 +46,22 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUserDTO update(AdminUserInfoReq adminUserInfoReq, String username) {
-        adminUserMapper.update(adminUserInfoReq,username);
+        adminUserMapper.update(adminUserInfoReq, username);
         return adminUserMapper.findByUsername(username).orElse(null);
     }
 
     @Override
     public String updatePass(AdminUserPassReq adminUserReq) {
-        String password = encodePass(adminUserReq.getPassword());
-        adminUserMapper.updatePass(adminUserReq.getUsername(), password);
-        AdminUserDTO user = new AdminUserDTO();
-        user.setUsername(adminUserReq.getUsername());
-        user.setPassword(adminUserReq.getPassword());
-        return jwtUserService.saveUserLoginInfo(user);
-    }
-
-    private String encodePass(String password) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return passwordEncoder.encode(password);
+        String encodedPassword = encodePass(adminUserReq.getPassword());
+        adminUserMapper.updatePass(adminUserReq.getUsername(), encodedPassword);
+        return jwtUserService.saveUserLoginInfo(createDTOWithPassword(adminUserReq, encodedPassword));
     }
 
     @Override
     public PageInfo<AdminUserDTO> findByAdminUsers(Integer page, Integer pageSize, String search) {
         PageHelper.startPage(page, pageSize);
-        List<AdminUserDTO> adminUsers;
-        if (StringUtils.isEmpty(search)) {
-            adminUsers = adminUserMapper.findByAdminUsers();
-        } else {
-            adminUsers = adminUserMapper.findByAdminUsersLike(search);
-        }
+        List<AdminUserDTO> adminUsers = StringUtils.isEmpty(search) ?
+                adminUserMapper.findByAdminUsers() : adminUserMapper.findByAdminUsersLike(search);
         return new PageInfo<>(adminUsers);
     }
 
@@ -82,64 +72,83 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public void createAdminUser(AdminUserReq adminUserReq) {
-        String password = encodePass(adminUserReq.getPassword());
-        adminUserReq.setPassword(password);
-        RoleDTO roleDTO = roleMapper.findById(adminUserReq.getRoleId());
-        adminUserReq.setRole(roleDTO.getRole());
+        adminUserReq.setPassword(encodePass(adminUserReq.getPassword()));
+        setRoleForAdminUserRequest(adminUserReq);
         adminUserMapper.insert(adminUserReq);
-        List<Integer> rolePermissionIds = rolePermissionMapper.findPermissionIdsByRoleId(adminUserReq.getRoleId());
-        userRolePermissionMapper.inserts(adminUserReq.getId(),adminUserReq.getRoleId(),rolePermissionIds);
+        updateUserRolePermissions(adminUserReq);
     }
 
     @Override
     public void deletes(String ids) {
-        String[] split = ids.split(",");
-        List<String> userIds = Arrays.asList(split);
+        List<String> userIds = Arrays.asList(ids.split(","));
         userRolePermissionMapper.deletesByUserIds(userIds);
         adminUserMapper.deletesByIds(userIds);
     }
 
     @Override
     public void updateAdminUserInfo(AdminUserReq adminUserReq) {
-        RoleDTO roleDTO = roleMapper.findById(adminUserReq.getRoleId());
-        adminUserReq.setRole(roleDTO.getRole());
-        String password = encodePass(adminUserReq.getPassword());
-        adminUserReq.setPassword(password);
+        setRoleForAdminUserRequest(adminUserReq);
         adminUserMapper.updateAdminUserInfo(adminUserReq);
-        updateAdminUserPermission(adminUserReq, roleDTO);
-    }
-
-    private void updateAdminUserPermission(AdminUserReq adminUserReq, RoleDTO roleDTO) {
-        AdminUserDTO userDTO = adminUserMapper.findById(adminUserReq.getId());
-        if (!userDTO.getRole().equals(roleDTO.getRole())) {
-            userRolePermissionMapper.deletesByUserIdAndRoleId(adminUserReq.getId(), userDTO.getRoles().get(0).getId());
-            List<Integer> rolePermissionIds = rolePermissionMapper.findPermissionIdsByRoleId(adminUserReq.getRoleId());
-            userRolePermissionMapper.inserts(adminUserReq.getId(),adminUserReq.getRoleId(), rolePermissionIds);
-        }
+        updateAdminUserPermissionBasedOnRole(adminUserReq);
     }
 
     @Override
     public void patchAdminUserPermission(AdminUserPermissionReq adminUserPermissionReq) {
-        List<Integer> permissionIds = userRolePermissionMapper.findByUserId(adminUserPermissionReq.getId());
-        List<Integer> newPermissionIds = Arrays.asList((Integer[]) ConvertUtils.convert(adminUserPermissionReq.getPermissionIds(), Integer.class));
-
-        List<Integer> unchangedPermissionIds = newPermissionIds.stream().filter(permissionIds::contains).collect(Collectors.toList());
-        List<Integer> addedPermissionIds = new ArrayList<>(newPermissionIds);
-        addedPermissionIds.removeAll(unchangedPermissionIds);
-
-        if (!addedPermissionIds.isEmpty()) {
-            userRolePermissionMapper.inserts(adminUserPermissionReq.getId(), DEFAULT_ROLE_ID, addedPermissionIds);
-        }
-        permissionIds.removeAll(unchangedPermissionIds);
-        if (!permissionIds.isEmpty()) {
-            userRolePermissionMapper.deletesByPermissionIds(permissionIds, adminUserPermissionReq.getId());
-        }
+        adjustUserPermissions(adminUserPermissionReq);
     }
-
 
     @Override
     public List<PermissionMenuDTO> findByMenus(String username) {
-        List<PermissionMenuDTO> roleMenus = permissionMenuMapper.findMenusByUsername(username);
-        return TreeHelper.getSortedNodes(roleMenus);
+        return TreeHelper.getSortedNodes(permissionMenuMapper.findMenusByUsername(username));
+    }
+
+    private String encodePass(String password) {
+        return passwordEncoder.encode(password);
+    }
+
+    private AdminUserDTO createDTOWithPassword(AdminUserPassReq adminUserReq, String encodedPassword) {
+        AdminUserDTO user = new AdminUserDTO();
+        user.setUsername(adminUserReq.getUsername());
+        user.setPassword(encodedPassword);
+        return user;
+    }
+
+    private void setRoleForAdminUserRequest(AdminUserReq adminUserReq) {
+        RoleDTO roleDTO = roleMapper.findById(adminUserReq.getRoleId());
+        adminUserReq.setRole(roleDTO.getRole());
+    }
+
+    private void updateUserRolePermissions(AdminUserReq adminUserReq) {
+        List<Integer> rolePermissionIds = rolePermissionMapper.findPermissionIdsByRoleId(adminUserReq.getRoleId());
+        userRolePermissionMapper.inserts(adminUserReq.getId(), adminUserReq.getRoleId(), rolePermissionIds);
+    }
+
+    private void updateAdminUserPermissionBasedOnRole(AdminUserReq adminUserReq) {
+        AdminUserDTO currentUserDTO = adminUserMapper.findById(adminUserReq.getId());
+        RoleDTO newRoleDTO = roleMapper.findById(adminUserReq.getRoleId());
+
+        if (!currentUserDTO.getRole().equals(newRoleDTO.getRole())) {
+            userRolePermissionMapper.deletesByUserIdAndRoleId(adminUserReq.getId(), currentUserDTO.getRoles().get(0).getId());
+            updateUserRolePermissions(adminUserReq);
+        }
+    }
+
+    private void adjustUserPermissions(AdminUserPermissionReq adminUserPermissionReq) {
+        List<Integer> currentPermissionIds = userRolePermissionMapper.findByUserId(adminUserPermissionReq.getId());
+        List<Integer> newPermissionIds = Arrays.stream(adminUserPermissionReq.getPermissionIds())
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        List<Integer> unchangedPermissions = newPermissionIds.stream().filter(currentPermissionIds::contains).collect(Collectors.toList());
+        List<Integer> addedPermissions = new ArrayList<>(newPermissionIds);
+        addedPermissions.removeAll(unchangedPermissions);
+
+        if (!addedPermissions.isEmpty()) {
+            userRolePermissionMapper.inserts(adminUserPermissionReq.getId(), DEFAULT_ROLE_ID, addedPermissions);
+        }
+
+        currentPermissionIds.removeAll(unchangedPermissions);
+        if (!currentPermissionIds.isEmpty()) {
+            userRolePermissionMapper.deletesByPermissionIds(currentPermissionIds, adminUserPermissionReq.getId());
+        }
     }
 }
