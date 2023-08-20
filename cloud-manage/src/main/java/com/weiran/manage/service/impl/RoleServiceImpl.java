@@ -11,11 +11,9 @@ import com.weiran.manage.mapper.UserRolePermissionMapper;
 import com.weiran.manage.request.RoleReq;
 import com.weiran.manage.service.RoleService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.beanutils.ConvertUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,10 +31,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public PageInfo<RoleDTO> findByRoles(Integer page, Integer pageSize, String search) {
         validatePageParameters(page, pageSize);
-
         PageHelper.startPage(page, pageSize);
         List<RoleDTO> roles = (search == null || search.isEmpty()) ? roleMapper.findByRoles() : roleMapper.findByRolesLike(search);
-
         return new PageInfo<>(roles);
     }
 
@@ -44,49 +40,24 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public void createRole(RoleReq roleReq) {
         validateRoleRequest(roleReq);
-
         roleMapper.createRole(roleReq);
-
-        if (roleReq.getId() == null || roleReq.getId() <= 0) {
-            throw new IllegalArgumentException(ResponseEnum.PERMISSION_CREATE_ERROR.getMsg());
-        }
-
+        ensureRoleCreationSuccess(roleReq);
         rolePermissionMapper.inserts(roleReq);
     }
 
     @Override
     public void deletes(String ids) {
-        // 删除角色权限表，用户角色权限表，角色表
-        String[] split = ids.split(COMMA);
-        List<String> roleIds = Arrays.asList(split);
-        BusinessValidation.isInvalid(userRolePermissionMapper.countByRoleIds(roleIds) > 0, ResponseEnum.PERMISSION_DELETES_ERROR);
-        rolePermissionMapper.deletesByRoleIds(roleIds);
-        userRolePermissionMapper.deletesByRoleIds(roleIds);
-        roleMapper.deletesByIds(roleIds);
+        List<String> roleIds = extractIds(ids);
+        ensureNoAssociatedPermissions(roleIds);
+        deleteAssociatedRoleEntries(roleIds);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateRole(RoleReq roleReq) {
         validateRoleRequest(roleReq);
-
         roleMapper.updateRole(roleReq);
-        List<Integer> permissionIds = rolePermissionMapper.findPermissionIdsByRoleId(roleReq.getId());
-        // 相同权限不变
-        List<Integer> integers = Arrays.asList((Integer[]) ConvertUtils.convert(roleReq.getPermissionIds(), Integer.class));
-        List<Integer> saveList = integers.stream().filter(permissionIds::contains).collect(Collectors.toList());
-        List<Integer> missionIds = new ArrayList<>(integers);
-        missionIds.removeAll(saveList);
-        // 多余权限新增
-        if (missionIds.size() != 0) {
-            Integer rows = rolePermissionMapper.insertList(missionIds, roleReq.getId());
-            BusinessValidation.isInvalid(rows <= 0, ResponseEnum.PERMISSION_UPDATE_ERROR);
-        }
-        // 少余权限删除
-        permissionIds.removeAll(saveList);
-        if (permissionIds.size() != 0) {
-            rolePermissionMapper.deletesByPermissionIds(permissionIds, roleReq.getId());
-        }
+        handlePermissionsUpdate(roleReq);
     }
 
     @Override
@@ -103,6 +74,56 @@ public class RoleServiceImpl implements RoleService {
     private void validateRoleRequest(RoleReq roleReq) {
         if (roleReq == null) {
             throw new IllegalArgumentException(ResponseEnum.ROLE_NOT_FOUND.getMsg());
+        }
+    }
+
+    private void ensureRoleCreationSuccess(RoleReq roleReq) {
+        if (roleReq.getId() == null || roleReq.getId() <= 0) {
+            throw new IllegalArgumentException(ResponseEnum.PERMISSION_CREATE_ERROR.getMsg());
+        }
+    }
+
+    private List<String> extractIds(String ids) {
+        return Arrays.asList(ids.split(COMMA));
+    }
+
+    private void ensureNoAssociatedPermissions(List<String> roleIds) {
+        boolean hasAssociatedPermissions = userRolePermissionMapper.countByRoleIds(roleIds) > 0;
+        BusinessValidation.isInvalid(hasAssociatedPermissions, ResponseEnum.PERMISSION_DELETES_ERROR);
+    }
+
+    private void deleteAssociatedRoleEntries(List<String> roleIds) {
+        rolePermissionMapper.deletesByRoleIds(roleIds);
+        userRolePermissionMapper.deletesByRoleIds(roleIds);
+        roleMapper.deletesByIds(roleIds);
+    }
+
+    private void handlePermissionsUpdate(RoleReq roleReq) {
+        List<Integer> existingPermissionIds = rolePermissionMapper.findPermissionIdsByRoleId(roleReq.getId());
+        List<Integer> requestedPermissionIds = Arrays.stream(roleReq.getPermissionIds())
+                .map(Integer::valueOf)
+                .collect(Collectors.toList());
+
+        updateNewPermissions(roleReq, existingPermissionIds, requestedPermissionIds);
+        removeUnwantedPermissions(roleReq, existingPermissionIds, requestedPermissionIds);
+    }
+
+    private void updateNewPermissions(RoleReq roleReq, List<Integer> existingPermissionIds, List<Integer> requestedPermissionIds) {
+        List<Integer> newPermissions = requestedPermissionIds.stream()
+                .filter(permissionId -> !existingPermissionIds.contains(permissionId))
+                .collect(Collectors.toList());
+        if (!newPermissions.isEmpty()) {
+            int rows = rolePermissionMapper.insertList(newPermissions, roleReq.getId());
+            BusinessValidation.isInvalid(rows <= 0, ResponseEnum.PERMISSION_UPDATE_ERROR);
+        }
+    }
+
+    private void removeUnwantedPermissions(RoleReq roleReq, List<Integer> existingPermissionIds, List<Integer> requestedPermissionIds) {
+        List<Integer> permissionsToRemove = existingPermissionIds.stream()
+                .filter(permissionId -> !requestedPermissionIds.contains(permissionId))
+                .collect(Collectors.toList());
+        if (!permissionsToRemove.isEmpty()) {
+            rolePermissionMapper.deletesByPermissionIds(permissionsToRemove, roleReq.getId());
         }
     }
 }
