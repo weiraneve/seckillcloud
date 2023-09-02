@@ -83,7 +83,7 @@ qiniu:
   # 对象存储空间名
   bucket: weiran1999
   # 域名
-  domain: http://rel.weiran.ltd/
+  domain: http://res.steveay.com/
 
 # 配置文件加密
 jasypt:
