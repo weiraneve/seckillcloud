@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 30/05/2022 21:28:13
+ Date: 01/09/2023 21:28:13
 */
 
 SET NAMES utf8mb4;
@@ -39,8 +39,8 @@ CREATE TABLE `admin_users` (
 -- Records of admin_users
 -- ----------------------------
 BEGIN;
-INSERT INTO `admin_users` (`id`, `username`, `name`, `avatar`, `phone`, `role`, `password`, `is_ban`, `created_at`, `updated_at`) VALUES (1, 'super_admin', '超级管理者一号', 'https://weiran.ltd/upload/2021/11/logo-16e07db7e60545809c66fef944f3e9ee.png', '', 'ROLE_SUPER_ADMIN', '$2a$10$RO97lPxOvseFMLrbquwblupRmpu0gB..pInyi95Ocrj60APwQXKDq', b'0', '2019-12-05 16:30:01', '2022-02-23 15:52:11');
-INSERT INTO `admin_users` (`id`, `username`, `name`, `avatar`, `phone`, `role`, `password`, `is_ban`, `created_at`, `updated_at`) VALUES (2, 'admin', '普通管理者一号', 'https://weiran.ltd/upload/2021/11/logo-16e07db7e60545809c66fef944f3e9ee.png', '088-6668888', 'NORMAL_ADMIN_USER', '$2a$10$RO97lPxOvseFMLrbquwblupRmpu0gB..pInyi95Ocrj60APwQXKDq', b'0', '2020-03-14 13:39:53', '2022-03-02 18:11:16');
+INSERT INTO `admin_users` (`id`, `username`, `name`, `avatar`, `phone`, `role`, `password`, `is_ban`, `created_at`, `updated_at`) VALUES (1, 'super_admin', '超级管理者一号', 'http://res.steveay.com/index/ee717dbb66f044a1b87d002b78121682.png', '', 'ROLE_SUPER_ADMIN', '$2a$10$RO97lPxOvseFMLrbquwblupRmpu0gB..pInyi95Ocrj60APwQXKDq', b'0', '2019-12-05 16:30:01', '2022-02-23 15:52:11');
+INSERT INTO `admin_users` (`id`, `username`, `name`, `avatar`, `phone`, `role`, `password`, `is_ban`, `created_at`, `updated_at`) VALUES (2, 'admin', '普通管理者一号', 'http://res.steveay.com/index/ee717dbb66f044a1b87d002b78121682.png', '088-6668888', 'NORMAL_ADMIN_USER', '$2a$10$RO97lPxOvseFMLrbquwblupRmpu0gB..pInyi95Ocrj60APwQXKDq', b'0', '2020-03-14 13:39:53', '2022-03-02 18:11:16');
 COMMIT;
 
 -- ----------------------------

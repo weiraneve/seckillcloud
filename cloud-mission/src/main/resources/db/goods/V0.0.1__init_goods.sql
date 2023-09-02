@@ -1,7 +1,7 @@
 CREATE TABLE `goods` (
                          `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
                          `goods_name` varchar(16) DEFAULT NULL COMMENT '商品名称',
-                         `goods_img` varchar(64) DEFAULT NULL COMMENT '商品图片',
+                         `goods_img` varchar(255) DEFAULT NULL COMMENT '商品图片',
                          `is_using` bit(1) DEFAULT b'1' COMMENT '是否启用',
                          `goods_title` varchar(64) DEFAULT NULL COMMENT '商品标题',
                          `goods_price` decimal(10,0) DEFAULT NULL COMMENT '商品价格',
