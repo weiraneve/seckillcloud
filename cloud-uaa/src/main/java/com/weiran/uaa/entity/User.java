@@ -20,17 +20,11 @@ public class User implements Serializable {
 	@ApiModelProperty("主键")
 	private Long id;
 
-	@ApiModelProperty("用户名")
-	private String userName;
-
 	@ApiModelProperty("登录手机号")
 	private String phone;
 
 	@ApiModelProperty("密码")
 	private String password;
-
-	@ApiModelProperty("身份证号")
-	private String identityCardId;
 
 	@ApiModelProperty("创建时间")
 	private LocalDateTime createdAt;

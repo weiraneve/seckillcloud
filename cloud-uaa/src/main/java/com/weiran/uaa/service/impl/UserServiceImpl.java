@@ -86,16 +86,12 @@ public class UserServiceImpl implements UserService {
 
     private void isRegistered(RegisterParam registerParam) {
         UserInfoValidation.isInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null, ResponseEnum.REPEATED_REGISTER_MOBILE);
-        UserInfoValidation.isInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getUserName, registerParam.getRegisterUsername())) != null, ResponseEnum.REPEATED_REGISTER_USERNAME);
-        UserInfoValidation.isInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getIdentityCardId, registerParam.getRegisterIdentity())) != null, ResponseEnum.REPEATED_REGISTER_IDENTITY);
     }
 
     private User getUserByRegisterParam(RegisterParam registerParam) {
         User user = new User();
         user.setPhone(registerParam.getRegisterMobile());
-        user.setUserName(registerParam.getRegisterUsername());
         user.setPassword(registerParam.getRegisterPassword());
-        user.setIdentityCardId(registerParam.getRegisterIdentity());
         return user;
     }
 

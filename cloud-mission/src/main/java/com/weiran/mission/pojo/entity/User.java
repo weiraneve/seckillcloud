@@ -34,9 +34,6 @@ public class User implements Serializable {
     @ApiModelProperty("密码")
     private String password;
 
-    @ApiModelProperty("身份证号")
-    private String identityCardId;
-
     @ApiModelProperty("创建时间")
     @TableField(fill = FieldFill.INSERT)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)  //反序列化
