@@ -57,7 +57,7 @@ public class SeckillServiceImpl implements SeckillService {
             for (SeckillGoods seckillGoods : seckillGoodsList) {
                 // 用商品Id作为key，加载秒杀商品的剩余数量
                 redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(seckillGoods.getGoodsId()), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-                localOverMap.put(seckillGoods.getGoodsId(), seckillGoods.getStockCount() <= 0);
+                localOverMap.put(seckillGoods.getGoodsId(), seckillGoods.getStockCount() > 0);
             }
         }
     }
