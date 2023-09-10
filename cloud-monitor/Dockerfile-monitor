@@ -2,7 +2,7 @@ FROM adoptopenjdk/openjdk8:jdk8u345-b01-debian-slim
 
 WORKDIR /app
 
-COPY ./target/cloud-monitor-1.0.2.jar /app/cloud-monitor.jar
+COPY ./target/cloud-monitor-1.0.3.jar /app/cloud-monitor.jar
 
 ENV LANG=en_US.UTF8
 ENV TZ=Asia/Shanghai
