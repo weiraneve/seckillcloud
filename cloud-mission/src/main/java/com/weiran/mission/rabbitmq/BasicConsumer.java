@@ -1,9 +1,9 @@
 package com.weiran.mission.rabbitmq;
 
 import cn.hutool.json.JSONUtil;
-
-import com.weiran.mission.pojo.entity.Order;
+import com.rabbitmq.client.Channel;
 import com.weiran.mission.manager.OrderManager;
+import com.weiran.mission.pojo.entity.Order;
 import com.weiran.mission.service.SeckillGoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-
-import com.rabbitmq.client.Channel;
 
 /**
  * rabbitmq demo-消费者
@@ -37,8 +35,10 @@ public class BasicConsumer {
             log.info("rabbitmq demo-消费者-监听消息：{} ", JSONUtil.toJsonStr(seckillMessage));
             long userId = seckillMessage.getUserId();
             long goodsId = seckillMessage.getGoodsId();
+            Long orderId = goodsId * 1000000 + userId;
             // 减库存，下订单，写入订单表
             Order order = new Order();
+            order.setId(orderId);
             order.setUserId(userId);
             order.setGoodsId(goodsId);
             boolean flag = orderManager.save(order);
