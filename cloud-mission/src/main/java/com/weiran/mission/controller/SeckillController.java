@@ -45,7 +45,6 @@ public class SeckillController  {
 
     /**
      * 返回一个唯一的path的id
-     *
      * 注解配合拦截器，限制规定时间内访问次数
      */
     @ApiOperation("返回一个唯一的path的id")
