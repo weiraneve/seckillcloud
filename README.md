@@ -1,12 +1,9 @@
 # 前言
-项目是基于Java微服务方案的商品秒杀系统。是前后端分离的项目，前端用React，后端为Java的微服务架构。
+项目是基于Java微服务方案的商品秒杀系统。是前后端分离的项目，前端用React，后端为Java的Spring微服务架构，客户端用flutter。
 
 本项目版本迭代至1.0.3，欢迎各位多多交流。
 
-- [客户端前端服务器](https://github.com/weiraneve/seckill-front)
-- [后台系统前端服务器](https://github.com/weiraneve/admin-manager)
-
-# web前端与客户端
+# 项目的web前端与客户端
 - [本项目的秒杀部分Web前端](https://github.com/weiraneve/seckill-front)
 - [本项目的后台配置部分Web前端](https://github.com/weiraneve/admin-manager)
 - [本项目的flutter客户端](https://github.com/weiraneve/seckillDeal)
