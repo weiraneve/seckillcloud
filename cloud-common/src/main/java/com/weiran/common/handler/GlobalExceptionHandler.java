@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserInfoException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<String> handle(UserInfoException exception) {
         log.error(exception.getResponseEnum().getMsg());
         return Result.fail(exception.getResponseEnum());

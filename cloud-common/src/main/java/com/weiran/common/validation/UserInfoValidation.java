@@ -8,13 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserInfoValidation {
 
     /**
-     * 抛出异常(默认错误1000)
-     */
-    public static void invalid(ResponseEnum responseEnum) {
-        throw new UserInfoException(responseEnum);
-    }
-
-    /**
      * 表达式为真即抛出异常(默认错误1000)
      */
     public static void isInvalid(boolean expression, ResponseEnum responseEnum) {
