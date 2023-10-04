@@ -34,7 +34,8 @@ public enum ResponseEnum implements BaseEnum {
     GOODS_CREATE_FAIL(500, "goods创建失败"),
     IMAGE_UPLOAD_FAIL(500, "上传图片失败"),
     PERMISSION_CREATE_ERROR(500, "创建失败"),
-    PERMISSION_UPDATE_ERROR(500, "修改失败");
+    PERMISSION_UPDATE_ERROR(500, "修改失败"),
+    SYSTEM_ERROR(500, "系统异常");
 
     private final int code;
     private final String msg;
