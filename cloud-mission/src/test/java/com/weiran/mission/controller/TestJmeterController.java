@@ -10,7 +10,6 @@ import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.SM3Util;
-import com.weiran.common.validation.SeckillValidation;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.pojo.entity.Order;
@@ -22,7 +21,6 @@ import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -96,23 +94,28 @@ public class TestJmeterController {
     }
 
     // 进行秒杀
-    @Transactional
     Result<Integer> doSeckill(Long userId, String path) {
         // 验证path
         boolean check = checkPath(userId, path);
-        SeckillValidation.isInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
+        if (!check) {
+            return Result.fail(ResponseEnum.REQUEST_ILLEGAL);
+        }
         // 若为非，则为商品已经售完
         boolean over = localOverMap.get((long) 1);
-        SeckillValidation.isInvalid(!over, ResponseEnum.SECKILL_OVER);
+        if (!over) {
+            return Result.fail(ResponseEnum.SECKILL_OVER);
+        }
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
         Long orderId = (long) 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
-        SeckillValidation.isInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
+        if (order != null) {
+            return Result.fail(ResponseEnum.REPEATED_SECKILL);
+        }
         Long count = redisLua.judgeStockAndDecrStock((long) 1);
         if (count == -1) {
             localOverMap.put((long) 1, false);
-            SeckillValidation.invalid(ResponseEnum.SECKILL_OVER);
+            return Result.fail(ResponseEnum.SECKILL_OVER);
         }
 
         // 入队

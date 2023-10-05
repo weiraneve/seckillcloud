@@ -11,7 +11,6 @@ import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.CommonUtil;
 import com.weiran.common.utils.SM3Util;
-import com.weiran.common.validation.SeckillValidation;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.pojo.entity.Order;
@@ -67,28 +66,29 @@ public class SeckillServiceImpl implements SeckillService {
     public Result<Integer> doSeckill(long goodsId, String path, HttpServletRequest request) {
         long userId = getUserId(request);
         // 验证path
-        checkPath(goodsId, path, userId);
+        if (!checkPath(userId, goodsId, path)) {
+            return Result.fail(ResponseEnum.REQUEST_ILLEGAL);
+        }
         // 若为非，则为商品已经售完
-        isCountOver(goodsId);
+        if (!localOverMap.get(goodsId)) {
+            return Result.fail(ResponseEnum.SECKILL_OVER);
+        }
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
-        getOrderId(goodsId, userId);
-        // LUA脚本判断库存和预减库存
-        luaCheckAndReduceStock(goodsId);
-        // 入队
-        handleMQ(goodsId, userId);
-        return Result.success(0); // 排队中
-    }
-
-    private void getOrderId(long goodsId, long userId) {
         Long orderId = goodsId * 1000000 + userId;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
-        SeckillValidation.isInvalid(order != null, ResponseEnum.REPEATED_SECKILL);
-    }
-
-    private void isCountOver(long goodsId) {
-        boolean over = localOverMap.get(goodsId);
-        SeckillValidation.isInvalid(!over, ResponseEnum.SECKILL_OVER);
+        if (order != null) {
+            return Result.fail(ResponseEnum.REPEATED_SECKILL);
+        }
+        // LUA脚本判断库存和预减库存
+        Long count = redisLua.judgeStockAndDecrStock(goodsId);
+        if (count == -1) {
+            localOverMap.put(goodsId, false);
+            return Result.fail(ResponseEnum.SECKILL_OVER);
+        }
+        // 入队
+        handleMQ(goodsId, userId);
+        return Result.success(0); // 排队中
     }
 
     private void handleMQ(long goodsId, long userId) {
@@ -97,19 +97,6 @@ public class SeckillServiceImpl implements SeckillService {
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
         messageSender.sendMsg(seckillMessage);
-    }
-
-    private void luaCheckAndReduceStock(long goodsId) {
-        Long count = redisLua.judgeStockAndDecrStock(goodsId);
-        if (count == -1) {
-            localOverMap.put(goodsId, false);
-            SeckillValidation.invalid(ResponseEnum.SECKILL_OVER);
-        }
-    }
-
-    private void checkPath(long goodsId, String path, long userId) {
-        boolean check = checkPath(userId, goodsId, path);
-        SeckillValidation.isInvalid(!check, ResponseEnum.REQUEST_ILLEGAL);
     }
 
     private long getUserId(HttpServletRequest request) {

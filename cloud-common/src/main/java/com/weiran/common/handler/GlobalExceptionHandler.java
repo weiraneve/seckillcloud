@@ -4,7 +4,6 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.exception.BaseCustomizeException;
 import com.weiran.common.exception.BusinessException;
-import com.weiran.common.exception.SeckillException;
 import com.weiran.common.obj.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({SeckillException.class, BusinessException.class})
+    @ExceptionHandler({BusinessException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<String> handleCustomExceptions(BaseCustomizeException ex) {
         logError(ex.getResponseEnum().getMsg(), ex);
