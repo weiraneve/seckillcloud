@@ -27,8 +27,8 @@ public class SessionController {
      */
     @GetMapping
     public Result<AdminUserDTO> index(Principal principal) {
-        AdminUserDTO adminUserDTO = adminUserService.findByUsername(principal.getName()).get();
-        return Result.success(adminUserDTO);
+        Optional<AdminUserDTO> adminUserDTO = adminUserService.findByUsername(principal.getName());
+        return adminUserDTO.map(Result::success).orElseGet(() -> Result.fail(ResponseEnum.USER_NOT_FOUND));
     }
 
     /**
