@@ -3,7 +3,8 @@ package com.weiran.manage.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.validation.BusinessValidation;
+import com.weiran.common.obj.Result;
+import com.weiran.common.validation.CustomValidation;
 import com.weiran.manage.dto.PermissionDTO;
 import com.weiran.manage.mapper.PermissionMapper;
 import com.weiran.manage.mapper.PermissionMenuMapper;
@@ -37,10 +38,11 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public void createPermission(PermissionReq permissionReq) {
+    public Result<Object> createPermission(PermissionReq permissionReq) {
         permissionMapper.findByPermission(permissionReq.getPermission())
-                .ifPresent(permission -> BusinessValidation.invalid(ResponseEnum.PERMISSION_EXIST_ERROR));
+                .ifPresent(permission -> Result.fail(ResponseEnum.PERMISSION_EXIST_ERROR));
         permissionMapper.insert(permissionReq);
+        return Result.success();
     }
 
     @Override
@@ -55,14 +57,15 @@ public class PermissionServiceImpl implements PermissionService {
         boolean isRoleAssociated = rolePermissionMapper.countByPermissionIds(permissionIds) > 0;
         boolean isUserRoleAssociated = userRolePermissionMapper.countByPermissionIds(permissionIds) > 0;
 
-        BusinessValidation.isInvalid(isMenuAssociated || isRoleAssociated || isUserRoleAssociated, ResponseEnum.PERMISSION_DELETES_ERROR);
+        CustomValidation.isInvalid(isMenuAssociated || isRoleAssociated || isUserRoleAssociated, ResponseEnum.PERMISSION_DELETES_ERROR);
     }
 
     @Override
-    public void update(PermissionReq permissionReq) {
+    public Result<Object> update(PermissionReq permissionReq) {
         permissionMapper.findByPermissionAndId(permissionReq)
-                .ifPresent(permission -> BusinessValidation.invalid(ResponseEnum.PERMISSION_EXIST_ERROR));
+                .ifPresent(permission -> Result.fail(ResponseEnum.PERMISSION_EXIST_ERROR));
         permissionMapper.update(permissionReq);
+        return Result.success();
     }
 
     @Override

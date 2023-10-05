@@ -3,7 +3,7 @@ package com.weiran.mission.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.weiran.common.enums.ImageDirEnum;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.validation.BusinessValidation;
+import com.weiran.common.validation.CustomValidation;
 import com.weiran.mission.service.ImageService;
 import com.weiran.mission.utils.EnumUtil;
 import com.weiran.mission.utils.qiniu.ImageKit;
@@ -27,7 +27,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ImageKit upload(MultipartFile file, Integer dir) {
         ImageDirEnum dirEnum = EnumUtil.getByCode(dir, ImageDirEnum.class);
-        BusinessValidation.isInvalid(ObjectUtil.isNull(dirEnum), ResponseEnum.IMAGE_ENUM_NOT_FOUND);
+        CustomValidation.isInvalid(ObjectUtil.isNull(dirEnum), ResponseEnum.IMAGE_ENUM_NOT_FOUND);
         return imageScalaKit.upload(file, dirEnum.getMsg());
     }
 

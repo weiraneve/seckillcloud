@@ -2,9 +2,9 @@ package com.weiran.common.exception;
 
 import com.weiran.common.enums.ResponseEnum;
 
-public class BusinessException extends BaseCustomizeException {
+public class CustomException extends BaseCustomizeException {
 
-    public BusinessException(ResponseEnum responseEnum) {
+    public CustomException(ResponseEnum responseEnum) {
         super(responseEnum);
     }
 

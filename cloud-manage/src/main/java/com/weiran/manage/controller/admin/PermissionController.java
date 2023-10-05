@@ -39,8 +39,7 @@ public class PermissionController {
     @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
     public Result<Object> update(@RequestBody PermissionReq permissionReq) {
-        permissionService.update(permissionReq);
-        return Result.success();
+        return permissionService.update(permissionReq);
     }
 
     /**
@@ -59,8 +58,7 @@ public class PermissionController {
     @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @PostMapping
     public Result<Object> createPermission(@RequestBody PermissionReq permissionReq) {
-        permissionService.createPermission(permissionReq);
-        return Result.success();
+        return permissionService.createPermission(permissionReq);
     }
 
     /**

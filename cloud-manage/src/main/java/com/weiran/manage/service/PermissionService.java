@@ -1,6 +1,7 @@
 package com.weiran.manage.service;
 
 import com.github.pagehelper.PageInfo;
+import com.weiran.common.obj.Result;
 import com.weiran.manage.dto.PermissionDTO;
 import com.weiran.manage.request.PermissionReq;
 
@@ -18,7 +19,7 @@ public interface PermissionService {
     /**
      * 创建权限
      */
-    void createPermission(PermissionReq permissionReq);
+    Result<Object> createPermission(PermissionReq permissionReq);
 
 
     /**
@@ -30,7 +31,7 @@ public interface PermissionService {
     /**
      * 修改权限
      */
-    void update(PermissionReq permissionReq);
+    Result<Object> update(PermissionReq permissionReq);
 
 
     /**

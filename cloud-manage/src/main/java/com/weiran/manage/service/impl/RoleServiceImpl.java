@@ -3,7 +3,7 @@ package com.weiran.manage.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.enums.ResponseEnum;
-import com.weiran.common.validation.BusinessValidation;
+import com.weiran.common.validation.CustomValidation;
 import com.weiran.manage.dto.RoleDTO;
 import com.weiran.manage.mapper.RoleMapper;
 import com.weiran.manage.mapper.RolePermissionMapper;
@@ -89,7 +89,7 @@ public class RoleServiceImpl implements RoleService {
 
     private void ensureNoAssociatedPermissions(List<String> roleIds) {
         boolean hasAssociatedPermissions = userRolePermissionMapper.countByRoleIds(roleIds) > 0;
-        BusinessValidation.isInvalid(hasAssociatedPermissions, ResponseEnum.PERMISSION_DELETES_ERROR);
+        CustomValidation.isInvalid(hasAssociatedPermissions, ResponseEnum.PERMISSION_DELETES_ERROR);
     }
 
     private void deleteAssociatedRoleEntries(List<String> roleIds) {
@@ -114,7 +114,7 @@ public class RoleServiceImpl implements RoleService {
                 .collect(Collectors.toList());
         if (!newPermissions.isEmpty()) {
             int rows = rolePermissionMapper.insertList(newPermissions, roleReq.getId());
-            BusinessValidation.isInvalid(rows <= 0, ResponseEnum.PERMISSION_UPDATE_ERROR);
+            CustomValidation.isInvalid(rows <= 0, ResponseEnum.PERMISSION_UPDATE_ERROR);
         }
     }
 

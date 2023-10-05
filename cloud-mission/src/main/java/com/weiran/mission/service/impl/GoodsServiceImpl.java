@@ -12,7 +12,7 @@ import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.common.redis.key.GoodsKey;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.validation.BusinessValidation;
+import com.weiran.common.validation.CustomValidation;
 import com.weiran.mission.manager.GoodsManager;
 import com.weiran.mission.mapper.GoodsMapper;
 import com.weiran.mission.mapper.SeckillGoodsMapper;
@@ -202,7 +202,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public GoodsDTO selectById(Long id) {
         GoodsDTO goodsDTO = goodsMapper.selectGoodsById(id);
-        BusinessValidation.isInvalid(ObjectUtil.isNull(goodsDTO), ResponseEnum.RESOURCE_NOT_FOUND);
+        CustomValidation.isInvalid(ObjectUtil.isNull(goodsDTO), ResponseEnum.RESOURCE_NOT_FOUND);
         return goodsDTO;
     }
 
