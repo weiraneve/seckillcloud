@@ -1,6 +1,7 @@
 package com.weiran.uaa.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
@@ -9,7 +10,6 @@ import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.CommonUtil;
-import com.weiran.common.validation.UserInfoValidation;
 import com.weiran.uaa.entity.User;
 import com.weiran.uaa.manager.UserManager;
 import com.weiran.uaa.param.LoginParam;
@@ -19,7 +19,6 @@ import com.weiran.uaa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import cn.hutool.crypto.SecureUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -36,9 +35,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<String> doLogin(LoginParam loginParam) {
-        Result<User> userResult = login(loginParam);
-        UserInfoValidation.isInvalidAndMobile(!userResult.isSuccess(), userResult.getCode(), loginParam.getMobile());
-        User user = userResult.getData();
+        User user = userManager.getOne(Wrappers.<User>lambdaQuery()
+                .eq(User::getPhone, loginParam.getMobile()));
+        if (user == null) {
+            return Result.fail(ResponseEnum.MOBILE_NOT_EXIST.getMsg());
+        }
+        // 数据库里存储的都是密码本身加加盐后的密文
+        if (!user.getPassword().equals(loginParam.getPassword())) {
+            return Result.fail(ResponseEnum.PASSWORD_ERROR.getMsg());
+        }
+        // 密码置为空 防止泄漏
+        user.setPassword("");
         long userId = user.getId();
         // 将用户手机号进行MD5和随机数加盐加密，作为Token给到前端服务器
         String loginToken = generateLoginToken(user);
@@ -78,14 +85,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<ResponseEnum> doRegister(RegisterParam registerParam) {
         // 判断电话、用户名、身份证有无被注册
-        isRegistered(registerParam);
+        if (userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null) {
+            return Result.fail(ResponseEnum.REPEATED_REGISTER_MOBILE);
+        }
         userManager.save(getUserByRegisterParam(registerParam));
         log.info(registerParam.getRegisterMobile() + "用户注册成功");
         return Result.success();
-    }
-
-    private void isRegistered(RegisterParam registerParam) {
-        UserInfoValidation.isInvalid(userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null, ResponseEnum.REPEATED_REGISTER_MOBILE);
     }
 
     private User getUserByRegisterParam(RegisterParam registerParam) {
@@ -99,25 +104,14 @@ public class UserServiceImpl implements UserService {
     public Result<ResponseEnum> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
         long userId = redisService.get(UserKey.getById, CommonUtil.getLoginTokenByRequest(request), Long.class);
         User user = userManager.getById(userId);
-        UserInfoValidation.isInvalid(!user.getPassword().equals(updatePassParam.getOldPassword()), ResponseEnum.OLD_PASSWORD_ERROR);
+        if (!user.getPassword().equals(updatePassParam.getOldPassword())) {
+            return Result.fail(ResponseEnum.OLD_PASSWORD_ERROR);
+        }
+
         user.setPassword(updatePassParam.getNewPassword());
         userManager.update(user, Wrappers.<User>lambdaQuery().eq(User::getId, user.getId()));
         log.info(user.getPhone() + "用户更换密码成功");
         return Result.success();
     }
 
-    private Result<User> login(LoginParam loginParam) {
-        User user = userManager.getOne(Wrappers.<User>lambdaQuery()
-                .eq(User::getPhone, loginParam.getMobile()));
-        if (user == null) {
-            return Result.fail(ResponseEnum.MOBILE_NOT_EXIST);
-        }
-        // 数据库里存储的都是密码本身加加盐后的密文
-        if (!user.getPassword().equals(loginParam.getPassword())) {
-            return Result.fail(ResponseEnum.PASSWORD_ERROR);
-        }
-        // 密码置为空 防止泄漏
-        user.setPassword("");
-        return Result.success(user);
-    }
 }
