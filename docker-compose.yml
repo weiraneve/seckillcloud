@@ -5,7 +5,7 @@ services:
     build:
       context: ./cloud-mission
       dockerfile: Dockerfile-mission
-    image: cloud-mission:1.0.3
+    image: cloud-mission:1.0.4
     ports:
       - "8888:8888"
     environment:
@@ -25,7 +25,7 @@ services:
     build:
       context: ./cloud-uaa
       dockerfile: Dockerfile-uaa
-    image: cloud-uaa:1.0.3
+    image: cloud-uaa:1.0.4
     ports:
       - "8088:8088"
     environment:
@@ -43,7 +43,7 @@ services:
     build:
       context: ./cloud-manage
       dockerfile: Dockerfile-manage
-    image: cloud-manage:1.0.3
+    image: cloud-manage:1.0.4
     ports:
       - "8070:8070"
     environment:
@@ -61,7 +61,7 @@ services:
     build:
       context: ./cloud-gateway
       dockerfile: Dockerfile-gateway
-    image: cloud-gateway:1.0.3
+    image: cloud-gateway:1.0.4
     ports:
       - "8205:8205"
     restart: always
@@ -71,7 +71,7 @@ services:
     build:
       context: ./cloud-monitor
       dockerfile: Dockerfile-monitor
-    image: cloud-monitor:1.0.3
+    image: cloud-monitor:1.0.4
     ports:
       - "8890:8890"
     restart: always
