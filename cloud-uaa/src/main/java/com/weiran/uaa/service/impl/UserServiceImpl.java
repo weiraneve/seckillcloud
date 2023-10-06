@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<ResponseEnum> doRegister(RegisterParam registerParam) {
-        // 判断电话、用户名、身份证有无被注册
+        // 判断电话、用户名
         if (userManager.getOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, registerParam.getRegisterMobile())) != null) {
             return Result.fail(ResponseEnum.REPEATED_REGISTER_MOBILE);
         }

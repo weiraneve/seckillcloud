@@ -27,7 +27,6 @@ public enum ResponseEnum implements BaseEnum {
     IMAGE_ENUM_NOT_FOUND(415, "上传的类型不正确"),
     REPEATED_REGISTER_MOBILE(409, "手机号码已注册"),
     REPEATED_REGISTER_USERNAME(409, "用户名已经被注册"),
-    REPEATED_REGISTER_IDENTITY(409, "身份证已经被注册"),
     PERMISSION_EXIST_ERROR(409, "已经存在"),
     PERMISSION_DELETES_ERROR(409, "已被使用,请先取消关联"),
     SECKILL_OVER(410, "商品已经秒杀完毕"),
