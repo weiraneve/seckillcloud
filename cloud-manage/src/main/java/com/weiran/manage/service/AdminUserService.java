@@ -27,7 +27,7 @@ public interface AdminUserService {
     /**
      * 修改用户密码
      */
-    String updatePass(AdminUserPassReq adminUserReq);
+    String updatePass(AdminUserPasswordUpdateReq adminUserPasswordUpdateReq);
 
 
     /**

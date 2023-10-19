@@ -23,7 +23,6 @@ public class MyUsernamePasswordAuthenticationFilter extends AbstractAuthenticati
         super(new AntPathRequestMatcher("/login", "POST"));
     }
 
-
     @Override
     public void afterPropertiesSet() {
         Assert.notNull(getAuthenticationManager(), "authenticationManager must be specified");
@@ -53,5 +52,4 @@ public class MyUsernamePasswordAuthenticationFilter extends AbstractAuthenticati
                 username, password);
         return this.getAuthenticationManager().authenticate(authRequest);
     }
-
 }

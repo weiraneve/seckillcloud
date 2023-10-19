@@ -7,10 +7,7 @@ import com.weiran.manage.dto.AdminUserDTO;
 import com.weiran.manage.dto.PermissionMenuDTO;
 import com.weiran.manage.dto.RoleDTO;
 import com.weiran.manage.mapper.*;
-import com.weiran.manage.request.AdminUserInfoReq;
-import com.weiran.manage.request.AdminUserPassReq;
-import com.weiran.manage.request.AdminUserPermissionReq;
-import com.weiran.manage.request.AdminUserReq;
+import com.weiran.manage.request.*;
 import com.weiran.manage.service.AdminUserService;
 import com.weiran.manage.utils.TreeHelper;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,10 +45,18 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public String updatePass(AdminUserPassReq adminUserReq) {
-        String encodedPassword = encodePass(adminUserReq.getPassword());
-        adminUserMapper.updatePass(adminUserReq.getUsername(), encodedPassword);
-        return jwtUserService.saveUserLoginInfo(createDTOWithPassword(adminUserReq, encodedPassword));
+    public String updatePass(AdminUserPasswordUpdateReq adminUserPasswordUpdateReq) {
+        String username = adminUserPasswordUpdateReq.getUsername();
+        AdminUserDTO adminUserDTO = adminUserMapper.findByUsername(username).orElse(null);
+        assert adminUserDTO != null;
+        String oldEncodedPassword = adminUserDTO.getPassword();
+        boolean isMatch = passwordEncoder.matches(adminUserPasswordUpdateReq.getOldPassword(), oldEncodedPassword);
+        if (!isMatch) {
+            return null;
+        }
+        String encodedNewPassword = encodePass(adminUserPasswordUpdateReq.getNewPassword());
+        adminUserMapper.updatePass(username, encodedNewPassword);
+        return jwtUserService.saveUserLoginInfo(createDTOWithPassword(adminUserPasswordUpdateReq, encodedNewPassword));
     }
 
     @Override
@@ -106,9 +108,9 @@ public class AdminUserServiceImpl implements AdminUserService {
         return passwordEncoder.encode(password);
     }
 
-    private AdminUserDTO createDTOWithPassword(AdminUserPassReq adminUserReq, String encodedPassword) {
+    private AdminUserDTO createDTOWithPassword(AdminUserPasswordUpdateReq adminUserPasswordUpdateReq, String encodedPassword) {
         AdminUserDTO user = new AdminUserDTO();
-        user.setUsername(adminUserReq.getUsername());
+        user.setUsername(adminUserPasswordUpdateReq.getUsername());
         user.setPassword(encodedPassword);
         return user;
     }
