@@ -40,7 +40,7 @@
         <swagger2-version>2.9.2</swagger2-version>
         <admin-version>2.3.0</admin-version>
         <admin-version>2.3.0</admin-version>
-        <seckillcloud.version>1.0.4</seckillcloud.version>
+        <seckillcloud.version>1.0.5</seckillcloud.version>
     </properties>
 
     <dependencies>

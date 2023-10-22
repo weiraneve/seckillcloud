@@ -37,7 +37,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("【微服务秒杀系统-用户统一登录与验证】接口文档")
-                .version("1.0.4")
+                .version("1.0.5")
                 .termsOfServiceUrl("http://localhost:8205/uaa/login")
                 .description("秒杀系统微服务相关文档")
                 .build();
