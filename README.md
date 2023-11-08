@@ -6,7 +6,7 @@
 # 项目的web前端与客户端
 - [本项目的秒杀部分Web前端](https://github.com/weiraneve/seckill-front)
 - [本项目的后台配置部分Web前端](https://github.com/weiraneve/admin-manager)
-- [本项目的flutter客户端](https://github.com/weiraneve/seckillDeal)
+- [本项目的flutter客户端](https://github.com/weiraneve/seckill-deal)
 
 # 简介
 项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、Flyway数据库版本管理工具和多数据源处理方案、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RabbitMQ等一系列技术栈，优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
