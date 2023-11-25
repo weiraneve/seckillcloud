@@ -6,23 +6,11 @@ import com.weiran.common.pojo.dto.GoodsDTO;
 import com.weiran.common.pojo.dto.OrderDTO;
 import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.common.pojo.vo.WelcomeVO;
-import com.weiran.mission.service.GoodsService;
-import com.weiran.mission.service.ImageService;
-import com.weiran.mission.service.OrderService;
-import com.weiran.mission.service.SeckillGoodsService;
-import com.weiran.mission.service.WelcomeService;
+import com.weiran.mission.service.*;
 import com.weiran.mission.utils.qiniu.ImageKit;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -52,13 +40,15 @@ public class CloudController {
     @ApiOperation("新增goods")
     @PostMapping("/goods")
     public Result<Object> goodsCreate(@RequestBody @Valid GoodsDTO goodsDTO) {
-        return goodsService.create(goodsDTO);
+        goodsService.create(goodsDTO);
+        return seckillGoodsService.create(goodsDTO);
     }
 
     @ApiOperation("修改goods")
     @PutMapping("/goods")
     public Result<Object> goodsUpdate(@RequestBody @Valid GoodsDTO goodsDTO) {
-        return goodsService.update(goodsDTO);
+        goodsService.update(goodsDTO);
+        return seckillGoodsService.update(goodsDTO);
     }
 
     /**
@@ -82,6 +72,7 @@ public class CloudController {
     @DeleteMapping("/goods/{id}")
     public Result<Object> goodsDelete(@PathVariable("id") Long id) {
         goodsService.delete(id);
+        seckillGoodsService.delete(id);
         return Result.success();
     }
 
@@ -89,6 +80,7 @@ public class CloudController {
     @DeleteMapping("/goods/deletes")
     public Result<Object> goodsDeletes(@RequestParam String ids) {
         goodsService.deletes(ids);
+        seckillGoodsService.deletes(ids);
         return Result.success();
     }
 

@@ -2,24 +2,22 @@ package com.weiran.mission.service.impl;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.common.pojo.dto.GoodsDTO;
-import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.common.redis.key.GoodsKey;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.validation.CustomValidation;
 import com.weiran.mission.manager.GoodsManager;
 import com.weiran.mission.mapper.GoodsMapper;
-import com.weiran.mission.mapper.SeckillGoodsMapper;
 import com.weiran.mission.pojo.entity.Goods;
 import com.weiran.mission.pojo.vo.GoodsDetailVo;
 import com.weiran.mission.service.GoodsService;
-import com.weiran.mission.utils.POJOConverter;
 import com.weiran.mission.utils.qiniu.ImageScalaKit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,13 +36,13 @@ import java.util.List;
 
 @Slf4j
 @Service
+@DS("goods")
 @RequiredArgsConstructor
 public class GoodsServiceImpl implements GoodsService {
 
     private final ImageScalaKit imageScalaKit;
     private final GoodsManager goodsManager;
     private final GoodsMapper goodsMapper;
-    private final SeckillGoodsMapper seckillGoodsMapper;
     private final RedisService redisService;
 
     /**
@@ -126,17 +124,13 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<Object> create(GoodsDTO goodsDTO) {
+    public void create(GoodsDTO goodsDTO) {
         try {
             goodsMapper.addGoods(goodsDTO);
-            SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
-            seckillGoodsMapper.addSeckillGoods(seckillGoodsDTO);
         } catch (Exception e) {
             log.error(e.toString());
-            return Result.fail(ResponseEnum.GOODS_CREATE_FAIL);
         }
         addGoodsToCache(goodsDTO);
-        return Result.success();
     }
 
     private void addGoodsToCache(GoodsDTO goodsDTO) {
@@ -148,18 +142,10 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
         GoodsDTO goodsDTO = goodsMapper.selectGoodsById(id);
-        if (ObjectUtil.isNotEmpty(goodsDTO.getGoodsImg())) {
-            try {
-                URL url = new URL(goodsDTO.getGoodsImg());
-                imageScalaKit.delete(url.getPath().replaceFirst("/", ""));
-            } catch (MalformedURLException e) {
-                log.error(e.toString());
-            }
-        }
+        deleteGoodsImage(goodsDTO);
         redisService.delete(GoodsKey.goodsKey, String.valueOf(id));
         redisService.delete(SeckillGoodsKey.seckillCount, String.valueOf(id));
         goodsMapper.deleteGoods(id);
-        seckillGoodsMapper.deleteSeckillGoods(id);
     }
 
     @Override
@@ -173,13 +159,11 @@ public class GoodsServiceImpl implements GoodsService {
     void deleteGoods(List<String> goodsIds) {
         List<GoodsDTO> goodsDTOList = goodsMapper.findGoodsByIds(goodsIds);
         for (GoodsDTO goodsDTO : goodsDTOList) {
+            deleteGoodsImage(goodsDTO);
             try {
-                URL url = new URL(goodsDTO.getGoodsImg());
-                imageScalaKit.delete(url.getPath().replaceFirst("/", ""));
                 redisService.delete(GoodsKey.goodsKey, String.valueOf(goodsDTO.getId()));
                 redisService.delete(SeckillGoodsKey.seckillCount, String.valueOf(goodsDTO.getId()));
                 goodsMapper.deleteGoods(goodsDTO.getId());
-                seckillGoodsMapper.deleteSeckillGoods(goodsDTO.getId());
             } catch (Exception e) {
                 log.error(e.toString());
             }
@@ -187,16 +171,9 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Result<Object> update(GoodsDTO goodsDTO) {
+    public void update(GoodsDTO goodsDTO) {
         goodsMapper.updateGoods(goodsDTO);
         addGoodsToCache(goodsDTO);
-        updateGoodsForSeckillDatabase(goodsDTO);
-        return Result.success();
-    }
-
-    private void updateGoodsForSeckillDatabase(GoodsDTO goodsDTO) {
-        SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
-        seckillGoodsMapper.updateSeckillGoods(seckillGoodsDTO);
     }
 
     @Override
@@ -212,6 +189,17 @@ public class GoodsServiceImpl implements GoodsService {
         GoodsDTO goodsDTO = redisService.get(GoodsKey.goodsKey, String.valueOf(id), GoodsDTO.class);
         goodsDTO.setIsUsing(BooleanUtil.negate(goodsDTO.getIsUsing()));
         redisService.set(GoodsKey.goodsKey, String.valueOf(id), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+    }
+
+    private void deleteGoodsImage(GoodsDTO goodsDTO) {
+        if (ObjectUtil.isNotEmpty(goodsDTO.getGoodsImg())) {
+            try {
+                URL url = new URL(goodsDTO.getGoodsImg());
+                imageScalaKit.delete(url.getPath().replaceFirst("/", ""));
+            } catch (MalformedURLException e) {
+                log.error(e.toString());
+            }
+        }
     }
 
 }

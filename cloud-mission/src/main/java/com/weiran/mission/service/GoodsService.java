@@ -32,12 +32,12 @@ public interface GoodsService {
     /**
      * 新增goods
      */
-    Result<Object> create(GoodsDTO goodsDTO);
+    void create(GoodsDTO goodsDTO);
 
     /**
      * 修改goods
      */
-    Result<Object> update(GoodsDTO goodsDTO);
+    void update(GoodsDTO goodsDTO);
 
     /**
      * 选择单个goods

@@ -1,23 +1,32 @@
 package com.weiran.mission.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.weiran.common.enums.ResponseEnum;
+import com.weiran.common.obj.Result;
+import com.weiran.common.pojo.dto.GoodsDTO;
+import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.manager.SeckillGoodsManager;
 import com.weiran.mission.mapper.SeckillGoodsMapper;
-import com.weiran.common.pojo.dto.SeckillGoodsDTO;
+import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.service.SeckillGoodsService;
+import com.weiran.mission.utils.POJOConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 
+@Slf4j
 @Service
+@DS("seckill")
 @RequiredArgsConstructor
 public class SeckillGoodsServiceImpl implements SeckillGoodsService {
 
@@ -49,5 +58,43 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
             seckillGoodsDTOList = seckillGoodsMapper.findByGoodsIdLike(goodsId);
         }
         return new PageInfo<>(seckillGoodsDTOList);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Object> create(GoodsDTO goodsDTO) {
+        try {
+            SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
+            seckillGoodsMapper.addSeckillGoods(seckillGoodsDTO);
+        } catch (Exception e) {
+            log.error(e.toString());
+            return Result.fail(ResponseEnum.GOODS_CREATE_FAIL);
+        }
+        return Result.success();
+    }
+
+    @Override
+    public Result<Object> update(GoodsDTO goodsDTO) {
+        SeckillGoodsDTO seckillGoodsDTO = POJOConverter.converter(goodsDTO);
+        seckillGoodsMapper.updateSeckillGoods(seckillGoodsDTO);
+        return Result.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Long id) {
+        seckillGoodsMapper.deleteSeckillGoods(id);
+    }
+
+    @Override
+    public void deletes(String ids) {
+        String[] split = ids.split(",");
+        try {
+            for (String goodId : split) {
+                seckillGoodsMapper.deleteSeckillGoods(Long.valueOf(goodId));
+            }
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
     }
 }
