@@ -60,6 +60,37 @@ SpringAdmin监控一览。
 - 启动后台前端服务器和客户端前端服务器。客户端有账号和密码(密码都为123)，因为flutter还没有加上加盐加密传输能力，所以有明文账号和密码就在sql里(账号：12345678910，密码：123) ；后台系统有超级管理员账号与密码和普通管理员账号与密码(密码都为123) 。客户端端口为3000，后台系统端口为3001。因为项目中使用了qiniu云对象储存配置上传空间，如若需要，需在配置文件中配置自己的域名以及信息（已经加密脱敏）。
 - cloud-manage调用cloud-mission模块的商品上传配置是使用qiniu相关的依赖，也需要qiniu云对象储存账号的一些信息，项目是使用了配置文件加密脱敏后qiniu云对象储存密钥信息。其中配置商品图片(只能上传jpg后缀图片文件)的功能有qiniu云对象储存以及对应依赖提供。
 
+## 中间件启动脚本
+以下是中间件启动`shell`脚本，保存为名字为`mid`，然后放到macos的环境变量`PATH`之下，也可以自己去设置环境变量PATH `export PATH="${HOME}/env:$PATH"` 在`~/.zshrc`中。
+然后使用命令行`mid start`、`mid stop`、`mid remove`来实现启动、停止、清理日志文件。目前脚本只适配macos && linux环境，
+```shell
+if [[ $1 == 'start' ]]; then 
+    sh ${HOME}/env/nacos/bin/startup.sh -m standalone
+    redis-server /opt/homebrew/etc/redis.conf &
+    rabbitmq-server -detached
+    exit 0
+fi 
+
+if [[ $1 == 'stop' ]]; then
+    sh ${HOME}/env/nacos/bin/shutdown.sh -m standalone
+    redis-cli shutdown
+    rabbitmqctl stop
+    exit 0
+fi
+
+if [[ $1 == 'remove' ]]; then
+    rm -r ${HOME}/nacos
+    rm -r ${HOME}/logs
+    rm -r ${HOME}/nohup.out
+    rm -r ${HOME}/derby.log
+    exit 0
+fi
+
+echo echo "usage: mid <start | stop ｜ remove> [args]"
+exit 1
+```
+
+## 参考与测试数据
 [一些自己收集的知识点和参考](./docs/THINK.md)
 
 [用Jmeter测试的数据](./docs/jmeter-test.md)
