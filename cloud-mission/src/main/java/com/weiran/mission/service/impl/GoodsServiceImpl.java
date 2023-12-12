@@ -45,6 +45,8 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsMapper goodsMapper;
     private final RedisService redisService;
 
+    private static final long MAX_GOODS_ID = 50L;
+
     /**
      * 系统初始化，把商品信息加载到Redis缓存中。后续客户访问都从缓存中读取。
      */
@@ -66,7 +68,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     private List<GoodsDetailVo> getGoodsDetailVos() {
         List<GoodsDetailVo> goodsDetailVoList = new ArrayList<>();
-        for (long goodsId = 1L; goodsId < 50L; goodsId++) {
+        for (long goodsId = 1L; goodsId < MAX_GOODS_ID; goodsId++) {
             if (!redisService.exists(GoodsKey.goodsKey, String.valueOf(goodsId))) {
                 continue;
             }
