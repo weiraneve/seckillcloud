@@ -55,7 +55,8 @@ public class SeckillServiceImpl implements SeckillService {
         if (seckillGoodsList != null) {
             for (SeckillGoods seckillGoods : seckillGoodsList) {
                 // 用商品Id作为key，加载秒杀商品的剩余数量
-                redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(seckillGoods.getGoodsId()), seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+                redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(seckillGoods.getGoodsId()),
+                        seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
                 localOverMap.put(seckillGoods.getGoodsId(), seckillGoods.getStockCount() > 0);
             }
         }
@@ -152,7 +153,8 @@ public class SeckillServiceImpl implements SeckillService {
         }
         // 随机返回一个唯一的id，加上盐，然后sm3加密
         String str = SM3Util.sm3(UUID.randomUUID() + saltString);
-        redisService.set(SeckillKey.getSeckillPath, userId + "_" + goodsId, str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
+        redisService.set(SeckillKey.getSeckillPath, userId + "_" + goodsId,
+                str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
         return str;
     }
 

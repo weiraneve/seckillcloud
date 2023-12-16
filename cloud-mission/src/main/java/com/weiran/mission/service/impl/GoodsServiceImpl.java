@@ -54,7 +54,8 @@ public class GoodsServiceImpl implements GoodsService {
     public void initGoodsInfo() {
         List<Goods> goodsList = goodsManager.list();
         for (Goods goods : goodsList) {
-            redisService.set(GoodsKey.goodsKey, goods.getId().toString(), goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+            redisService.set(GoodsKey.goodsKey, goods.getId().toString(),
+                    goods, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
         }
     }
 
@@ -136,8 +137,10 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     private void addGoodsToCache(GoodsDTO goodsDTO) {
-        redisService.set(GoodsKey.goodsKey, String.valueOf(goodsDTO.getId()), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-        redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(goodsDTO.getId()), goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(GoodsKey.goodsKey, String.valueOf(goodsDTO.getId()),
+                goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(goodsDTO.getId()),
+                goodsDTO.getGoodsStock(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
     }
 
     @Override
@@ -190,7 +193,8 @@ public class GoodsServiceImpl implements GoodsService {
         goodsMapper.updateGoodsUsingById(id);
         GoodsDTO goodsDTO = redisService.get(GoodsKey.goodsKey, String.valueOf(id), GoodsDTO.class);
         goodsDTO.setIsUsing(BooleanUtil.negate(goodsDTO.getIsUsing()));
-        redisService.set(GoodsKey.goodsKey, String.valueOf(id), goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
+        redisService.set(GoodsKey.goodsKey, String.valueOf(id),
+                goodsDTO, RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
     }
 
     private void deleteGoodsImage(GoodsDTO goodsDTO) {

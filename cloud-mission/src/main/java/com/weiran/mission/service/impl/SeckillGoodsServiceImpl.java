@@ -36,7 +36,10 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
 
     @Override
     public int reduceStock(long goodsId) {
-        SeckillGoods seckillGoods = seckillGoodsManager.getOne(Wrappers.<SeckillGoods>lambdaQuery().eq(SeckillGoods::getGoodsId, goodsId));
+        SeckillGoods seckillGoods = seckillGoodsManager.getOne(
+                Wrappers.<SeckillGoods>lambdaQuery().eq(SeckillGoods::getGoodsId, goodsId)
+        );
+
         // 多线程并发写的时候，有并发问题，这里只读redis的库存，然后写入库中，避免并发问题。
         reduceStockCount(goodsId, seckillGoods);
         boolean flag = seckillGoodsManager.update(seckillGoods, Wrappers.<SeckillGoods>lambdaUpdate().eq(SeckillGoods::getGoodsId, goodsId));
