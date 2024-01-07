@@ -19,7 +19,7 @@ public interface RolePermissionMapper {
     /**
      * 批量新增
      */
-    Integer inserts(@Param("roleReq") RoleReq roleReq);
+    void inserts(@Param("roleReq") RoleReq roleReq);
 
 
     /**

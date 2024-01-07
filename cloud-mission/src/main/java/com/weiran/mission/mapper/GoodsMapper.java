@@ -51,7 +51,7 @@ public interface GoodsMapper extends BaseMapper<Goods> {
     /**
      * 更新goods
      */
-    Integer updateGoods(@Param("goodsDTO") GoodsDTO goodsDTO);
+    void updateGoods(@Param("goodsDTO") GoodsDTO goodsDTO);
 
     /**
      * 通过id更新goods的Using状态
