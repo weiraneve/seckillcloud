@@ -33,12 +33,20 @@ public class InternalAccessAspect {
 
     @Before(value = "internalAccessOnMethod() || internalAccessOnClass()")
     public void before() {
-        HttpServletRequest httpServletRequest = getRequestAttributes().getRequest();
-        String from = httpServletRequest.getHeader("from");
-        if (StringUtils.isNotBlank(from) && FROM_PUBLIC.equals(from)) {
+        HttpServletRequest request = getRequestAttributes().getRequest();
+        validateInternalSource(request);
+    }
+
+    private void validateInternalSource(HttpServletRequest request) {
+        String from = request.getHeader("from");
+        if (isPublicAccess(from)) {
             log.error(INTERNAL_ACCESS_ERROR_MESSAGE);
             throw new BaseCustomizeException(ResponseEnum.INTERNAL_ACCESS_ERROR);
         }
+    }
+
+    private boolean isPublicAccess(String from) {
+        return StringUtils.isNotBlank(from) && FROM_PUBLIC.equals(from);
     }
 
     @NonNull
