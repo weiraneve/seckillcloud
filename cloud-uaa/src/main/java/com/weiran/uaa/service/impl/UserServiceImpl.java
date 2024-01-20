@@ -9,7 +9,7 @@ import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.CommonUtil;
+import com.weiran.common.utils.AuthUtil;
 import com.weiran.uaa.entity.User;
 import com.weiran.uaa.manager.UserManager;
 import com.weiran.uaa.param.LoginParam;
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<ResponseEnum> doLogout(HttpServletRequest request) {
-        String loginToken = CommonUtil.getLoginTokenByRequest(request);
+        String loginToken = AuthUtil.getLoginTokenByRequest(request);
         if (loginToken == null) {
             return Result.fail(ResponseEnum.TOKEN_PARSING_ERROR);
         }
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<ResponseEnum> updatePass(UpdatePassParam updatePassParam, HttpServletRequest request) {
-        long userId = redisService.get(UserKey.getById, CommonUtil.getLoginTokenByRequest(request), Long.class);
+        long userId = redisService.get(UserKey.getById, AuthUtil.getLoginTokenByRequest(request), Long.class);
         User user = userManager.getById(userId);
         if (!user.getPassword().equals(updatePassParam.getOldPassword())) {
             return Result.fail(ResponseEnum.OLD_PASSWORD_ERROR);

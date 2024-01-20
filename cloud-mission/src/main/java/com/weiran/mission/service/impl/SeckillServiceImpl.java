@@ -9,7 +9,7 @@ import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.CommonUtil;
+import com.weiran.common.utils.AuthUtil;
 import com.weiran.common.utils.SM3Util;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
@@ -101,7 +101,7 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     private long getUserId(HttpServletRequest request) {
-        return redisService.get(UserKey.getById, CommonUtil.getLoginTokenByRequest(request), Long.class);
+        return redisService.get(UserKey.getById, AuthUtil.getLoginTokenByRequest(request), Long.class);
     }
 
     // 客户端-前端服务器轮询查询是否下单成功
