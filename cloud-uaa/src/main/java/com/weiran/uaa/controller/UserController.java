@@ -21,32 +21,33 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequiredArgsConstructor
 @Api("登录控制器")
+@RequestMapping("/user")
 public class UserController {
 
     final UserService userService;
 
     @AccessLimit() // 默认限制1s内三次
-    @PostMapping("user/doLogin")
+    @PostMapping("doLogin")
     @ApiOperation("登录，信息写进redis")
     @ApiImplicitParam(value = "登录传递字段")
     public Result<String> doLogin(@RequestBody LoginParam loginParam) {
         return userService.doLogin(loginParam);
     }
 
-    @PostMapping("user/doRegister")
+    @PostMapping("doRegister")
     @ApiOperation("注册")
     @ApiImplicitParam(value = "注册传递字段")
     public Result<ResponseEnum> doRegister(@RequestBody RegisterParam registerParam) {
         return userService.doRegister(registerParam);
     }
 
-    @PostMapping("user/updatePass")
+    @PostMapping("updatePass")
     @ApiOperation("更换密码")
     public Result<ResponseEnum> updatePass(@RequestBody UpdatePassParam updatePassParam, HttpServletRequest request) {
         return userService.updatePass(updatePassParam, request);
     }
 
-    @RequestMapping("user/logout")
+    @RequestMapping("logout")
     @ApiOperation("注销")
     public Result<ResponseEnum> doLogout(HttpServletRequest request) {
         return userService.doLogout(request);
