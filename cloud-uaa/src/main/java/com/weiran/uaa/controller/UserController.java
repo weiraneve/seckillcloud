@@ -47,7 +47,7 @@ public class UserController {
         return userService.updatePass(updatePassParam, request);
     }
 
-    @RequestMapping("logout")
+    @GetMapping("logout")
     @ApiOperation("注销")
     public Result<ResponseEnum> doLogout(HttpServletRequest request) {
         return userService.doLogout(request);
