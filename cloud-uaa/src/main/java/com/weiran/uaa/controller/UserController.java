@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * 登录控制器
- */
 @RestController
 @RequiredArgsConstructor
 @Api("登录控制器")

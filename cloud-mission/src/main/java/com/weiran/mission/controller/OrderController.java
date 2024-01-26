@@ -1,8 +1,9 @@
 package com.weiran.mission.controller;
 
 import com.weiran.common.obj.Result;
-import com.weiran.mission.service.OrderService;
 import com.weiran.mission.pojo.vo.OrderDetailVo;
+import com.weiran.mission.service.OrderService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-/**
- * 订单控制器
- */
 @RestController
+@Api("订单控制器")
 @RequiredArgsConstructor
 @RequestMapping("/order")
 public class OrderController {

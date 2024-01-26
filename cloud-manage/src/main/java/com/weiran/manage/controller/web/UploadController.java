@@ -2,6 +2,7 @@ package com.weiran.manage.controller.web;
 
 import com.weiran.common.obj.Result;
 import com.weiran.manage.cloud.MissionClient;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
+@Api("后台系统")
 @RestController
 @RequestMapping("/upload")
 @RequiredArgsConstructor

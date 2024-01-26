@@ -3,19 +3,18 @@ package com.weiran.mission.controller;
 import com.weiran.common.obj.Result;
 import com.weiran.mission.annotations.SeckillLimit;
 import com.weiran.mission.service.SeckillService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * 秒杀控制器
- */
 @RestController
+@Api("秒杀控制器")
 @RequiredArgsConstructor
 @RequestMapping("seckill")
-public class SeckillController  {
+public class SeckillController {
 
     private final SeckillService seckillService;
 
@@ -25,8 +24,8 @@ public class SeckillController  {
     @ApiOperation("秒杀接口")
     @GetMapping
     public Result<Integer> doSeckill(@RequestParam("goodsId") long goodsId,
-                                @RequestParam("path") String path,
-                                HttpServletRequest request) {
+                                     @RequestParam("path") String path,
+                                     HttpServletRequest request) {
 
         return seckillService.doSeckill(goodsId, path, request);
     }

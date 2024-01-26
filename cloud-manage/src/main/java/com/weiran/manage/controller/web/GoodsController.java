@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.weiran.common.obj.Result;
 import com.weiran.common.pojo.dto.GoodsDTO;
 import com.weiran.manage.cloud.MissionClient;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-/**
- * 商品列表
- */
+@Api("商品列表")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/goods")

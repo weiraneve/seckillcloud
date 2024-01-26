@@ -8,6 +8,7 @@ import com.weiran.common.pojo.dto.SeckillGoodsDTO;
 import com.weiran.common.pojo.vo.WelcomeVO;
 import com.weiran.mission.service.*;
 import com.weiran.mission.utils.qiniu.ImageKit;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
-/**
- * Feign接口
- */
 @RestController
 @RequiredArgsConstructor
+@Api("Feign接口")
 @RequestMapping("/cloud")
 public class CloudController {
 
