@@ -1,15 +1,17 @@
-# 前言
+# seckillcloud
+
+## 前言
 项目是基于Java微服务方案的商品秒杀系统。是前后端分离的项目。前端用React完成web前端；后端为Java的Spring cloud微服务架构，客户端用flutter跨平台完成mobile端，小程序端用uniapp完成。
 
 本项目版本迭代至1.0.5，欢迎各位多多交流。
 
-# 项目的web前端与客户端
+## 项目的web前端与客户端
 - [本项目的秒杀部分Web前端](https://github.com/weiraneve/seckill-front)
 - [本项目的后台配置部分Web前端](https://github.com/weiraneve/admin-manager)
 - [本项目的flutter客户端](https://github.com/weiraneve/seckill-deal)
 - [本项目的uniapp小程序端](https://github.com/weiraneve/seckill-mall-miniprogram)
 
-# 简介
+## 简介
 项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、Flyway数据库版本管理工具和多数据源处理方案、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RabbitMQ等一系列技术栈，优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
 
 ## 项目模块
@@ -50,7 +52,7 @@ SpringAdmin监控一览。
 
 <img src="./docs/images/monitor_interface.png" alt="SpringAdmin监控一览" width="100%" />
 
-# 如何使用
+## 如何使用
 - 项目拥有Flyway数据库版本管理，首先在项目启动之前需要创建对应的Mysql数据库，cloud-mission-goods、cloud-mission-order、cloud-mission-seckillGoods、cloud-uaa、cloud-manage五个库。然后分别启动以下中间件，如果没启动好中间件，项目则会报错。
 - 启动Nacos，如果没有则先安装，安装后按网上文章博客启动。
 - 启动本地的Redis，密码为空即可。如果本地没有安装Redis，则先安装。
@@ -95,7 +97,7 @@ exit 1
 
 [用Jmeter测试的数据](./docs/jmeter-test.md)
 
-# 秒杀的代码逻辑
+## 秒杀的代码逻辑
 - 关于秒杀的业务逻辑，用户访问，在uaa模块登入时，进行资格筛选，认证后。进入秒杀商品列表页面，点入秒杀商品详情后，点击立即秒杀，如果在规定时间内（按钮没有置灰），并且没有重复秒杀，则开启秒杀。
 - 这里涉及到秒杀接口的URL加盐动态化，后端相关的秒杀代码，没有选择Redis的LUA脚本和Redisson分布式锁，因为项目中没有使用过多的Redis事务逻辑和Redis分布式逻辑。秒杀主要运用的是Redis库存预热加载和Redis预减库存解决超卖，RabbitMQ消息队列使用串行化，保证项目的高可用和高并发。
 - 秒杀的策略配置，是由cloud-manage模块提供，持久层主要使用MyBatis完成。
@@ -110,7 +112,7 @@ exit 1
 - cloud-mission使用Feign被cloud-manage模块调用接口，并且是MyBatisPlus与MyBatis共存使用。
 - 加入了CI/CD部分，jenkins、docker、docker-compose尽数加入，但目前没有完全调通。
 
-# 未来展望
+## 未来展望
 - Nginx对于Redis的分布式的一些配置未来也可以用上，Nginx均衡负载，集群分布式等，增加高可用的程度。
 - 数据库的容灾，可以在云数据库厂商直接配置。主从结构，定时备份。也可以用容器构建。集群部署，主从分离，定时备份。
 - 本身项目中秒杀模块也有注解加拦截器负责限流。关于限流、熔断等功能，还可以由网关来承载，这可能是未来改进的一个方向，项目中是以自定义注解加拦截器来限流。
