@@ -97,6 +97,11 @@ exit 1
 
 [用Jmeter测试的数据](./docs/jmeter-test.md)
 
+## swagger api
+- http://localhost:8205/uaa/swagger-ui.html
+- http://localhost:8205/mission/swagger-ui.html
+- http://localhost:8205/manage/swagger-ui.html
+
 ## 秒杀的代码逻辑
 - 关于秒杀的业务逻辑，用户访问，在uaa模块登入时，进行资格筛选，认证后。进入秒杀商品列表页面，点入秒杀商品详情后，点击立即秒杀，如果在规定时间内（按钮没有置灰），并且没有重复秒杀，则开启秒杀。
 - 这里涉及到秒杀接口的URL加盐动态化，后端相关的秒杀代码，没有选择Redis的LUA脚本和Redisson分布式锁，因为项目中没有使用过多的Redis事务逻辑和Redis分布式逻辑。秒杀主要运用的是Redis库存预热加载和Redis预减库存解决超卖，RabbitMQ消息队列使用串行化，保证项目的高可用和高并发。
