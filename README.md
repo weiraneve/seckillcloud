@@ -97,10 +97,11 @@ exit 1
 
 [用Jmeter测试的数据](./docs/jmeter-test.md)
 
-## swagger api
-- http://localhost:8205/uaa/swagger-ui.html
-- http://localhost:8205/mission/swagger-ui.html
-- http://localhost:8205/manage/swagger-ui.html
+## swagger
+项目对应模块启动之后，可以通过path查看swagger文档
+- [uaa api](http://localhost:8205/uaa/swagger-ui.html)
+- [mission api](http://localhost:8205/mission/swagger-ui.html)
+- [manage api](http://localhost:8205/manage/swagger-ui.html)
 
 ## 秒杀的代码逻辑
 - 关于秒杀的业务逻辑，用户访问，在uaa模块登入时，进行资格筛选，认证后。进入秒杀商品列表页面，点入秒杀商品详情后，点击立即秒杀，如果在规定时间内（按钮没有置灰），并且没有重复秒杀，则开启秒杀。
