@@ -71,7 +71,7 @@ public class GoodsServiceImpl implements GoodsService {
         List<GoodsDetailVo> goodsDetailVoList = new ArrayList<>();
         for (long goodsId = 1L; goodsId < MAX_GOODS_ID; goodsId++) {
             if (!redisService.exists(GoodsKey.goodsKey, String.valueOf(goodsId))) {
-                continue;
+                break;
             }
             Result<GoodsDetailVo> result = getGoodsDetail(goodsId);
             GoodsDetailVo goodsDetailVo = result.getData();
