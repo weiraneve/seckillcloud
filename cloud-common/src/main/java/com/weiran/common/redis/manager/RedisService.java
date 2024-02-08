@@ -4,9 +4,13 @@ import com.weiran.common.redis.key.KeyPrefix;
 import com.weiran.common.utils.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -107,4 +111,20 @@ public class RedisService {
         }
     }
 
+    /**
+     * 获得某个key的前缀存在的内容列表
+     */
+    public List<String> scanKeysForPattern(String pattern) {
+        List<String> keys = new ArrayList<>();
+        redisTemplate.execute((connection) -> {
+            ScanOptions options = ScanOptions.scanOptions().match(pattern).count(1000).build();
+            Cursor<byte[]> cursor = connection.scan(options);
+            cursor.forEachRemaining(item -> {
+                String key = new String(item);
+                keys.add(key);
+            });
+            return null;
+        }, true);
+        return keys;
+    }
 }
