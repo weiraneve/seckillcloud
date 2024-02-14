@@ -66,3 +66,6 @@ management:
 
 logging:
   config: classpath:logback.xml
+
+app:
+  version: 1.0.5
