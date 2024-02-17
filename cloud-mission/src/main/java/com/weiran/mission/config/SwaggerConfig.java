@@ -45,8 +45,6 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title(SWAGGER_TITLE)
                 .version(VERSION)
-                .termsOfServiceUrl("http://localhost:8205/uaa/login")
-                .description("秒杀系统微服务相关文档")
                 .build();
     }
 }
