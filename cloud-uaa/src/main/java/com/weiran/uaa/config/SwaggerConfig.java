@@ -18,6 +18,9 @@ public class SwaggerConfig {
     @Value("${app.version}")
     private String VERSION;
 
+    @Value("${app.swagger.title}")
+    private String SWAGGER_TITLE;
+
     /**
      * 创建API应用
      * apiInfo() 增加API相关信息
@@ -40,7 +43,7 @@ public class SwaggerConfig {
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("【微服务秒杀系统-用户统一登录与验证】接口文档")
+                .title(SWAGGER_TITLE)
                 .version(VERSION)
                 .termsOfServiceUrl("http://localhost:8205/uaa/login")
                 .description("秒杀系统微服务相关文档")

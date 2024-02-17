@@ -110,3 +110,5 @@ logging:
 
 app:
   version: 1.0.5
+  swagger:
+    title: 微服务秒杀系统-秒杀接口文档
