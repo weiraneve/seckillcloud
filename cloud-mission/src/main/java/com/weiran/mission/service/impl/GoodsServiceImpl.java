@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.weiran.common.redis.key.BasePrefix.KEY_SEPARATOR;
-
 @Slf4j
 @Service
 @DS("goods")
