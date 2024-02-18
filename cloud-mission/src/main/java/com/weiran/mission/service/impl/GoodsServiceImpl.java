@@ -92,23 +92,36 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     private Result<GoodsDetailVo> getGoodsDetailVoResult(long goodsId, Goods goods) {
-        int stockCount = redisService.get(SeckillGoodsKey.seckillCount, String.valueOf(goodsId), Integer.class);
+        int stockCount = getStockCount(goodsId);
+        int remainSeconds = calculateRemainSeconds(goods);
+        GoodsDetailVo goodsDetailVo = createGoodsDetailVo(goods, stockCount, remainSeconds);
+        return Result.success(goodsDetailVo);
+    }
+
+    private int getStockCount(long goodsId) {
+        return redisService.get(SeckillGoodsKey.seckillCount, String.valueOf(goodsId), Integer.class);
+    }
+
+    private int calculateRemainSeconds(Goods goods) {
         long startTime = Timestamp.valueOf(goods.getStartTime()).getTime();
         long endTime = Timestamp.valueOf(goods.getEndTime()).getTime();
         long now = System.currentTimeMillis();
-        int remainSeconds;
+
         if (now < startTime) {
-            remainSeconds = (int) ((startTime - now) / 1000);
+            return (int) ((startTime - now) / 1000);
         } else if (now > endTime) {
-            remainSeconds = -1;
+            return -1;
         } else {
-            remainSeconds = 0;
+            return 0;
         }
-        return Result.success(GoodsDetailVo.builder()
+    }
+
+    private GoodsDetailVo createGoodsDetailVo(Goods goods, int stockCount, int remainSeconds) {
+        return GoodsDetailVo.builder()
                 .goods(goods)
                 .stockCount(stockCount)
                 .remainSeconds(remainSeconds)
-                .build());
+                .build();
     }
 
     @Override
