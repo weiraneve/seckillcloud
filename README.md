@@ -129,7 +129,7 @@ exit 1
 - 增量or全量同步(canal)
 
 ## 特别感谢
--  <a href="https://www.jetbrains.com/?from=spring-boot-demo"><img src="https://account.jetbrains.com/static/images/jetbrains-logo-inv.svg" width="20%" alt="jetbrains"> 感谢 JetBrains 提供的免费开源 License</a>
+<a href="https://www.jetbrains.com/?from=spring-boot-demo"><img src="https://account.jetbrains.com/static/images/jetbrains-logo-inv.svg" width="20%" alt="jetbrains"> 感谢 JetBrains 提供的免费开源 License</a>
 
 ## License
-- [MIT](https://github.com/weiraneve/seckillcloud/blob/master/LICENSE)
+Licensed under either of [MIT License](./LICENSE) at your option.
