@@ -11,7 +11,7 @@ import java.io.Serializable;
 @ToString
 public class FallbackMsg<T> implements Serializable {
     private static final long serialVersionUID = -1177183613782210351L;
-    private Integer code;
+    private int code;
     private String msg;
     private T data;
 }
