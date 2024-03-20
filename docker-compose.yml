@@ -18,6 +18,7 @@ services:
       - nacos
       - redis
       - rabbitmq
+      - uaa
     restart: always
     entrypoint: java -jar /app/cloud-mission.jar
 
@@ -36,6 +37,7 @@ services:
       - mysql
       - nacos
       - redis
+      - gateway
     restart: always
     entrypoint: java -jar /app/cloud-uaa.jar
 
@@ -54,6 +56,7 @@ services:
       - mysql
       - nacos
       - redis
+      - mission
     restart: always
     entrypoint: java -jar /app/cloud-manage.jar
 
@@ -64,6 +67,10 @@ services:
     image: cloud-gateway:1.0.5
     ports:
       - "8205:8205"
+    environment:
+      - DOCKER_NACOS=nacos
+    depends_on:
+      - nacos
     restart: always
     entrypoint: java -jar /app/cloud-gateway.jar
 
@@ -74,6 +81,13 @@ services:
     image: cloud-monitor:1.0.5
     ports:
       - "8890:8890"
+    environment:
+      - DOCKER_NACOS=nacos
+    depends_on:
+      - gateway
+      - uaa
+      - mission
+      - manage
     restart: always
     entrypoint: java -jar /app/cloud-monitor.jar
 
@@ -83,7 +97,7 @@ services:
       - ./sql/init:/docker-entrypoint-initdb.d/
       - mysql-data:/var/lib/mysql
     ports:
-      - "3305:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       TZ: Asia/Shanghai
@@ -99,7 +113,7 @@ services:
     restart: always
 
   nacos:
-    image: zhusaidong/nacos-server-m1:2.0.3
+    image: nacos/nacos-server:latest
     ports:
       - "8848:8848"
     restart: always
@@ -107,12 +121,14 @@ services:
       - PREFER_HOST_MODE=hostname
       - MODE=standalone
       - SPRING_DATASOURCE_PLATFORM=
-      - MYSQL_SERVICE_HOST=127.0.0.1
+      - MYSQL_SERVICE_HOST=mysql
       - MYSQL_SERVICE_DB_NAME=nacos_config
       - MYSQL_SERVICE_PORT=3306
       - MYSQL_SERVICE_USER=root
-      - MYSQL_SERVICE_PASSWORD=root
+      - MYSQL_SERVICE_PASSWORD=123456
       - MYSQL_SERVICE_DB_PARAM=allowPublicKeyRetrieval=true
+    depends_on:
+      - mysql
 
   rabbitmq:
     image: rabbitmq:3.11.7
