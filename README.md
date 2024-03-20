@@ -61,6 +61,8 @@ SpringAdmin监控一览。
 - cloud-monitor模块的SpringBoot Admin监控技术栈，使用只需要开启网关后访问http://localhost:8205/monitor 或者直接访问monitor端口。
 - 启动后台前端服务器和客户端前端服务器。客户端有账号和密码(密码都为123)，因为flutter还没有加上加盐加密传输能力，所以有明文账号和密码就在sql里(账号：12345678910，密码：123) ；后台系统有超级管理员账号与密码和普通管理员账号与密码(密码都为123) 。客户端端口为3000，后台系统端口为3001。因为项目中使用了qiniu云对象储存配置上传空间，如若需要，需在配置文件中配置自己的域名以及信息（已经加密脱敏）。
 - cloud-manage调用cloud-mission模块的商品上传配置是使用qiniu相关的依赖，也需要qiniu云对象储存账号的一些信息，项目是使用了配置文件加密脱敏后qiniu云对象储存密钥信息。其中配置商品图片(只能上传jpg后缀图片文件)的功能有qiniu云对象储存以及对应依赖提供。
+- docker-compose使用的话，先要把所有module的jar包打出来，`mvn install` 然后 在项目文件夹根目录运行`docker-compose up -d
+  `，即可。注意目前仅限于X86机器。
 
 ## 中间件启动脚本
 以下是中间件启动`shell`脚本，保存为名字为`mid`，然后放到macos的环境变量`PATH`之下，也可以自己去设置环境变量PATH `export PATH="${HOME}/env:$PATH"` 在`~/.zshrc`中。
@@ -118,14 +120,13 @@ exit 1
 - 对于高并发下的超卖问题，项目测试过synchronized锁、Redisson分布式锁，在能保证并发安全的情况下，性能都有不少地损失，所以采取了LUA脚本解决，使Redis的操作具有原子性，做到了避免超卖。
 - cloud-mission模块，对于订单防重和写入的逻辑，根据用户id和商品id做一定地计算后得出订单id，结合幂等机制写入库中。
 - cloud-mission使用Feign被cloud-manage模块调用接口，并且是MyBatisPlus与MyBatis共存使用。
-- 加入了CI/CD部分，jenkins、docker、docker-compose尽数加入，但目前没有完全调通。
+- 加入了CI/CD部分，jenkins、docker、docker-compose等功能。
 
 ## 未来展望
 - Nginx对于Redis的分布式的一些配置未来也可以用上，Nginx均衡负载，集群分布式等，增加高可用的程度。
 - 数据库的容灾，可以在云数据库厂商直接配置。主从结构，定时备份。也可以用容器构建。集群部署，主从分离，定时备份。
 - 本身项目中秒杀模块也有注解加拦截器负责限流。关于限流、熔断等功能，还可以由网关来承载，这可能是未来改进的一个方向，项目中是以自定义注解加拦截器来限流。
 - 消息队列、JVM和一些环境上的调优。
-- 调通docker-compose部署。
 - 增量or全量同步(canal)
 
 ## 特别感谢
