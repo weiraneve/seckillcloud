@@ -113,7 +113,7 @@ services:
     restart: always
 
   nacos:
-    image: nacos/nacos-server:latest
+    image: nacos/nacos-server:v2.3.1-slim
     ports:
       - "8848:8848"
     restart: always
