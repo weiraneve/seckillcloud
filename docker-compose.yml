@@ -89,7 +89,7 @@ services:
       - mission
       - manage
     restart: always
-    entrypoint: java -jar /app/cloud-monitor.jar
+    command: ["sh", "-c", "sleep 30 && java -jar /app/cloud-monitor.jar"]
 
   mysql:
     image: mysql:8.0
