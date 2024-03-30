@@ -109,6 +109,6 @@ logging:
   config: classpath:logback.xml
 
 app:
-  version: 1.0.6
+  version: 1.0.7
   swagger:
     title: 微服务秒杀系统-秒杀接口文档
