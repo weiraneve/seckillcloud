@@ -46,12 +46,22 @@ public interface UserRolePermissionMapper {
      */
     void deletesByUserIdAndRoleId(@Param("userId") Integer userId, @Param("roleId") Integer roleId);
 
+    /**
+     * 删除用户角色权限关系
+     */
+    void deletesByUserIdAndRoleIdAndPermissionIds(@Param("userId") Integer userId,
+                                                  @Param("roleId") Integer roleId,
+                                                  @Param("permissionIds") List<Integer> permissionIds);
 
     /**
      * 查询用户角色权限关系
      */
     List<Integer> findByUserId(Integer userId);
 
+    /**
+     * 查询用户角色关系
+     */
+    Integer findByRoleId(Integer userId);
 
     /**
      * 批量删除关系

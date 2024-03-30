@@ -73,8 +73,25 @@
         role_id = #{roleId}
     </delete>
 
+    <delete id="deletesByUserIdAndRoleIdAndPermissionIds">
+        delete
+        from user_role_permission
+        where permission_id in
+        <foreach collection="permissionIds" item="permissionId" open="(" separator="," close=")">
+            #{permissionId}
+        </foreach>
+        and
+        role_id = #{roleId}
+        and
+        user_id = #{userId}
+    </delete>
+
     <select id="findByUserId" resultType="java.lang.Integer">
         select permission_id from user_role_permission where user_id = #{userId}
+    </select>
+
+    <select id="findByRoleId" resultType="java.lang.Integer">
+        select user_id from user_role_permission where role_id = #{roleId} LIMIT 1
     </select>
 
     <delete id="deletesByPermissionIds">

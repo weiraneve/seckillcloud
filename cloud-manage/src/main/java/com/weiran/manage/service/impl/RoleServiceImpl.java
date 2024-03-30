@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -112,9 +113,15 @@ public class RoleServiceImpl implements RoleService {
         List<Integer> newPermissions = requestedPermissionIds.stream()
                 .filter(permissionId -> !existingPermissionIds.contains(permissionId))
                 .collect(Collectors.toList());
+        int userId = userRolePermissionMapper.findByRoleId(roleReq.getId());
         if (!newPermissions.isEmpty()) {
             int rows = rolePermissionMapper.insertList(newPermissions, roleReq.getId());
+            userRolePermissionMapper.inserts(userId, roleReq.getId(), newPermissions);
             CustomValidation.isInvalid(rows <= 0, ResponseEnum.PERMISSION_UPDATE_ERROR);
+        } else {
+            List<Integer> differencePermissions = new ArrayList<>(existingPermissionIds);
+            differencePermissions.removeAll(requestedPermissionIds);
+            userRolePermissionMapper.deletesByUserIdAndRoleIdAndPermissionIds(userId, roleReq.getId(), differencePermissions);
         }
     }
 
