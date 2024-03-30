@@ -120,7 +120,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         adminUserReq.setRole(roleDTO.getRole());
     }
 
-    // todo refactor
     private void updateUserRolePermissions(AdminUserReq adminUserReq) {
         List<Integer> rolePermissionIds = rolePermissionMapper.findPermissionIdsByRoleId(adminUserReq.getRoleId());
         userRolePermissionMapper.inserts(adminUserReq.getId(), adminUserReq.getRoleId(), rolePermissionIds);
@@ -134,7 +133,6 @@ public class AdminUserServiceImpl implements AdminUserService {
             userRolePermissionMapper.deletesByUserIdAndRoleId(adminUserReq.getId(), currentUserDTO.getRoles().get(0).getId());
             updateUserRolePermissions(adminUserReq);
         }
-        updateUserRolePermissions(adminUserReq);
     }
 
     private void adjustUserPermissions(AdminUserPermissionReq adminUserPermissionReq) {
