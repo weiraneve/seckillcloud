@@ -27,6 +27,7 @@ public class CloudController {
     private final SeckillGoodsService seckillGoodsService;
     private final WelcomeService welcomeService;
     private final ImageService imageService;
+    private final SeckillService seckillService;
 
     @ApiOperation("分页查询goods")
     @GetMapping("/goods")
@@ -40,6 +41,7 @@ public class CloudController {
     @PostMapping("/goods")
     public Result<Object> goodsCreate(@RequestBody @Valid GoodsDTO goodsDTO) {
         goodsService.create(goodsDTO);
+        seckillService.updateSeckillLocalMap(goodsDTO);
         return seckillGoodsService.create(goodsDTO);
     }
 
@@ -47,6 +49,7 @@ public class CloudController {
     @PutMapping("/goods")
     public Result<Object> goodsUpdate(@RequestBody @Valid GoodsDTO goodsDTO) {
         goodsService.update(goodsDTO);
+        seckillService.updateSeckillLocalMap(goodsDTO);
         return seckillGoodsService.update(goodsDTO);
     }
 

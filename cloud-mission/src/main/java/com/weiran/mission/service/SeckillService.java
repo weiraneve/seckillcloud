@@ -1,6 +1,7 @@
 package com.weiran.mission.service;
 
 import com.weiran.common.obj.Result;
+import com.weiran.common.pojo.dto.GoodsDTO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,4 +22,8 @@ public interface SeckillService {
      */
     Result<String> getSeckillPath(HttpServletRequest request, long goodsId);
 
+    /**
+     * 修改本地缓存map内容
+     */
+    void updateSeckillLocalMap(GoodsDTO goodsDTO);
 }

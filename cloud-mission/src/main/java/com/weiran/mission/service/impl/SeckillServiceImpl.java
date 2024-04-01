@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
+import com.weiran.common.pojo.dto.GoodsDTO;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.key.UserKey;
@@ -44,7 +45,7 @@ public class SeckillServiceImpl implements SeckillService {
     private final static String saltString = "123456";
 
     // 内存标记，减少redis访问，并且为线程安全的集合
-    private final Map<Long, Boolean> localOverMap = new ConcurrentHashMap<>();
+    private final Map<Long, Boolean> localMap = new ConcurrentHashMap<>();
 
     /**
      * 系统初始化，把秒杀商品库存剩余加载到Redis缓存中。库存预热。
@@ -57,9 +58,13 @@ public class SeckillServiceImpl implements SeckillService {
                 // 用商品Id作为key，加载秒杀商品的剩余数量
                 redisService.set(SeckillGoodsKey.seckillCount, String.valueOf(seckillGoods.getGoodsId()),
                         seckillGoods.getStockCount(), RedisCacheTimeEnum.GOODS_LIST_EXTIME.getValue());
-                localOverMap.put(seckillGoods.getGoodsId(), seckillGoods.getStockCount() > 0);
+                localMap.put(seckillGoods.getGoodsId(), seckillGoods.getStockCount() > 0);
             }
         }
+    }
+
+    public void updateSeckillLocalMap(GoodsDTO goodsDTO) {
+        localMap.put(goodsDTO.getId(), goodsDTO.getGoodsStock() > 0);
     }
 
     @Override
@@ -71,7 +76,7 @@ public class SeckillServiceImpl implements SeckillService {
             return Result.fail(ResponseEnum.REQUEST_ILLEGAL);
         }
         // 若为非，则为商品已经售完
-        if (!localOverMap.get(goodsId)) {
+        if (!localMap.get(goodsId)) {
             return Result.fail(ResponseEnum.SECKILL_OVER);
         }
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
@@ -84,7 +89,7 @@ public class SeckillServiceImpl implements SeckillService {
         // LUA脚本判断库存和预减库存
         Long count = redisLua.judgeStockAndDecrStock(goodsId);
         if (count == -1) {
-            localOverMap.put(goodsId, false);
+            localMap.put(goodsId, false);
             return Result.fail(ResponseEnum.SECKILL_OVER);
         }
         // 入队
