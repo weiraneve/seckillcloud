@@ -50,7 +50,7 @@ public class SeckillServiceImpl implements SeckillService {
      * 系统初始化，把秒杀商品库存剩余加载到Redis缓存中。库存预热。
      */
     @PostConstruct
-    public void initSeckillGoodsNumber() {
+    public void initSeckillGoodsCount() {
         List<SeckillGoods> seckillGoodsList = seckillGoodsManager.list();
         if (seckillGoodsList != null) {
             for (SeckillGoods seckillGoods : seckillGoodsList) {
