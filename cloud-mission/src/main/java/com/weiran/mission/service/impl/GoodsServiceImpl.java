@@ -81,11 +81,7 @@ public class GoodsServiceImpl implements GoodsService {
     // 显示商品细节。剩余时间等于0，正在秒杀中；剩余时间大于0，还没有开始秒杀；小于0，已经结束秒杀。
     @Override
     public Result<GoodsDetailVo> getGoodsDetail(long goodsId) {
-        // 从Redis中读取商品数据，这样多次访问都从缓存中取，减少数据库的压力
         Goods goods = redisService.get(GoodsKey.goodsKey, String.valueOf(goodsId), Goods.class);
-        if (!goods.getIsUsing()) {
-            return null;
-        }
         return getGoodsDetailVoResult(goodsId, goods);
     }
 
