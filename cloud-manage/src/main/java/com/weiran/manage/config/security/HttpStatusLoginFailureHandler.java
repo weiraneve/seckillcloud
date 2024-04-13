@@ -20,26 +20,35 @@ import java.io.IOException;
  */
 public class HttpStatusLoginFailureHandler implements AuthenticationFailureHandler {
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
-        response.setStatus(HttpStatus.OK.value());
-        response.setCharacterEncoding("UTF-8");
-        // 防request.getRemoteHost止乱码
-        response.setContentType("application/json;charset=UTF-8");
-        Result<ResponseEnum> httpResultVO = Result.fail(ResponseEnum.USER_NOT_FOUND);
+        Result<ResponseEnum> httpResultVO;
+        HttpStatus status = HttpStatus.OK;
+
         if (exception instanceof BadCredentialsException) {
             httpResultVO = Result.fail(ResponseEnum.USER_PASSWORD_VALID);
         } else if (exception instanceof NonceExpiredException) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            status = HttpStatus.UNAUTHORIZED;
             httpResultVO = Result.fail(ResponseEnum.UNAUTHORIZED);
         } else if (exception instanceof InsufficientAuthenticationException) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            status = HttpStatus.UNAUTHORIZED;
             httpResultVO = Result.fail(ResponseEnum.UNAUTHORIZED);
         } else if (exception instanceof DisabledException) {
             httpResultVO = Result.fail(ResponseEnum.USER_IS_BAN_FOUND);
+        } else {
+            httpResultVO = Result.fail(ResponseEnum.USER_NOT_FOUND);
         }
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(httpResultVO));
+        sendResponse(response, status, httpResultVO);
+    }
+
+    private void sendResponse(HttpServletResponse response, HttpStatus status, Result<ResponseEnum> httpResultVO) throws IOException {
+        response.setStatus(status.value());
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(httpResultVO));
     }
 }
