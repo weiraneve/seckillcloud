@@ -101,9 +101,11 @@ exit 1
 
 ## swagger
 项目对应模块启动之后，可以通过path查看swagger文档
-- [uaa api](http://localhost:8205/uaa/swagger-ui.html)
-- [mission api](http://localhost:8205/mission/swagger-ui.html)
-- [manage api](http://localhost:8205/manage/swagger-ui.html)
+- uaa-module http://localhost:8205/uaa/swagger-ui.html
+- mission-module http://localhost:8205/mission/swagger-ui.html
+- manage-module http://localhost:8205/manage/swagger-ui.html
+
+也可以在目录内查看所有API的swagger静态文档👇
 
 [所有接口的离线swagger文档](./docs/swagger.html)
 
