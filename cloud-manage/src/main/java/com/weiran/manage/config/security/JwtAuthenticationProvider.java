@@ -11,7 +11,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.www.NonceExpiredException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Calendar;
 
@@ -31,12 +31,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         DecodedJWT jwt = ((JwtAuthenticationToken) authentication).getToken();
         if (jwt.getExpiresAt().before(Calendar.getInstance().getTime())) {
-            throw new NonceExpiredException("Token expires");
+            throw new BadCredentialsException("令牌已过期");
         }
         String username = jwt.getSubject();
         UserDetails user = userService.getUserLoginInfo(username);
         if (user == null || user.getPassword() == null) {
-            throw new NonceExpiredException("Token expires");
+            throw new UsernameNotFoundException("未找到用户或密码为空");
         }
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -45,7 +45,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
                     .build();
             verifier.verify(jwt.getToken());
         } catch (Exception e) {
-            throw new BadCredentialsException("JWT token verify fail", e);
+            throw new BadCredentialsException("JWT 令牌验证失败", e);
         }
         return new JwtAuthenticationToken(user, jwt, user.getAuthorities());
     }
