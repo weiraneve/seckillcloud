@@ -47,8 +47,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         } catch (Exception e) {
             throw new BadCredentialsException("JWT token verify fail", e);
         }
-        JwtAuthenticationToken token = new JwtAuthenticationToken(user, jwt, user.getAuthorities());
-        return token;
+        return new JwtAuthenticationToken(user, jwt, user.getAuthorities());
     }
 
     @Override
