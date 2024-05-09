@@ -81,7 +81,7 @@ qiniu:
   accessKey: ENC(XEL2TdE7S3eBkI4lukdgHuP03m3FKV/NaCpUezk6z6KCR6UOo7UGmS8VXI2YlI/cDCXyuGbuqFw=)
   secretKey: ENC(RySyvFuZ+SfUDAVA0VSUX4fexjmQ1t/D45oADbkAkRMQdy0kQX+cF9uyRsh/BUzJciemr1GK610=)
   # 对象存储空间名
-  bucket: weiran1999
+  bucket: weiraneve
   # 域名
   domain: http://res.steveay.com/
 
