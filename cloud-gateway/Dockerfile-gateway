@@ -2,7 +2,7 @@ FROM adoptopenjdk/openjdk8:jdk8u345-b01-debian-slim
 
 WORKDIR /app
 
-COPY ./target/cloud-gateway-1.0.8.jar /app/cloud-gateway.jar
+COPY ./target/cloud-gateway-1.0.9.jar /app/cloud-gateway.jar
 
 ENV LANG=en_US.UTF8
 ENV TZ=Asia/Shanghai
