@@ -53,16 +53,30 @@ SpringAdmin监控一览。
 <img src="./docs/images/monitor_interface.png" alt="SpringAdmin监控一览" width="100%" />
 
 ## 如何使用
-- 项目拥有Flyway数据库版本管理，首先在项目启动之前需要创建对应的Mysql数据库，cloud-mission-goods、cloud-mission-order、cloud-mission-seckillGoods、cloud-uaa、cloud-manage五个库。然后分别启动以下中间件，如果没启动好中间件，项目则会报错。
+- 项目拥有Flyway数据库版本管理，首先在项目启动之前需要创建对应的Mysql数据库，cloud-mission-goods、
+cloud-mission-order、cloud-mission-seckillGoods、cloud-uaa、cloud-manage五个库。
+然后分别启动下述中间件，如果没启动好中间件，项目则会报错。
 - 启动Nacos，如果没有则先安装，安装后按网上文章博客启动。
 - 启动本地的Redis，密码为空即可。如果本地没有安装Redis，则先安装。
 - 启动本地的RabbitMQ(没有则安装，网上搜索如何安装RabbitMQ与可视化软件)，用户名和密码默认即可。
-- 当对应的中间件都启动好后，启动项目Flyway会自动帮助创建对应的表结构和导入一些必要的初始信息。对应的SQL文件在sql文件夹中，Flyway的迁移sql文件则在对应模块之中。依次启动项目中的cloud-gateway、cloud-uaa、cloud-mission、cloud-manage模块，如果不用到后台管理系统可以不启动cloud-manage模块。
+- 当对应的中间件都启动好后，启动项目Flyway会自动帮助创建对应的表结构和导入一些必要的初始信息。对应的SQL文件在sql文件夹中，
+Flyway的迁移sql文件则在对应模块之中。依次启动项目中的cloud-gateway、cloud-uaa、cloud-mission、cloud-manage模块， 
+如果不用到后台管理系统可以不启动cloud-manage模块。
 - cloud-monitor模块的SpringBoot Admin监控技术栈，使用只需要开启网关后访问http://localhost:8205/monitor 或者直接访问monitor端口。
-- 启动后台前端服务器和客户端前端服务器。客户端有账号和密码(密码都为123)，因为flutter还没有加上加盐加密传输能力，所以有明文账号和密码就在sql里(账号：12345678910，密码：123) ；后台系统有超级管理员账号与密码和普通管理员账号与密码(密码都为123) 。客户端端口为3000，后台系统端口为3001。因为项目中使用了qiniu云对象储存配置上传空间，如若需要，需在配置文件中配置自己的域名以及信息（已经加密脱敏）。
-- cloud-manage调用cloud-mission模块的商品上传配置是使用qiniu相关的依赖，也需要qiniu云对象储存账号的一些信息，项目是使用了配置文件加密脱敏后qiniu云对象储存密钥信息。其中配置商品图片(只能上传jpg后缀图片文件)的功能有qiniu云对象储存以及对应依赖提供。
-- docker-compose使用的话，先要把所有module的jar包打出来，`mvn install` 然后 在项目文件夹根目录运行`docker-compose up -d
-  `，即可。
+- 启动后台前端服务器和客户端前端服务器。客户端有账号和密码(密码都为123)，因为flutter还没有加上加盐加密传输能力，
+所以有明文账号和密码就在sql里(账号：12345678910，密码：123)； 后台系统有超级管理员账号与密码和普通管理员账号与密码(密码都为123)
+秒杀项目客户端端口为3000，秒杀项目后台系统端口为3001。
+因为项目中使用了qiniu云对象储存配置上传空间，如若需要，需在配置文件中配置自己的域名以及信息（已经加密脱敏）。
+- cloud-manage调用cloud-mission模块的商品上传配置是使用qiniu相关的依赖，也需要qiniu云对象储存账号的一些信息，
+项目是使用了配置文件加密脱敏后qiniu云对象储存密钥信息。其中配置商品图片(只能上传jpg后缀图片文件)的功能有qiniu云对象储存以及对应依赖提供。
+- docker-compose使用的话，先要把所有module的jar包打出来，`mvn install` 然后 在项目文件夹根目录运行`docker-compose up -d`即可。
+
+## 后台配置的OSS
+本项目关于`admin-manager`部分的商品图片存储，是使用[七牛云](https://www.qiniu.com/)的对象存储Kodo功能。
+
+想详情由自己配置的，可去七牛云官网注册免费使用。然后修改`mission`模块中的`application.yml`文件中的:
+`qiniu`的`accessKey`,`secretKey`,`bucket`,`domain`。自己账户的`accessKey`,`secretKey`可以在七牛云的密钥管理中查看。
+`bucket`,`domain`分别是对象存储空间名和域名，对象存储空间可以在七牛云里免费申请和使用。域名则需要用七牛云中配置的自己的域名。
 
 ## 中间件启动脚本
 以下是中间件启动`shell`脚本，保存为名字为`mid`，然后放到macos的环境变量`PATH`之下，也可以自己去设置环境变量PATH `export PATH="${HOME}/env:$PATH"` 在`~/.zshrc`中。
