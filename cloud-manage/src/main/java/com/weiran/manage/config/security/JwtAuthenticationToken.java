@@ -1,6 +1,7 @@
 package com.weiran.manage.config.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +18,8 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
 	private UserDetails principal;
 	private String credentials;
-	private final DecodedJWT token;
+	@Getter
+    private final DecodedJWT token;
 
 	public JwtAuthenticationToken(DecodedJWT token) {
 		super(Collections.emptyList());
@@ -44,10 +46,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 	@Override
 	public Object getPrincipal() {
 		return principal;
-	}
-
-	public DecodedJWT getToken() {
-		return token;
 	}
 
 }
