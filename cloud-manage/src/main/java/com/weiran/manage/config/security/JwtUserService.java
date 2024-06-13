@@ -23,6 +23,8 @@ public class JwtUserService implements UserDetailsService {
 
     private final AdminUserMapper adminUserMapper;
 
+    private final String USERNAME_NOT_FOUND_MESSAGE = "用户不存在";
+
     public JwtUserService(AdminUserMapper adminUserMapper) {
         this.adminUserMapper = adminUserMapper;
     }
@@ -45,7 +47,7 @@ public class JwtUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return adminUserMapper.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("用户不存在"));
+        return adminUserMapper.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
     }
 
 }
