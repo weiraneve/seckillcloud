@@ -12,7 +12,10 @@
 - [本项目的uniapp小程序端](https://github.com/weiraneve/seckill-mall-miniprogram)
 
 ## 简介
-项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、持久层MybatisPlus框架、Flyway数据库版本管理工具和多数据源处理方案、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RabbitMQ等一系列技术栈，优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
+项目采用了SpringBoot框架、SpringCloud微服务架构、SpringCloud Gateway网关技术栈、SpringCloud alibaba技术栈Nacos、SpringCloud Netflix技术栈容灾和均衡负载和Feign进行服务间的通信、
+持久层MybatisPlus框架、Flyway数据库版本管理工具和多数据源处理方案、中间件缓存Redis与相关框架、SpringBoot Admin技术栈、中间件消息队列RabbitMQ等一系列技术栈，
+优化项目中的消息队列与缓存与分表分库等技术，解决了秒杀系统设计与实现中，并发不安全的难题与数据库存储的瓶颈，并使用针对Redis的LUA脚本解决高并发下的商品超卖问题。微服务构架技术，
+则赋予了项目需要的容灾性和可扩展性，从而完成了一个具有高并发、高可用性能的秒杀系统以及灵活配置秒杀业务与策略的秒杀系统。并且拥有秒杀业务客户端和后台管理的前端服务器，实现了前后端分离。
 
 ## 项目模块
 因为是用微服务架构构建的项目，很多地方需要一些微服务必须的组件。下面简单介绍一些项目模块。
@@ -28,7 +31,8 @@
 - cloud-uaa
 用户认证中心模块，统一登录，与客户注册功能。对应cloud-uaa表。
 - cloud-mission
-主要秒杀业务模块。React框架下的秒杀客户端前后端分离。cloud-mission模块里的test包里，有TestJmeterController类专供Jmeter压测工具测试秒杀性能。对应cloud-mission-goods、order、seckillGoods三个表的多数据源。
+主要秒杀业务模块。React框架下的秒杀客户端前后端分离。cloud-mission模块里的test包里，有TestJmeterController类专供Jmeter压测工具测试秒杀性能。
+对应cloud-mission-goods、order、seckillGoods三个表的多数据源。
 
 ## 图文一览
 
@@ -125,13 +129,17 @@ exit 1
 
 ## 秒杀的代码逻辑
 - 关于秒杀的业务逻辑，用户访问，在uaa模块登入时，进行资格筛选，认证后。进入秒杀商品列表页面，点入秒杀商品详情后，点击立即秒杀，如果在规定时间内（按钮没有置灰），并且没有重复秒杀，则开启秒杀。
-- 这里涉及到秒杀接口的URL加盐动态化，后端相关的秒杀代码，没有选择Redis的LUA脚本和Redisson分布式锁，因为项目中没有使用过多的Redis事务逻辑和Redis分布式逻辑。秒杀主要运用的是Redis库存预热加载和Redis预减库存解决超卖，RabbitMQ消息队列使用串行化，保证项目的高可用和高并发。
+- 这里涉及到秒杀接口的URL加盐动态化，后端相关的秒杀代码，没有选择Redisson分布式锁，因为项目中没有使用过多的Redis事务逻辑和Redis分布式逻辑。
+秒杀主要运用的是Redis库存预热加载、LUA脚本和Redis预减库存解决超卖，RabbitMQ消息队列使用串行化，保证项目的高可用和高并发。
 - 秒杀的策略配置，是由cloud-manage模块提供，持久层主要使用MyBatis完成。
-- 在后台系统中，在商品列表里增加一个商品，则会分别在商品表和库存表中分别增加对应的信息，以及在Redis缓存中的商品缓存和库存缓存中增加，并且也会在后台秒杀库存页面中显示。并且在商品信息中有是否启用这个信息以及对应的控制，不启用的时候，客户端访问商品列表只会显示那些缓存中的启用的商品信息。
-- 在后台中使用的SpringSecurity的JWT认证，而客户端使用的是自己写的Token加盐令牌的逻辑，每次客户端访问接口就需要前端服务器传递token给后端验证。其中的客户端的登录和注册的密码，为了做到脱敏，都是前端服务器进行国密加密然后传输到后端存储。
+- 在后台系统中，在商品列表里增加一个商品，则会分别在商品表和库存表中分别增加对应的信息，以及在Redis缓存中的商品缓存和库存缓存中增加，并且也会在后台秒杀库存页面中显示。
+并且在商品信息中有是否启用这个信息以及对应的控制，不启用的时候，客户端访问商品列表只会显示那些缓存中的启用的商品信息。
+- 在后台中使用的SpringSecurity的JWT认证，而客户端使用的是自己写的Token加盐令牌的逻辑，每次客户端访问接口就需要前端服务器传递token给后端验证。
+其中的客户端的登录和注册的密码，为了做到脱敏，都是前端服务器进行国密加密然后传输到后端存储。
 - 后台系统中，简单实现一个对于用户是否能有资格进入秒杀系统的灵活配置，这里逻辑相对简略，此处的完成度不高。
 - 后台管理系统的接口应该遵从微服务的规则，一个服务模块使用一个数据库，这里可用Feign来调用，即cloud-manage去调用cloud-mission模块的接口来调用。本项目目前使用MyBatis配置多数据源来调用资源。
-- [Jmeter测试文件](./docs/HTTP-test.jmx)可以导入Jmeter自行测试，测试类为cloud-mission模块中test包中的TestJmeterController，但每次使用测试都需要要么直接复制，放入com.weiran.mission包的controller包中测试，测试完再删除。要么就要在test包中启动test类对应的启动类。
+- [Jmeter测试文件](./docs/HTTP-test.jmx)可以导入Jmeter自行测试，测试类为cloud-mission模块中test包中的TestJmeterController，但每次使用测试都需要要么直接复制，
+放入com.weiran.mission包的controller包中测试，测试完再删除。要么就要在test包中启动test类对应的启动类。
 - cloud-uaa拥有对于某一IP频繁登录访问的限制，用注解加拦截器实现。
 - 对于高并发下的超卖问题，项目测试过synchronized锁、Redisson分布式锁，在能保证并发安全的情况下，性能都有不少地损失，所以采取了LUA脚本解决，使Redis的操作具有原子性，做到了避免超卖。
 - cloud-mission模块，对于订单防重和写入的逻辑，根据用户id和商品id做一定地计算后得出订单id，结合幂等机制写入库中。
