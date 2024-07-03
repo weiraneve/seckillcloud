@@ -16,12 +16,14 @@ import java.io.IOException;
  */
 public class RestAuthenticationAccessDeniedHandler implements AccessDeniedHandler {
 
+    public static final String UTF_8 = "UTF-8";
+    public static final String APPLICATION_JSON_UTF_8 = "application/json;charset=UTF-8";
+
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
-        response.setCharacterEncoding("UTF-8");
-        // 防止乱码
-        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding(UTF_8);
+        response.setContentType(APPLICATION_JSON_UTF_8);
         Result<ResponseEnum> httpResultVO = Result.fail(ResponseEnum.FORBIDDEN);
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpResultVO));
     }
