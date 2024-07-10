@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 
-@EnableWebSecurity // 开启WebSecurity
+@EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 开启方法级的安全；prePostEnabled = true开启方法执行前与后，PreAuthorize注解会在方法执行前验证。
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -39,7 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/actuator/**", "/upload", "/session/findByUsername", "/login").permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs", "/webjars/**").permitAll()
-//                .antMatchers("/system","/system/**").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
@@ -48,8 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
-                new Header("Access-control-Allow-Origin", "*"),
-                new Header("Access-Control-Expose-Headers", "Authorization"))))
+                        new Header("Access-control-Allow-Origin", "*"),
+                        new Header("Access-Control-Expose-Headers", "Authorization"))))
                 .and().exceptionHandling().accessDeniedHandler(new RestAuthenticationAccessDeniedHandler()).and()
                 .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class)
                 .apply(new JsonLoginConfigurer<>()).loginSuccessHandler(jsonLoginSuccessHandler())
@@ -57,7 +56,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .apply(new JwtLoginConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler()).permissiveRequestUrls("/logout")
                 .and()
                 .logout()
-//		        .logoutUrl("/logout")
                 .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                 .and()
                 .sessionManagement().disable();
