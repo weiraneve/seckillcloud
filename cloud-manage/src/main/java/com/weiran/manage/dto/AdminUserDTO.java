@@ -30,7 +30,6 @@ public class AdminUserDTO implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority(role));
         permissions.forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getPermission())));
         return authorities;
     }
