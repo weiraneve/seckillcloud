@@ -152,13 +152,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Assert.notNull(failureHandler, "failureHandler cannot be null");
         this.failureHandler = failureHandler;
     }
-
-    protected AuthenticationSuccessHandler getSuccessHandler() {
-        return successHandler;
-    }
-
-    protected AuthenticationFailureHandler getFailureHandler() {
-        return failureHandler;
-    }
-
 }
