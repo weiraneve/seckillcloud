@@ -17,9 +17,7 @@ import com.weiran.mission.pojo.entity.SeckillGoods;
 import com.weiran.mission.pojo.entity.User;
 import com.weiran.mission.rabbitmq.BasicPublisher;
 import com.weiran.mission.rabbitmq.SeckillMessage;
-import com.weiran.mission.service.GoodsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,8 +36,6 @@ import java.util.UUID;
 public class TestJmeterController {
 
     final RedisService redisService;
-    final RedisTemplate<String, Object> redisTemplate;
-    final GoodsService goodsService;
     final OrderManager orderManager;
     final SeckillGoodsManager seckillGoodsManager;
     final BasicPublisher messageSender;
