@@ -27,7 +27,7 @@
 - cloud-common
 通用模块。负责一些通用的依赖管理和一些通用代码如Redis等的复用。
 - cloud-manage
-后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单。后端提供接口给React框架下的后台前端服务器，实现前后端分离。对应cloud-manage表。
+后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单，并且有管理者权限和对应鉴权逻辑。后端提供接口给React框架下的后台前端服务器，实现前后端分离。对应cloud-manage表。
 - cloud-uaa
 用户认证中心模块，统一登录，与客户注册功能。对应cloud-uaa表。
 - cloud-mission
