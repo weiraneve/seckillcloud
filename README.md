@@ -147,11 +147,9 @@ exit 1
 - 加入了CI/CD部分，jenkins、docker、docker-compose等功能。
 
 ## 未来展望
-- Nginx对于Redis的分布式的一些配置未来也可以用上，Nginx均衡负载，集群分布式等，增加高可用的程度。
+- 允许用户提前注册秒杀商品的通知，系统在商品秒杀开始前通过短信或邮件提醒用户
 - 数据库的容灾，可以在云数据库厂商直接配置。主从结构，定时备份。也可以用容器构建。集群部署，主从分离，定时备份。
-- 本身项目中秒杀模块也有注解加拦截器负责限流。关于限流、熔断等功能，还可以由网关来承载，这可能是未来改进的一个方向，项目中是以自定义注解加拦截器来限流。
 - 消息队列、JVM和一些环境上的调优。
-- 增量or全量同步(canal)
 
 ## 特别感谢
 <a href="https://www.jetbrains.com/?from=spring-boot-demo"><img src="https://account.jetbrains.com/static/images/jetbrains-logo-inv.svg" width="20%" alt="jetbrains"> 感谢 JetBrains 提供的免费开源 License</a>
