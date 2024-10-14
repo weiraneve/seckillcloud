@@ -11,4 +11,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/subscribe")
 public class SubscribeController {
 
+     // 增加一个表来cover用户订阅信息
 }
