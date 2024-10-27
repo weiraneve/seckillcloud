@@ -7,4 +7,13 @@ import org.springframework.stereotype.Service;
 public class NotificationServiceImpl implements NotificationService {
 
 
+    @Override
+    public void registerNotification(Long userId, Long productId, String notifyType, String notifyTarget) {
+
+    }
+
+    @Override
+    public void scanAndSendNotification() {
+
+    }
 }
