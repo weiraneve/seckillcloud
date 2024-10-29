@@ -27,14 +27,8 @@ public class SeckillNotification {
     @ApiModelProperty("秒杀时间")
     private LocalDateTime seckillTime;
 
-    @ApiModelProperty("EMAIL/SMS")
-    private String notifyType;
-
-    @ApiModelProperty("邮箱或手机号")
-    private String notifyTarget;
-
-    @ApiModelProperty("商品id")
-    private Boolean notified = false;
+    @ApiModelProperty("是否进行通知")
+    private Boolean isNotified = false;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createdAt;
