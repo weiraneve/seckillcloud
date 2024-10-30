@@ -24,10 +24,7 @@ public class SeckillNotification {
     @ApiModelProperty("商品id")
     private Long goodsId;
 
-    @ApiModelProperty("秒杀时间")
-    private LocalDateTime seckillTime;
-
-    @ApiModelProperty("是否进行通知")
+    @ApiModelProperty("是否已经进行通知")
     private Boolean isNotified = false;
 
     @ApiModelProperty("创建时间")
