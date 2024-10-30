@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiran.mission.mapper.SeckillNotificationMapper">
+
+    <resultMap id="seckillNotificationResultMap" type="com.weiran.common.pojo.dto.SeckillNotificationDTO">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="seckill_time" property="seckillTime"/>
+        <result column="is_notified" property="isNotified"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!--通过user id查询-->
+    <select id="findSeckillNotificationByUserId" resultMap="seckillNotificationResultMap" parameterType="java.util.List">
+        select *
+        from seckill_notification
+        where user_id = #{userId}
+          AND is_notified = 0
+    </select>
+
+</mapper>
