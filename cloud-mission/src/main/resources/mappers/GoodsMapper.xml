@@ -6,33 +6,42 @@
 
     <resultMap id="goodsResultMap" type="com.weiran.common.pojo.dto.GoodsDTO">
         <result column="id" property="id"/>
-        <result column="goodsName" property="goods_name"/>
-        <result column="goodsImg" property="goods_img"/>
-        <result column="isUsing" property="is_using"/>
-        <result column="goodsTitle" property="goods_title"/>
-        <result column="goodsPrice" property="goods_price"/>
-        <result column="goodsStock" property="goods_stock"/>
-        <result column="startTime" property="start_time"/>
-        <result column="endTime" property="end_time"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_img" property="goodsImg"/>
+        <result column="is_using" property="isUsing"/>
+        <result column="goods_title" property="goodsTitle"/>
+        <result column="goods_price" property="goodsPrice"/>
+        <result column="goods_stock" property="goodsStock"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
     </resultMap>
 
     <!--查询全部-->
     <select id="findGoods" resultMap="goodsResultMap">
-        select id,goods_name,goods_img,is_using,goods_title,goods_price,goods_stock,start_time,end_time
+        select id,
+               goods_name,
+               goods_img,
+               is_using,
+               goods_title,
+               goods_price,
+               goods_stock,
+               start_time,
+               end_time
         from goods
     </select>
 
     <!--通过商品名模糊查询-->
     <select id="findByGoodsNameLike" resultMap="goodsResultMap">
-        select * from goods where goods_name LIKE CONCAT(CONCAT('%', #{goodsName}), '%')
+        select *
+        from goods
+        where goods_name LIKE CONCAT(CONCAT('%', #{goodsName}), '%')
     </select>
 
     <!--通过ID查询-->
     <select id="selectGoodsById" resultMap="goodsResultMap">
         select *
         from goods
-        where id = #{id}
-            limit 1
+        where id = #{id} limit 1
     </select>
 
     <!--根据ids查询-->
@@ -47,7 +56,7 @@
 
     <!--新增-->
     <insert id="addGoods" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO goods (goods_name,goods_img,is_using,goods_title,goods_price,goods_stock,start_time,end_time)
+        INSERT INTO goods (goods_name, goods_img, is_using, goods_title, goods_price, goods_stock, start_time, end_time)
         VALUES (#{goodsDTO.goodsName},
                 #{goodsDTO.goodsImg},
                 #{goodsDTO.isUsing},
@@ -66,7 +75,7 @@
     </delete>
 
     <!--批量删除-->
-    <delete id="deletesGoods" parameterType = "java.util.List">
+    <delete id="deletesGoods" parameterType="java.util.List">
         delete
         from goods
         where id in
@@ -78,14 +87,14 @@
     <!--通过更新goods-->
     <update id="updateGoods">
         UPDATE goods
-        SET goods_name = #{goodsDTO.goodsName},
-            goods_img  = #{goodsDTO.goodsImg},
-            is_using  = #{goodsDTO.isUsing},
+        SET goods_name  = #{goodsDTO.goodsName},
+            goods_img   = #{goodsDTO.goodsImg},
+            is_using    = #{goodsDTO.isUsing},
             goods_title = #{goodsDTO.goodsTitle},
             goods_price = #{goodsDTO.goodsPrice},
             goods_stock = #{goodsDTO.goodsStock},
-            start_time = #{goodsDTO.startTime},
-            end_time = #{goodsDTO.endTime}
+            start_time  = #{goodsDTO.startTime},
+            end_time    = #{goodsDTO.endTime}
         WHERE id = #{goodsDTO.id}
     </update>
 
