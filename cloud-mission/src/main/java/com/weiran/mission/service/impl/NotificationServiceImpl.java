@@ -13,6 +13,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public void cancelNotification(Long userId, Long goodsId) {
+
+    }
+
+    @Override
     public void scanAndSendNotification() {
 
     }
