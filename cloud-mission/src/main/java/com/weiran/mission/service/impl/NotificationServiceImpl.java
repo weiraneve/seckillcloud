@@ -8,7 +8,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 
     @Override
-    public void registerNotification(Long userId, Long productId, String notifyType, String notifyTarget) {
+    public void createNotification(Long userId, Long goodsId) {
 
     }
 
