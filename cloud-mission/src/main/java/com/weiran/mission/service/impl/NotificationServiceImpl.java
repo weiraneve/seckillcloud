@@ -21,4 +21,9 @@ public class NotificationServiceImpl implements NotificationService {
     public void scanAndSendNotification() {
 
     }
+
+    @Override
+    public void checkAndNotify() {
+
+    }
 }

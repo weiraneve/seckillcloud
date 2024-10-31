@@ -7,4 +7,6 @@ public interface NotificationService {
     void cancelNotification(Long userId, Long goodsId);
 
     void scanAndSendNotification();
+
+    void checkAndNotify();
 }
