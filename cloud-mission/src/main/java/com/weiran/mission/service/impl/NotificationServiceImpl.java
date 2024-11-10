@@ -27,14 +27,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     }
 
-    @Override
-    public void scanAndSendNotification() {
+    @Scheduled(fixedRate = LOOP_CHECK_INTERVAL)
+    public void checkAndNotify() {
 
     }
 
-    @Override
-    @Scheduled(fixedRate = LOOP_CHECK_INTERVAL)
-    public void checkAndNotify() {
+    public void sendNotification() {
 
     }
 }
