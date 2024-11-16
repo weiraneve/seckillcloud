@@ -15,7 +15,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final int LOOP_CHECK_INTERVAL = 60000;
 
-    private final SeckillNotificationMapper seckillNotificationMapper;
+    private final SeckillNotificationMapper notificationMapper;
 
     @Override
     public void createNotification(Long userId, Long goodsId) {
