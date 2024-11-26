@@ -40,7 +40,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         try {
             notificationMapper.insert(notification);
-            log.info("Successfully created notification for user: {}, goods: {}", userId, goodsId);
+            log.info("Successfully created notification for userId: {}, goodsId: {}", userId, goodsId);
         } catch (Exception e) {
             log.error("Failed to create notification: {}", e.getMessage(), e);
             throw new RuntimeException("创建秒杀通知失败");
