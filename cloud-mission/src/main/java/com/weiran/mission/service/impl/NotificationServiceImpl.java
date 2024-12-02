@@ -48,8 +48,18 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cancelNotification(Long userId, Long goodsId) {
-
+        LambdaQueryWrapper<SeckillNotification> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SeckillNotification::getUserId, userId)
+                .eq(SeckillNotification::getGoodsId, goodsId);
+        try {
+            notificationMapper.delete(wrapper);
+            log.info("Successfully cancelled notification for userId: {}, goodsId: {}", userId, goodsId);
+        } catch (Exception e) {
+            log.error("Failed to cancel notification: {}", e.getMessage(), e);
+            throw new RuntimeException("取消秒杀通知失败");
+        }
     }
 
     @Scheduled(fixedRate = LOOP_CHECK_INTERVAL)
