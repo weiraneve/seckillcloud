@@ -66,8 +66,4 @@ public class NotificationServiceImpl implements NotificationService {
     public void checkAndNotify() {
 
     }
-
-    public void sendNotification() {
-
-    }
 }
