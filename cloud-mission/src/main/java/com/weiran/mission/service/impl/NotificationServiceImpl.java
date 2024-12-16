@@ -10,6 +10,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Slf4j
 @Service
@@ -64,6 +66,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Scheduled(fixedRate = LOOP_CHECK_INTERVAL)
     public void checkAndNotify() {
+        LambdaQueryWrapper<SeckillNotification> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SeckillNotification::getIsNotified, false);
 
+        List<SeckillNotification> unNotifyList = notificationMapper.selectList(queryWrapper);
     }
 }
