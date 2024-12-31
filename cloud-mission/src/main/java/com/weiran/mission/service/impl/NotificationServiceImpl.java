@@ -65,10 +65,29 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Scheduled(fixedRate = LOOP_CHECK_INTERVAL)
+    @Transactional(rollbackFor = Exception.class)
     public void checkAndNotify() {
-        LambdaQueryWrapper<SeckillNotification> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SeckillNotification::getIsNotified, false);
+        log.info("开始检查待发送的秒杀通知");
+        try {
+            LambdaQueryWrapper<SeckillNotification> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(SeckillNotification::getIsNotified, false);
+            List<SeckillNotification> unNotifyList = notificationMapper.selectList(queryWrapper);
 
-        List<SeckillNotification> unNotifyList = notificationMapper.selectList(queryWrapper);
+            if (unNotifyList.isEmpty()) {
+                log.info("没有待发送的秒杀通知");
+                return;
+            }
+
+            for (SeckillNotification notification : unNotifyList) {
+                try {
+
+                } catch (Exception e) {
+                    log.error("处理通知失败, notificationId: {}, error: {}",
+                            notification.getId(), e.getMessage(), e);
+                }
+            }
+        } catch (Exception e) {
+            log.error("检查秒杀通知任务执行失败: {}", e.getMessage(), e);
+        }
     }
 }
