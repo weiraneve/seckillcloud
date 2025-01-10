@@ -80,14 +80,17 @@ public class NotificationServiceImpl implements NotificationService {
 
             for (SeckillNotification notification : unNotifyList) {
                 try {
-
+                    notify(notification.getUserId(), notification.getGoodsId());
                 } catch (Exception e) {
-                    log.error("处理通知失败, notificationId: {}, error: {}",
-                            notification.getId(), e.getMessage(), e);
+                    log.error("处理通知失败, notificationId: {}, error: {}", notification.getId(), e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
             log.error("检查秒杀通知任务执行失败: {}", e.getMessage(), e);
         }
+    }
+
+    private void notify(Long userId, Long goodsId) {
+
     }
 }
