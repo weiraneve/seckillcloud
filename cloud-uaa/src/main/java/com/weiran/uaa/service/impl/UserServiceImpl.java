@@ -7,7 +7,6 @@ import com.weiran.common.enums.RedisCacheTimeEnum;
 import com.weiran.common.enums.ResponseEnum;
 import com.weiran.common.obj.Result;
 import com.weiran.common.redis.key.UserKey;
-import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.AuthUtil;
 import com.weiran.uaa.entity.User;
@@ -31,7 +30,6 @@ public class UserServiceImpl implements UserService {
 
     final UserManager userManager;
     final RedisService redisService;
-    final RedisLua redisLua;
 
     @Override
     public Result<String> doLogin(LoginParam loginParam) {
