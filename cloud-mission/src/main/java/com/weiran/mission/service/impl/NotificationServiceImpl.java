@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Slf4j
@@ -95,7 +96,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     }
 
-    private void getNotifyId(Long userId, Long goodsId) {
-
+    private String getNotifyId(Long userId, Long goodsId) {
+        return UUID.nameUUIDFromBytes((userId + "-" + goodsId).getBytes()).toString();
     }
 }
