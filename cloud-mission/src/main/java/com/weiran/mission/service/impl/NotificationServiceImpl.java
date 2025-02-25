@@ -93,7 +93,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void notify(Long userId, Long goodsId) {
         // todo add feign notify
-
+        String notifyId = getNotifyId(userId, goodsId);
     }
 
     private String getNotifyId(Long userId, Long goodsId) {
