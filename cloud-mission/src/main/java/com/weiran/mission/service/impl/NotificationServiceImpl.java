@@ -92,8 +92,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private void notify(Long userId, Long goodsId) {
-        // todo add feign notify
         String notifyId = getNotifyId(userId, goodsId);
+        // todo add notify logic
     }
 
     private String getNotifyId(Long userId, Long goodsId) {
