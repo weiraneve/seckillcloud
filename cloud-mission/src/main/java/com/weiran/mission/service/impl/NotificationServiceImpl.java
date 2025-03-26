@@ -2,7 +2,9 @@ package com.weiran.mission.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.weiran.mission.mapper.SeckillNotificationMapper;
+import com.weiran.mission.pojo.entity.Goods;
 import com.weiran.mission.pojo.entity.SeckillNotification;
+import com.weiran.mission.pojo.entity.User;
 import com.weiran.mission.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +95,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void notify(Long userId, Long goodsId) {
         String notifyId = getNotifyId(userId, goodsId);
-        // todo add notify logic
+        // todo use email or anything else
     }
 
     private String getNotifyId(Long userId, Long goodsId) {
