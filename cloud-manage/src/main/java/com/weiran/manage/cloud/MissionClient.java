@@ -78,4 +78,8 @@ public interface MissionClient {
     @GetMapping("/cloud/notification")
     Result<PageInfo<SeckillNotificationDTO>> notificationIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                                                @RequestParam(required = false) String goodsName);
+
+    // 修改通知
+    @PutMapping("/cloud/notification")
+    Result<PageInfo<SeckillNotificationDTO>> updateNotification();
 }

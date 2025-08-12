@@ -31,8 +31,8 @@ public class NotificationController {
     @ApiOperation("修改通知")
     @GetMapping
     public Result<PageInfo<SeckillNotificationDTO>> seckillNotificationUpdate(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
-                                                                             @RequestParam(required = false) String goodsName) {
-        return missionClient.notificationIndex(page, pageSize, goodsName);
+                                                                              @RequestParam(required = false) String goodsName) {
+        return missionClient.updateNotification();
     }
 
 }
