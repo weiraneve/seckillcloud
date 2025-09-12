@@ -32,7 +32,7 @@ public class NotificationController {
     @GetMapping
     public Result<PageInfo<SeckillNotificationDTO>> seckillNotificationUpdate(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                                                               @RequestParam(required = false) String goodsName) {
-        return missionClient.updateNotification();
+        return missionClient.updateNotification(goodsName);
     }
 
 }

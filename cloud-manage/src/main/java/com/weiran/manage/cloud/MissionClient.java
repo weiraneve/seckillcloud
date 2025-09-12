@@ -81,5 +81,5 @@ public interface MissionClient {
 
     // 修改通知
     @PutMapping("/cloud/notification")
-    Result<PageInfo<SeckillNotificationDTO>> updateNotification();
+    Result<PageInfo<SeckillNotificationDTO>> updateNotification(@RequestParam(value = "goodsName", defaultValue = "") String goodsName);
 }
