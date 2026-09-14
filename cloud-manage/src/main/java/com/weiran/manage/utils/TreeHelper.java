@@ -21,14 +21,14 @@ public class TreeHelper {
 
     private static void convertData2Node(List<PermissionMenuDTO> nodes, NodeRelation<PermissionMenuDTO> checker) {
         for (int i = 0; i < nodes.size(); i++) {
-            PermissionMenuDTO n = nodes.get(i);
+            PermissionMenuDTO parentNode = nodes.get(i);
             for (int j = i + 1; j < nodes.size(); j++) {
-                PermissionMenuDTO m = nodes.get(j);
-                if (checker.isParent(n, m)) {
-                    if (n.getChildren() == null) {
-                        n.setChildren(new ArrayList<>());
+                PermissionMenuDTO childNode = nodes.get(j);
+                if (checker.isParent(parentNode, childNode)) {
+                    if (parentNode.getChildren() == null) {
+                        parentNode.setChildren(new ArrayList<>());
                     }
-                    n.getChildren().add(m);
+                    parentNode.getChildren().add(childNode);
                 }
             }
         }
@@ -36,14 +36,14 @@ public class TreeHelper {
 
     private static void convertData2TreeNode(List<TreeRoleMenuDTO> nodes, NodeRelation<TreeRoleMenuDTO> checker) {
         for (int i = 0; i < nodes.size(); i++) {
-            TreeRoleMenuDTO n = nodes.get(i);
+            TreeRoleMenuDTO parentNode = nodes.get(i);
             for (int j = i + 1; j < nodes.size(); j++) {
-                TreeRoleMenuDTO m = nodes.get(j);
-                if (checker.isParent(n, m)) {
-                    if (n.getChildren() == null) {
-                        n.setChildren(new ArrayList<>());
+                TreeRoleMenuDTO childNode = nodes.get(j);
+                if (checker.isParent(parentNode, childNode)) {
+                    if (parentNode.getChildren() == null) {
+                        parentNode.setChildren(new ArrayList<>());
                     }
-                    n.getChildren().add(m);
+                    parentNode.getChildren().add(childNode);
                 }
             }
         }
